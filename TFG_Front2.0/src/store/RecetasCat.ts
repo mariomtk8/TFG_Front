@@ -19,8 +19,11 @@ export const useRecetasStore = defineStore('recetas', () => {
   // Función para obtener las recetas por ID de categoría
   const fetchRecetasPorCategoria = async (idCategoria: number) => {
     try {
+      // Limpiar recetas antes de cargar nuevas
+      recetas.value = [];
+
       console.log(`Iniciando petición para obtener recetas de la categoría ${idCategoria}...`);
-      const response = await fetch(`/api/categoria/${idCategoria}/recetas`); // Ajusta la URL según tu backend
+      const response = await fetch(`/api/Receta/categoria/${idCategoria}`);
 
       if (!response.ok) {
         console.error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
@@ -35,7 +38,7 @@ export const useRecetasStore = defineStore('recetas', () => {
         throw new Error('El formato de los datos obtenidos no es válido.');
       }
 
-      recetas.value = data;
+      recetas.value = data; // Almacenar las nuevas recetas
       console.log('Datos de recetas cargados correctamente:', recetas.value);
 
     } catch (error: any) {

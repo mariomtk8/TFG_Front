@@ -36,8 +36,8 @@ import { useCategoriasStore } from '../store/Categorias';
 const categoriasStore = useCategoriasStore();
 const { categorias, fetchCategorias } = categoriasStore;
 
-onMounted(() => {
-  fetchCategorias();
+onMounted(async() => {
+   fetchCategorias();
 });
 </script>
 
