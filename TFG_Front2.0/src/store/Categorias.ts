@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 interface Categoria {
   idCategoria: number;
@@ -11,38 +10,39 @@ interface Categoria {
   puntuacionPromedio: number;
 }
 
-export const useCategoriasStore = defineStore('categorias', () => {
-  const categorias = ref<Categoria[]>([]);
+export const useCategoriasStore = defineStore('categorias', {
+  state: () => ({
+    categorias: [] as Categoria[],  // Estado que almacena las categorías
+    loading: false,                  // Estado de carga
+    error: null as string | null,    // Estado de error
+  }),
+  actions: {
+    async fetchCategorias() {
+      this.loading = true;           // Iniciar carga
+      this.error = null;             // Limpiar error anterior
 
-  const fetchCategorias = async () => {
-    try {
-      console.log('Iniciando petición para obtener categorías...');
-      const response = await fetch('/api/Categoria'); 
+      try {
+        console.log('Iniciando petición para obtener categorías...');
+        const response = await fetch('/api/Categoria');
 
-      if (!response.ok) {
-        console.error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
-        throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error('El formato de los datos obtenidos no es válido.');
+        }
+
+        this.categorias = data;       // Actualizar el estado con las categorías
+        console.log('Datos de categorías cargados correctamente:', this.categorias);
+      } catch (error: any) {
+        console.error('Error al obtener las categorías:', error);
+        this.error = error.message;   // Establecer el mensaje de error
+      } finally {
+        this.loading = false;          // Finalizar carga
       }
-
-      const data = await response.json();
-      
-     
-      if (!Array.isArray(data)) {
-        console.error('El formato de los datos no es un arreglo', data);
-        throw new Error('El formato de los datos obtenidos no es válido.');
-      }
-
-      categorias.value = data;
-      console.log('Datos de categorías cargados correctamente:', categorias.value);
-
-    } catch (error: any) {
-      console.error('Error al obtener las categorías:', error);
-      throw error; 
-    }
-  };
-
-  return {
-    categorias,
-    fetchCategorias,
-  };
+    },
+  },
 });
