@@ -11,6 +11,14 @@ interface Receta {
   tiempoPreparacion: number;
 }
 
+interface Paso {
+  idPaso: number;
+  idReceta: number;
+  numero: number;
+  descripcion: string;
+  imagenUrl: string;
+}
+
 interface Ingrediente {
   idIngrediente: number;
   nombreIngrediente: string;
@@ -26,6 +34,7 @@ export const useRecetasStore = defineStore('recetas', {
   state: () => ({
     recetaActual: null as Receta | null,
     ingredientes: [] as Ingrediente[], // Agregar un nuevo estado para los ingredientes
+    pasos: [] as Paso[],
     loading: false,
     error: null as string | null,
   }),
@@ -47,6 +56,7 @@ export const useRecetasStore = defineStore('recetas', {
         }
 
         this.recetaActual = data;
+        this.pasos = data.pasos; // Asignar los pasos desde la respuesta
       } catch (error: any) {
         this.error = 'Error al obtener la receta. Intenta nuevamente más tarde.';
       } finally {

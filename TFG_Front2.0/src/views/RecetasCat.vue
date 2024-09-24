@@ -17,6 +17,7 @@
           <span class="etiqueta">{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</span>
           <span class="etiqueta">Dificultad: {{ receta.nivelDificultad }}</span>
           <span class="etiqueta">Tiempo: {{ receta.tiempoPreparacion }} min</span>
+          <img class="imagen-receta" v-if="receta.imagen" :src="receta.imagen" alt="Paso imagen" />
         </RouterLink>
       </div>
     </div>
@@ -82,6 +83,10 @@ onMounted(() => {
   cursor: pointer;
   transition: transform 0.2s;
   text-decoration: none;
+}
+
+.imagen-receta{
+  max-width: 250px;
 }
 
 .receta-item:hover {

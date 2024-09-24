@@ -34,9 +34,10 @@
 
         <section class="pasos">
           <h3>Pasos</h3>
-          <div v-for="(paso, index) in pasos" :key="index">
-            <h4>{{ index + 1 }}º Paso</h4>
-            <p>{{ paso }}</p>
+          <div v-for="paso in pasos" :key="paso.idPaso">
+            <h4>{{ paso.numero }}º Paso</h4>
+            <p>{{ paso.descripcion }}</p>
+            <img class="imagen-pasos" v-if="paso.imagenUrl" :src="paso.imagenUrl" alt="Paso imagen" />
           </div>
         </section>
       </div>
@@ -68,21 +69,17 @@ const receta = computed(() => recetasStore.recetaActual); // Se define receta co
 // Crear una computed property para ingredientes
 const ingredientes = computed(() => recetasStore.ingredientes); // Asegúrate de que el store tenga esta propiedad
 
+// Crear una computed property para pasos
+const pasos = computed(() => recetasStore.pasos); // Extraer los pasos del store
+
 // Obtener el ID de la receta desde la ruta
 const route = useRoute();
 const recetaId = route.params.id ? Number(route.params.id) : null;
 
-// Constante para almacenar los pasos de la receta
-const pasos = ref<string[]>([]);
-
-// Función para cargar la receta y preparar los pasos
+// Función para cargar la receta y los ingredientes
 const cargarReceta = async (id: number) => {
   await recetasStore.fetchRecetaPorId(id);
   await recetasStore.fetchIngredientesPorRecetaId(id);
-  
-  if (receta.value?.instrucciones) {
-    pasos.value = receta.value.instrucciones.split('\n'); // Dividir las instrucciones en pasos
-  }
 };
 
 // Ejecutar la carga de la receta cuando se monte el componente
@@ -135,6 +132,10 @@ onMounted(() => {
 .ingredientes,
 .pasos {
   margin-top: 20px;
+}
+
+.imagen-pasos{
+  width: 200px;
 }
 
 .pasos div {

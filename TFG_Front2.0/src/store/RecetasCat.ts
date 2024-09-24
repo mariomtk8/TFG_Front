@@ -4,6 +4,7 @@ interface Receta {
   idReceta: number;
   nombre: string;
   descripcion: string;
+  imagen: string;
   instrucciones: string;
   esVegano: boolean;
   fechaCreacion: string;
