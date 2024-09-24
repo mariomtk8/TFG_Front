@@ -1,91 +1,100 @@
 <template>
-    <div class="receta-container">
-      <h1>{{ receta?.nombre }}</h1>
-  
-      <section v-if="receta" class="descripcion">
-        <h2>Descripción</h2>
-        <p>{{ receta.descripcion }}</p>
-      </section>
-  
-      <div v-if="receta" class="receta-layout">
-        <div class="receta-info">
-          <img :src="receta.imagen" alt="Imagen de la receta" class="receta-imagen" />
-  
-          <div class="datos">
-            <h3>Datos</h3>
-            <p><strong>Nivel de dificultad:</strong> {{ receta.nivelDificultad }}</p>
-            <p><strong>Tiempo de preparación:</strong> {{ receta.tiempoPreparacion }} min</p>
-            <p><strong>Tipo de plato:</strong> Primer plato</p>
-          </div>
-        </div>
-  
-        <div class="receta-detalles">
-          <section class="ingredientes">
-            <h3>Ingredientes</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-          </section>
-  
-          <section class="pasos">
-            <h3>Pasos</h3>
-            <div v-for="(paso, index) in pasos" :key="index">
-              <h4>{{ index + 1 }}º Paso</h4>
-              <p>{{ paso }}</p>
-            </div>
-          </section>
+  <div class="receta-container">
+    <h1>{{ receta?.nombre }}</h1>
+
+    <section v-if="receta" class="descripcion">
+      <h2>Descripción</h2>
+      <p>{{ receta.descripcion }}</p>
+    </section>
+
+    <div v-if="receta" class="receta-layout">
+      <div class="receta-info">
+        <div class="datos">
+          <h3>Datos</h3>
+          <p><strong>Nivel de dificultad:</strong> {{ receta.nivelDificultad }}</p>
+          <p><strong>Tiempo de preparación:</strong> {{ receta.tiempoPreparacion }} min</p>
+          <p><strong>Tipo de plato:</strong> Primer plato</p>
         </div>
       </div>
-  
-      <aside class="sidebar">
-        <section>
-          <h3>Recetas relacionadas</h3>
-          <div v-for="recetaRel in recetasRelacionadas" :key="recetaRel.idReceta">
-            <p>{{ recetaRel.nombre }}</p>
+
+      <div class="receta-detalles">
+        <section class="ingredientes">
+          <h3>Ingredientes</h3>
+          <ul>
+            <li v-for="ingrediente in ingredientes" :key="ingrediente.idIngrediente">
+              <p><strong>Nombre:</strong> {{ ingrediente.nombreIngrediente }}</p>
+              <p><strong>Cantidad:</strong> {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
+              <p><strong>Calorías:</strong> {{ ingrediente.calorias }} kcal</p>
+              <p><strong>Contiene alérgenos:</strong> {{ ingrediente.contieneAlergenos ? 'Sí' : 'No' }}</p>
+              <p v-if="ingrediente.contieneAlergenos"><strong>Tipo de alérgeno:</strong> {{ ingrediente.tipoAlergeno }}</p>
+              <p><strong>Fecha de expiración:</strong> {{ ingrediente.fechaExpiracion }}</p>
+            </li>
+          </ul>
+        </section>
+
+        <section class="pasos">
+          <h3>Pasos</h3>
+          <div v-for="(paso, index) in pasos" :key="index">
+            <h4>{{ index + 1 }}º Paso</h4>
+            <p>{{ paso }}</p>
           </div>
         </section>
-  
-        <section>
-          <h3>Más populares</h3>
-          <div v-for="popular in recetasPopulares" :key="popular.idReceta">
-            <p>{{ popular.nombre }}</p>
-          </div>
-        </section>
-      </aside>
-  
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      </div>
     </div>
-  </template>
+
+    <aside class="sidebar">
+      <section>
+        <h3>Recetas relacionadas</h3>
+      </section>
+
+      <section>
+        <h3>Más populares</h3>
+      </section>
+    </aside>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRecetasStore } from '../store/Recetas';
 
-// Importar la tienda de recetas
+// Obtener el store de recetas
 const recetasStore = useRecetasStore();
 
-// Extraer datos y acciones desde la tienda
-const { receta, errorMessage, fetchRecetaPorId } = recetasStore;
+// Extraer la receta actual desde el store
+const receta = computed(() => recetasStore.recetaActual); // Se define receta como un ref reactivo
+
+// Crear una computed property para ingredientes
+const ingredientes = computed(() => recetasStore.ingredientes); // Asegúrate de que el store tenga esta propiedad
 
 // Obtener el ID de la receta desde la ruta
 const route = useRoute();
-const recetaId = route.params.id;
+const recetaId = route.params.id ? Number(route.params.id) : null;
 
 // Constante para almacenar los pasos de la receta
 const pasos = ref<string[]>([]);
 
 // Función para cargar la receta y preparar los pasos
 const cargarReceta = async (id: number) => {
-  await fetchRecetaPorId(id);
-  if (receta.value) {
-    // Dividir las instrucciones en pasos (asumiendo que vienen separadas por saltos de línea)
-    pasos.value = receta.value.instrucciones.split('\n');
+  await recetasStore.fetchRecetaPorId(id);
+  await recetasStore.fetchIngredientesPorRecetaId(id);
+  
+  if (receta.value?.instrucciones) {
+    pasos.value = receta.value.instrucciones.split('\n'); // Dividir las instrucciones en pasos
   }
 };
 
 // Ejecutar la carga de la receta cuando se monte el componente
 onMounted(() => {
-  cargarReceta(Number(recetaId));
+  if (recetaId !== null && !isNaN(recetaId)) {
+    cargarReceta(recetaId);
+  } else {
+    console.error('ID de receta no válido');
+  }
 });
 </script>
+
 <style scoped>
 .receta-container {
   padding: 20px;
@@ -146,4 +155,3 @@ onMounted(() => {
   margin-top: 20px;
 }
 </style>
-  

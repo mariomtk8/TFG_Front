@@ -4,7 +4,7 @@
 
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
-    <div v-if="recetas.length > 0">
+    <div v-if="recetas && recetas.length > 0">
       <div class="recetas-grid">
         <RouterLink
           v-for="receta in recetas"
@@ -34,20 +34,21 @@ import { useRecetasStore } from '../store/RecetasCat';
 
 const errorMessage = ref<string | null>(null);
 const recetasStore = useRecetasStore();
-const { fetchRecetasPorCategoria } = recetasStore;
 
 const route = useRoute();
-const idCategoria = ref(parseInt(route.params.idCategoria as string));
+const idCategoria = computed(()=>parseInt(route.params.idCategoria as string));
 const categoriaNombre = route.query.categoriaNombre as string;
 
 // Constante para acceder a las recetas
-const recetas = computed(() => recetasStore.recetas);
+const recetas = ref<any[]>([]); // Inicializamos como un arreglo vacío
 
 // Función para cargar recetas
 const cargarRecetas = async (id: number) => {
   try {
-    errorMessage.value = null; 
-    await fetchRecetasPorCategoria(id); 
+    errorMessage.value = null;
+    const fetchedRecetas = await recetasStore.fetchRecetasPorCategoria(id);
+    recetas.value = fetchedRecetas;
+    console.log(recetas.value);
   } catch (error) {
     console.error('Error al cargar recetas:', error);
     errorMessage.value = 'Error al cargar las recetas. Por favor, intente más tarde.';
@@ -58,13 +59,12 @@ onMounted(() => {
   cargarRecetas(idCategoria.value);
 });
 
-watch(() => route.params.idCategoria, (newId) => {
-  const parsedId = parseInt(newId as string);
-  if (parsedId !== idCategoria.value) {
-    idCategoria.value = parsedId;
-    cargarRecetas(idCategoria.value);
-  }
-});
+// watch(() => route.params.idCategoria, (newId) => {
+//   const parsedId = parseInt(newId as string);
+//   if (parsedId !== idCategoria.value) {
+//     cargarRecetas(idCategoria.value);
+//   }
+// });
 </script>
 
 <style scoped>
@@ -79,13 +79,13 @@ watch(() => route.params.idCategoria, (newId) => {
   border: 1px solid #ddd;
   color: black;
   border-radius: 8px;
-  cursor: pointer; /* Cambia el cursor para indicar que es clickeable */
+  cursor: pointer;
   transition: transform 0.2s;
   text-decoration: none;
 }
 
 .receta-item:hover {
-  transform: scale(1.02); /* Añade un efecto al pasar el mouse */
+  transform: scale(1.02);
 }
 
 .error {

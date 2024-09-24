@@ -1,26 +1,83 @@
-// store/Recetas.ts
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
-export const useRecetasStore = defineStore('Recetas', () => {
-  const receta = ref(null);
-  const errorMessage = ref<string | null>(null);
+interface Receta {
+  idReceta: number;
+  nombre: string;
+  descripcion: string;
+  instrucciones: string;
+  esVegano: boolean;
+  fechaCreacion: string;
+  nivelDificultad: number;
+  tiempoPreparacion: number;
+}
 
-  const fetchRecetaPorId = async (id: number) => {
-    try {
-      errorMessage.value = null;
-      const response = await fetch(`/Receta/${id}`);
-      const data = await response.json();
-      receta.value = data;
-    } catch (error) {
-      console.error('Error al cargar la receta:', error);
-      errorMessage.value = 'No se pudo cargar la receta. Inténtalo más tarde.';
-    }
-  };
+interface Ingrediente {
+  idIngrediente: number;
+  nombreIngrediente: string;
+  cantidad: string; // Puedes ajustar según la estructura de tus ingredientes
+  calorias: number;
+  contieneAlergenos: boolean;
+  tipoAlergeno: string;
+  unidadMedida: string;
+  fechaExpiracion: string;
+}
 
-  return {
-    receta,
-    errorMessage,
-    fetchRecetaPorId,
-  };
+export const useRecetasStore = defineStore('recetas', {
+  state: () => ({
+    recetaActual: null as Receta | null,
+    ingredientes: [] as Ingrediente[], // Agregar un nuevo estado para los ingredientes
+    loading: false,
+    error: null as string | null,
+  }),
+
+  actions: {
+    async fetchRecetaPorId(id: number) {
+      try {
+        this.loading = true;
+        this.error = null;
+
+        const response = await fetch(`/api/Receta/${id}`);
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (!data || typeof data !== 'object') {
+          throw new Error('El formato de los datos obtenidos no es válido.');
+        }
+
+        this.recetaActual = data;
+      } catch (error: any) {
+        this.error = 'Error al obtener la receta. Intenta nuevamente más tarde.';
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchIngredientesPorRecetaId(id: number) {
+      try {
+        const response = await fetch(`/api/RecetaIngredientes/receta/${id}`);
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error('El formato de los datos de ingredientes no es válido.');
+        }
+
+        // Mapear cada ingrediente para obtener detalles adicionales
+        this.ingredientes = await Promise.all(data.map(async (ingrediente: Ingrediente) => {
+          const detalleResponse = await fetch(`/api/Ingrediente/${ingrediente.idIngrediente}`);
+          if (!detalleResponse.ok) {
+            throw new Error(`Error al obtener el detalle del ingrediente: ${detalleResponse.statusText}`);
+          }
+          const detalleData = await detalleResponse.json();
+          return { ...ingrediente, ...detalleData }; // Combina la información
+        }));
+      } catch (error: any) {
+        this.error = 'Error al obtener los ingredientes. Intenta nuevamente más tarde.';
+      }
+    },
+  }
 });

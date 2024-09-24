@@ -13,37 +13,34 @@ interface Receta {
 }
 
 export const useRecetasStore = defineStore({
-  id: 'recetas',
+  id: 'recetasCat',
+  
   state: () => ({
-    recetas: [] as Receta[],
-    categoriaActual: null as number | null,
+    recetas: [] as any[],
+    loading: false,
+    error: null as string | null,
   }),
-  actions: {
-    async fetchRecetasPorCategoria(idCategoria: number) {
-      try {
-        this.recetas = [];
-        this.categoriaActual = idCategoria;
 
-        console.log(`Iniciando petición para obtener recetas de la categoría ${idCategoria}...`);
-        const response = await fetch(`/api/Receta/categoria/${idCategoria}?timestamp=${new Date().getTime()}`);
+  actions: {
+    async fetchRecetasPorCategoria(idCategoria: number): Promise<any[]> {
+      try {
+        this.loading = true;
+        this.error = null;
+
+        const response = await fetch(`/api/Receta/categoria/${idCategoria}`);
 
         if (!response.ok) {
-          console.error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
         }
 
         const data = await response.json();
-        if (!Array.isArray(data)) {
-          console.error('El formato de los datos no es un arreglo', data);
-          throw new Error('El formato de los datos obtenidos no es válido.');
-        }
-
-        this.recetas = [...data];
-        console.log('Datos de recetas cargados correctamente:', this.recetas);
-
-      } catch (error) {
-        console.error('Error al obtener las recetas:', error);
-        throw error;
+        this.recetas = data;
+        return data; // Retorna los datos para que puedan ser usados en el componente
+      } catch (error: any) {
+        this.error = 'Error al obtener las recetas. Intenta nuevamente más tarde.';
+        return []; // En caso de error, retorna un arreglo vacío
+      } finally {
+        this.loading = false;
       }
     },
   },
