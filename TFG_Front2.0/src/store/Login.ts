@@ -1,12 +1,22 @@
 import { defineStore } from 'pinia';
+import { jwtDecode } from 'jwt-decode'
+
 
 interface Usuario {
   idUsuario: number;
   nombre: string;
+  correo: string;
+  rol: boolean;
+}
+
+interface JwtPayload {
+  nameid: string;
+  unique_name: string;
   email: string;
-  contraseña: string;
-  fechaRegistro: string;
-  esAdmin: boolean;
+  role: string;
+  nbf: number;
+  exp: number;
+  iat: number;
 }
 
 export const useLoginStore = defineStore({
@@ -15,51 +25,66 @@ export const useLoginStore = defineStore({
   state: () => ({
     usuario: JSON.parse(localStorage.getItem('usuario') || 'null') as Usuario | null,
     error: null as string | null,
+    token: localStorage.getItem('jwtToken') as string | null,
   }),
 
   getters: {
-    esAdmin(state): boolean {
-      return state.usuario?.esAdmin || false;
+    rol(state): boolean {
+      return state.usuario?.rol || false;
     },
   },
 
   actions: {
-    async login(nombre: string, contraseña: string): Promise<boolean> {
+    async login(correo: string, contrasena: string): Promise<boolean> {
+      const login = { correo, contrasena };
+
       try {
-        const response = await fetch('/api/Usuario');
+        const response = await fetch(`/api/Usuario/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(login),
+        });
+
         if (!response.ok) {
           throw new Error('Error al obtener la lista de usuarios.');
         }
 
-        const usuarios: Usuario[] = await response.json();
-        const usuarioEncontrado = usuarios.find(
-          (user) => user.nombre === nombre && user.contraseña === contraseña
-        );
+        const data = await response.json();
+        this.token = data.token;
+        localStorage.setItem('jwtToken', data.token);
 
-        if (usuarioEncontrado) {
-          this.usuario = usuarioEncontrado;
-          localStorage.setItem('usuario', JSON.stringify(usuarioEncontrado)); // Guardar en localStorage
-          return true; // Login exitoso
-        } else {
-          return false; // Credenciales incorrectas
-        }
+        // Decodificar el token para obtener los detalles del usuario
+        const decodedToken = jwtDecode<JwtPayload>(data.token);
+
+        this.usuario = {
+          idUsuario: parseInt(decodedToken.nameid),
+          nombre: decodedToken.unique_name,
+          correo: decodedToken.email,
+          rol: decodedToken.role === 'Admin',  // Ejemplo de manejo de rol
+        };
+
+        localStorage.setItem('usuario', JSON.stringify(this.usuario));
+        console.log('Login exitoso');
+
+        return true;
       } catch (error: any) {
         this.error = error.message;
         return false;
       }
     },
 
-    async register(nombre: string, email: string, contraseña: string): Promise<boolean> {
+    async register(nombre: string, correo: string, contrasena: string): Promise<boolean> {
       try {
         const nuevoUsuario = {
-          nombre,
-          email,
-          contraseña,
-          esAdmin: false, // Los usuarios nuevos no serán admin por defecto
-          fechaRegistro: new Date().toISOString(),
+          nombre: nombre,
+          contrasena: contrasena,
+          correo: correo
+
         };
 
-        const response = await fetch('/api/Usuario', {
+        const response = await fetch('/api/Usuario/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +96,24 @@ export const useLoginStore = defineStore({
           throw new Error('Error al registrar el usuario.');
         }
 
-        return true; // Registro exitoso
+        const data = await response.json();
+        this.token = data.token;
+        localStorage.setItem('jwtToken', data.token);
+
+        // Decodificar el token para obtener los detalles del usuario
+        const decodedToken = jwtDecode<JwtPayload>(data.token);
+
+        this.usuario = {
+          idUsuario: parseInt(decodedToken.nameid),
+          nombre: decodedToken.unique_name,
+          correo: decodedToken.email,
+          rol: decodedToken.role === 'Admin',  // Ejemplo de manejo de rol
+        };
+
+        localStorage.setItem('usuario', JSON.stringify(this.usuario));
+        console.log('Login exitoso');
+
+        return true;
       } catch (error: any) {
         this.error = error.message;
         return false;
@@ -80,7 +122,10 @@ export const useLoginStore = defineStore({
 
     logout() {
       this.usuario = null;
+      this.token = null;
       localStorage.removeItem('usuario'); // Eliminar usuario de localStorage
+      localStorage.removeItem('jwtToken'); // Eliminar token de localStorage
+      console.log('Sesión cerrada');
     },
   },
 });

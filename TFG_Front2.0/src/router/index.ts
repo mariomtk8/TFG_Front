@@ -21,7 +21,7 @@ const router = createRouter({
       component: PanelAdmin,
       beforeEnter: (to, from, next) => {
         const loginStore = useLoginStore();
-        if (loginStore.esAdmin) {
+        if (loginStore.rol) {
           next();
         } else {
           next('/Login');
@@ -33,7 +33,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const loginStore = useLoginStore();
-  if (to.path === '/PanelAdmin' && !loginStore.esAdmin) {
+  if (to.path === '/PanelAdmin' && !loginStore.rol) {
     next('/Login');
   } else {
     next();
