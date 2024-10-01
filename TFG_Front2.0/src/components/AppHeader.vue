@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
+import { useCategoriasStore } from '../store/Categorias';
 
 // Importar el store
 const loginStore = useLoginStore();
@@ -18,17 +19,36 @@ const handleLogout = () => {
   loginStore.logout();
   router.push('/'); // Redirigir a la página de inicio al cerrar sesión
 };
+
+// Acceder al store de categorías
+const categoriasStore = useCategoriasStore();
+const categoriasComputed = computed(() => categoriasStore.categorias); // Computar categorías
+const showDropdown = ref(false); // Estado para controlar la visibilidad del dropdown
 </script>
 
 <template>
   <header>
     <div class="logo">
-      <img src="../assets/Logo-design.png" alt="Logo"> 
+      <RouterLink to="/"><img src="../assets/Logo-design.png" alt="Logo"></RouterLink>
     </div>
     
     <nav>
       <ul>
-        <li><a href="#">Categorías</a></li>
+        <li @mouseover="showDropdown = true" @mouseleave="showDropdown = false">
+          <a href="#">Categorías</a>
+          <div v-if="showDropdown" class="dropdown" @mouseleave="showDropdown = false">
+            <div class="dropdown-content">
+              <ul>
+                <li v-for="(categoria, index) in categoriasComputed" :key="categoria.idCategoria">
+                  <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
+                    <img :src="categoria.icono" width="20" alt="Icono de la categoría" />
+                    {{ categoria.nombreCategoria }}
+                  </RouterLink>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
         <li><a href="#">Menus</a></li>
         <li><a href="#">Contacto</a></li>
       </ul>
@@ -51,6 +71,7 @@ const handleLogout = () => {
     </div>
   </header>
 </template>
+
 <style scoped>
 header {
     display: flex;
@@ -58,10 +79,11 @@ header {
     justify-content: center;
     background-color: #FFE5A2;
     padding: 35px 20px;
+    position: relative; /* Asegúrate de que el dropdown se posicione correctamente */
 }
 
 header .logo img {
-    height: 50px;
+    height: 100px;
 }
 
 nav ul {
@@ -73,9 +95,10 @@ nav ul {
 
 nav ul li {
     margin-right: 20px;
+    position: relative; /* Asegura que el dropdown se posicione respecto a este elemento */
 }
 
-.user-actions{
+.user-actions {
     display: flex;
     flex-direction: column;
     margin-left: 5vh;
@@ -84,6 +107,49 @@ nav ul li {
 nav ul li a {
     text-decoration: none;
     color: black;
+}
+
+/* Estilos para el dropdown */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Más sombra para mayor contraste */
+    border-radius: 8px;
+    z-index: 1000;
+    width: 300px; /* Ancho fijo para mejor control */
+}
+
+/* Estilo de la lista del dropdown */
+.dropdown-content {
+  padding: 10px;
+}
+
+.dropdown ul {
+  list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid; /* Usar grid para un mejor control de columnas */
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas */
+}
+
+.dropdown li {
+  padding: 10px; /* Espaciado para cada ítem */
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dropdown li:hover {
+    background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+}
+
+/* Estilo de los iconos en el dropdown */
+.dropdown img {
+    margin-right: 5px;
 }
 
 .search input[type="text"] {
@@ -103,22 +169,23 @@ nav ul li a {
 .user-actions button:hover {
     text-decoration: underline;
 }
+
 .user-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .logout-button {
-  background-color: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .logout-button:hover {
-  background-color: #d9363e;
+    background-color: #d9363e;
 }
 </style>

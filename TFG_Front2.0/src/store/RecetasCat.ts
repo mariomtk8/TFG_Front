@@ -13,17 +13,23 @@ interface Receta {
   idCategoria: number;
 }
 
+interface Categoria {
+  idCategoria: number;
+  nombreCategoria: string;
+}
+
 export const useRecetasStore = defineStore({
   id: 'recetasCat',
   
   state: () => ({
-    recetas: [] as any[],
+    recetas: [] as Receta[],
+    categorias: [] as Categoria[], // Agregamos el estado para las categorías
     loading: false,
     error: null as string | null,
   }),
 
   actions: {
-    async fetchRecetasPorCategoria(idCategoria: number): Promise<any[]> {
+    async fetchRecetasPorCategoria(idCategoria: number): Promise<Receta[]> {
       try {
         this.loading = true;
         this.error = null;
@@ -42,6 +48,22 @@ export const useRecetasStore = defineStore({
         return []; // En caso de error, retorna un arreglo vacío
       } finally {
         this.loading = false;
+      }
+    },
+
+    async fetchNombreCategoria(idCategoria: number): Promise<string | null> {
+      try {
+        const response = await fetch(`/api/Categoria/${idCategoria}`); // Asegúrate de que la API soporte esta ruta
+
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        }
+
+        const categoria = await response.json();
+        return categoria.nombreCategoria; // Devuelve el nombre de la categoría
+      } catch (error) {
+        console.error('Error al obtener el nombre de la categoría:', error);
+        return null;
       }
     },
   },
