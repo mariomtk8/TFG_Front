@@ -56,11 +56,25 @@ export const useRecetasStore = defineStore('recetas', {
         }
 
         this.recetaActual = data;
-        this.pasos = data.pasos; // Asignar los pasos desde la respuesta
+        this.pasos = await this.getPasosByRecetaId(id); // Cargar los pasos usando la función
       } catch (error: any) {
         this.error = 'Error al obtener la receta. Intenta nuevamente más tarde.';
       } finally {
         this.loading = false;
+      }
+    },
+
+    // Obtener los pasos de una receta por su ID
+    async getPasosByRecetaId(recetaId: number) {
+      try {
+        const response = await fetch(`/api/Receta/Receta/${recetaId}/Pasos`);
+        if (!response.ok) throw new Error('Error al obtener los pasos');
+        const pasosData = await response.json(); // Guardar los pasos en una variable
+        this.pasos = pasosData; // Asignar pasos a la propiedad del store
+        return pasosData; // Retornar los pasos para usar en fetchRecetaPorId si es necesario
+      } catch (error: any) {
+        console.error('Error al obtener los pasos:', error);
+        return [];
       }
     },
 

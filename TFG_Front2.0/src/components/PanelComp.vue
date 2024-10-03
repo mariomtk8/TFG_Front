@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAdminStore } from '../store/Admin';
-import type { Receta } from '../store/Admin'; 
+import type { Receta, Paso } from '../store/Admin';
 
 // Importar el store
 const adminStore = useAdminStore();
@@ -20,7 +20,15 @@ const nuevaReceta = ref<Receta>({
   idCategoria: 0
 });
 
+const nuevoPaso = ref<Paso>({
+  idPaso: 0, // Cambié a idPaso
+  idReceta: 0,
+  numero: 0,
+  descripcion: '',
+  imagenUrl: ''
+});
 const recetaSeleccionada = ref<Receta | null>(null);
+const pasosSeleccionados = ref<Paso[]>([]); // Estado para gestionar pasos seleccionados
 
 // Cargar las recetas y categorías al montar el componente
 onMounted(() => {
@@ -35,21 +43,53 @@ const createReceta = async () => {
 };
 
 // Función para seleccionar una receta y editarla
-const selectReceta = (receta: Receta) => {
+const selectReceta = async (receta: Receta) => {
   recetaSeleccionada.value = { ...receta };
+  // Obtener los pasos de la receta seleccionada
+  pasosSeleccionados.value = await adminStore.getPasosByRecetaId(receta.idReceta);
 };
 
 // Función para actualizar una receta seleccionada
 const updateReceta = async () => {
   if (recetaSeleccionada.value) {
     await adminStore.updateReceta(recetaSeleccionada.value.idReceta, recetaSeleccionada.value);
-    recetaSeleccionada.value = recetaSeleccionada;
+    recetaSeleccionada.value = null; // Limpiar la receta seleccionada
   }
 };
 
 // Función para eliminar una receta
 const deleteReceta = async (id: number) => {
   await adminStore.deleteReceta(id);
+};
+
+// Función para agregar un nuevo paso
+const addPaso = async () => {
+  if (recetaSeleccionada.value) {
+    const paso: Paso = {
+      idPaso: 0, // Asegúrate de que este ID se asigna en el servidor
+      idReceta: recetaSeleccionada.value.idReceta,
+      numero: pasosSeleccionados.value.length + 1,
+      descripcion: '',
+      imagenUrl: ''
+    };
+    await adminStore.createPaso(recetaSeleccionada.value.idReceta, paso); // Aquí se pasa el recetaId
+    pasosSeleccionados.value.push(paso);
+  }
+};
+
+// Función para eliminar un paso
+const deletePaso = async (index: number, idPaso: number) => {
+  if (idPaso !== 0) {
+    await adminStore.deletePaso(idPaso);
+  }
+  pasosSeleccionados.value.splice(index, 1);
+};
+
+// Función para actualizar un paso
+const updatePaso = async (paso: Paso) => {
+  if (recetaSeleccionada.value) {
+    await adminStore.updatePaso(recetaSeleccionada.value.idReceta, paso); // Aquí se pasa el recetaId
+  }
 };
 
 // Función para limpiar los campos de nueva receta
@@ -68,9 +108,10 @@ const resetNuevaReceta = () => {
   };
 };
 
-// Función para cancelar edición
+// Función para cancelar la edición
 const cancelEdit = () => {
   recetaSeleccionada.value = null;
+  pasosSeleccionados.value = []; // Limpiar pasos seleccionados
 };
 </script>
 
@@ -132,6 +173,8 @@ const cancelEdit = () => {
           <td>
             <button @click="selectReceta(receta)">Editar</button>
             <button @click="deleteReceta(receta.idReceta)">Eliminar</button>
+            <!-- <button @click="selectReceta(receta)">Editar Pasos</button> -->
+            <button @click="addPaso">Añadir Paso</button> 
           </td>
         </tr>
       </tbody>
@@ -142,32 +185,60 @@ const cancelEdit = () => {
       <summary>Editar Receta</summary>
       <div>
         <h2>Editar Receta</h2>
+        <label>Nombre de la receta</label>
         <input v-model="recetaSeleccionada.nombre" placeholder="Nombre de la receta" />
+
+        <label>Descripción</label>
         <textarea v-model="recetaSeleccionada.descripcion" placeholder="Descripción"></textarea>
+
+        <label>URL de la imagen</label>
         <input v-model="recetaSeleccionada.imagen" placeholder="URL de la imagen" />
-        <input type="checkbox" v-model="recetaSeleccionada.esVegano" /> Vegano
-        <input v-model="recetaSeleccionada.nivelDificultad" placeholder="Nivel de dificultad" type="number" />
-        <input v-model="recetaSeleccionada.tiempoPreparacion" placeholder="Tiempo de preparación" type="number" />
-        <select v-model="recetaSeleccionada.idCategoria">
+
+        <label>¿Es vegano?</label>
+        <input type="checkbox" v-model="nuevaReceta.esVegano" /> Vegano
+
+        <label>Nivel de dificultad</label>
+        <input v-model="nuevaReceta.nivelDificultad" placeholder="Nivel de dificultad" type="number" />
+
+        <label>Tiempo de preparación (minutos)</label>
+        <input v-model="nuevaReceta.tiempoPreparacion" placeholder="Tiempo de preparación" type="number" />
+
+        <label>Categoría</label>
+        <select v-model="nuevaReceta.idCategoria">
           <option v-for="categoria in adminStore.categorias" :key="categoria.idCategoria" :value="categoria.idCategoria">
             {{ categoria.nombreCategoria }}
           </option>
         </select>
 
-        <!-- Gestión de los pasos -->
-        <div v-for="(paso, index) in recetaSeleccionada.pasos" :key="index">
-          <h3>Paso {{ paso.numero }}</h3>
-          <input v-model="paso.descripcion" placeholder="Descripción del paso" />
-          <input v-model="paso.imagenUrl" placeholder="URL de la imagen del paso" />
-        </div>
-
-        <div class="button-group">
-          <button @click="updateReceta()">Guardar Cambios</button>
-          <button @click="cancelEdit()">Cancelar</button>
-        </div>
+        <!-- Botones para guardar o cancelar la edición -->
+        <button @click="updateReceta">Guardar cambios</button>
+        <button @click="cancelEdit">Cancelar</button>
       </div>
     </details>
 
+    <!-- Formulario para editar pasos -->
+    <details v-if="pasosSeleccionados.length > 0">
+      <summary>Editar Pasos</summary>
+      <div>
+        <h2>Editar Pasos</h2>
+        <div v-for="(paso, index) in pasosSeleccionados" :key="paso.idPaso">
+          <label>Número del Paso</label>
+          <input v-model="paso.numero" placeholder="Número del Paso" />
+          
+          <label>Descripción del Paso</label>
+          <input v-model="paso.descripcion" placeholder="Descripción del paso" />
+          
+          <label>URL de la imagen del Paso</label>
+          <input v-model="paso.imagenUrl" placeholder="URL de la imagen del paso" />
+          
+          <div class="button-group">
+            <button @click="deletePaso(index, paso.idPaso)">Eliminar Paso</button>
+          </div>
+        </div>
+        <button @click="addPaso">Añadir Paso</button>
+        <button @click="updatePaso">Guardar Paso</button>
+      </div>
+    </details>
   </div>
 </template>
 
@@ -190,7 +261,8 @@ th, td {
   padding: 10px;
   text-align: center;
 }
-h1, h2{
+
+h1, h2 {
   margin-left: 15vh;
 }
 

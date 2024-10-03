@@ -95,7 +95,7 @@ export const useAdminStore = defineStore({
         this.error = error.message;
       }
     },
-
+      //Actualizar receta
     async updateReceta(id: number, recetaActualizada: Receta) {
       const loginStore = useLoginStore();
       const token = loginStore.token;
@@ -113,6 +113,72 @@ export const useAdminStore = defineStore({
         });
         if (!response.ok) throw new Error(`Error al actualizar la receta con id ${id}`);
         await this.getRecetas(); 
+      } catch (error: any) {
+        this.error = error.message;
+      }
+    },
+    // Obtener los pasos de una receta por su ID
+    async getPasosByRecetaId(recetaId: number) {
+      try {
+        const response = await fetch(`/api/Receta/Receta/${recetaId}/Pasos`);
+        if (!response.ok) throw new Error('Error al obtener los pasos');
+        return await response.json();
+      } catch (error: any) {
+        console.error('Error al obtener los pasos:', error);
+        return [];
+      }
+    },
+    // Función para manejar los pasos
+    async createPaso(recetaId: number, paso: Paso) {
+      const loginStore = useLoginStore();
+      const token = loginStore.token;
+    
+      try {
+        const response = await fetch(`/api/Receta/${recetaId}/paso`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(paso),
+        });
+        if (!response.ok) throw new Error('Error al crear el paso');
+      } catch (error: any) {
+        this.error = error.message;
+      }
+    },
+    
+    async updatePaso(recetaId: number, paso: Paso) {
+      const loginStore = useLoginStore();
+      const token = loginStore.token;
+    
+      try {
+        const response = await fetch(`/api/Receta/${recetaId}/paso`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            // 'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(paso),
+        });
+        if (!response.ok) throw new Error('Error al actualizar el paso');
+      } catch (error: any) {
+        this.error = error.message;
+      }
+    },
+     // Eliminar un paso
+     async deletePaso(idPaso: number) {
+      const loginStore = useLoginStore();
+      const token = loginStore.token;
+
+      try {
+        const response = await fetch(`/api/Paso/${idPaso}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) throw new Error('Error al eliminar el paso');
       } catch (error: any) {
         this.error = error.message;
       }
