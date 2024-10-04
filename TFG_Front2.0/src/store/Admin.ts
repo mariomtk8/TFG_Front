@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login'; 
 
-interface Paso {
+export interface Paso {
   idPaso: number;
   idReceta: number;
   numero: number;
@@ -9,7 +9,7 @@ interface Paso {
   imagenUrl: string;
 }
 
-interface Receta {
+export interface Receta {
   idReceta: number;
   nombre: string;
   descripcion: string;
@@ -201,68 +201,6 @@ export const useAdminStore = defineStore({
       } catch (error: any) {
         this.error = error.message;
       }
-    },
-    async getIngredientesByReceta(idReceta: number) {
-      try {
-        const response = await fetch(`/api/RecetaIngredientes/receta/${idReceta}`);
-        if (!response.ok) throw new Error('Error al obtener ingredientes');
-        this.ingredientes = await response.json();
-      } catch (error: any) {
-        this.error = error.message;
-      }
-    },
-
-    // Añadir un nuevo ingrediente a una receta
-    async addIngrediente(idReceta: number, nuevoIngrediente: Ingrediente) {
-      try {
-        const response = await fetch(`/api/RecetaIngredientes`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idReceta,
-            idIngrediente: nuevoIngrediente.idIngrediente,
-            cantidad: nuevoIngrediente.cantidad
-          }),
-        });
-        if (!response.ok) throw new Error('Error al añadir ingrediente');
-        await this.getIngredientesByReceta(idReceta); // Refrescar ingredientes
-      } catch (error: any) {
-        this.error = error.message;
-      }
-    },
-
-    // Actualizar un ingrediente de una receta
-    async updateIngrediente(idReceta: number, ingredienteActualizado: Ingrediente) {
-      try {
-        const response = await fetch(`/api/RecetaIngredientes/${idReceta}/${ingredienteActualizado.idIngrediente}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            cantidad: ingredienteActualizado.cantidad
-          }),
-        });
-        if (!response.ok) throw new Error('Error al actualizar ingrediente');
-        await this.getIngredientesByReceta(idReceta);
-      } catch (error: any) {
-        this.error = error.message;
-      }
-    },
-
-    // Eliminar un ingrediente de una receta
-    async deleteIngrediente(idReceta: number, idIngrediente: number) {
-      try {
-        const response = await fetch(`/api/RecetaIngredientes/${idReceta}/${idIngrediente}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) throw new Error('Error al eliminar ingrediente');
-        await this.getIngredientesByReceta(idReceta);
-      } catch (error: any) {
-        this.error = error.message;
-      }
-    },
+    }
   },
 });

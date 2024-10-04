@@ -2,9 +2,13 @@
     <div>
         <h1>Panel Admin</h1>
     </div>
-    <PanelComp></PanelComp>
+    <CrearRecetas></CrearRecetas>
+    <EditarRecetas></EditarRecetas>
 </template>
 
 <script setup lang="ts">
-import PanelComp from '../components/PanelComp.vue';
+import CrearRecetas from '../components/CrearRecetas.vue';
+import EditarRecetas from '../components/EditarRecetas.vue';
 </script>
+
+
