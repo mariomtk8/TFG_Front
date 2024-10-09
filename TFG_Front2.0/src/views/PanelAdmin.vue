@@ -1,7 +1,7 @@
 <template>
     <div>
-      <CrearReceta />
-      <GestionarIngredientes :ingredientesSeleccionados="ingredientesSeleccionados" />
+      <CrearReceta></CrearReceta>
+
       <ListaRecetas />
     </div>
   </template>
