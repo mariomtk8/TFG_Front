@@ -3,6 +3,7 @@
       <CrearReceta></CrearReceta>
 
       <ListaRecetas />
+      <GestionarIngredientes></GestionarIngredientes>
     </div>
   </template>
   
@@ -16,6 +17,6 @@
   </script>
   
   <style scoped>
-  /* Puedes agregar estilos globales aquí si es necesario */
+
   </style>
   

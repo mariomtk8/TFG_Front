@@ -4,7 +4,7 @@ interface Categoria {
   idCategoria: number;
   nombreCategoria: string;
   descripcion: string;
-  visible: boolean;
+  Especial: boolean;
   fechaCreacion: string;
   icono: string;
   puntuacionPromedio: number;

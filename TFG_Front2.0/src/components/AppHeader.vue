@@ -3,27 +3,31 @@ import { computed, ref } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
 import { useCategoriasStore } from '../store/Categorias';
+import { useRecetasStore } from '../store/Recetas'; // Importar el store de recetas
 
-// Importar el store
 const loginStore = useLoginStore();
-const router = useRouter(); // Obtener acceso al router
+const router = useRouter();
+const recetasStore = useRecetasStore(); // Usar el store de recetas
 
-// Computar si el usuario está logueado
 const isLoggedIn = computed(() => loginStore.usuario !== null);
-
-// Obtener el nombre del usuario si está logueado
 const userName = computed(() => loginStore.usuario?.nombre || '');
 
-// Método para cerrar sesión
 const handleLogout = () => {
   loginStore.logout();
-  router.push('/'); // Redirigir a la página de inicio al cerrar sesión
+  router.push('/');
 };
 
-// Acceder al store de categorías
 const categoriasStore = useCategoriasStore();
-const categoriasComputed = computed(() => categoriasStore.categorias); // Computar categorías
+const categoriasComputed = computed(() => categoriasStore.categorias);
+
+const searchQuery = ref(''); // Estado para la búsqueda
+const searchResults = computed(() => recetasStore.resultadosBusqueda); // Computar resultados de búsqueda
 const showDropdown = ref(false); // Estado para controlar la visibilidad del dropdown
+
+const handleSearch = async () => {
+  await recetasStore.searchRecetas(searchQuery.value); // Llamar a la acción de búsqueda
+};
+
 </script>
 
 <template>
@@ -55,15 +59,25 @@ const showDropdown = ref(false); // Estado para controlar la visibilidad del dro
     </nav>
 
     <div class="search">
-      <input type="text" placeholder="Buscar...">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Buscar..."
+        @input="handleSearch"
+      >
+      <ul v-if="searchResults.length > 0" class="search-results">
+        <li v-for="(receta, index) in searchResults" :key="receta.idReceta">
+          <RouterLink :to="{ name: 'RecetaDetalle', params: { idReceta: receta.idReceta } }">
+            {{ receta.nombre }}
+          </RouterLink>
+        </li>
+      </ul>
     </div>
 
     <div class="user-actions">
-      <!-- Mostrar si no está logueado -->
       <RouterLink v-if="!isLoggedIn" to="/Register" class="nav__link">Register</RouterLink>
       <RouterLink v-if="!isLoggedIn" to="/Login" class="nav__link">Login</RouterLink>
 
-      <!-- Mostrar si está logueado -->
       <div v-if="isLoggedIn" class="logged-in-actions">
         <span>Bienvenido, {{ userName }}</span>
         <button @click="handleLogout" class="logout-button">Cerrar sesión</button>
@@ -187,5 +201,29 @@ nav ul li a {
 
 .logout-button:hover {
     background-color: #d9363e;
+}
+
+.search {
+  position: relative; /* Para permitir que el dropdown se posicione correctamente */
+}
+
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 200px; /* Limitar la altura del dropdown de resultados */
+  overflow-y: auto; /* Permitir el scroll si hay muchos resultados */
+  z-index: 1000; /* Asegurarse de que esté por encima de otros elementos */
+}
+
+.search-results li {
+  padding: 10px; /* Espaciado para cada ítem */
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
 }
 </style>

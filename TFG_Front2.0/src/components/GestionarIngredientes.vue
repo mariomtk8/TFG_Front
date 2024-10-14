@@ -1,73 +1,90 @@
 <template>
-  <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
-    <td>{{ receta.nombre }}</td> <!-- Mostrar el nombre de la receta aquí -->
-    <td>
-      <button @click="manageIngredientes(receta)">Gestionar Ingredientes</button>
-    </td>
-  </tr>
+  <div class="container">
+    <!-- Tabla de recetas -->
+    <table class="recipes-table">
+      <thead>
+        <tr>
+          <th>Nombre de la Receta</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
+          <td>{{ receta.nombre }}</td>
+          <td>
+            <button class="btn manage-btn" @click="manageIngredientes(receta)">Gestionar Ingredientes</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- Desplegable que se abre directamente al hacer clic en 'Gestionar Ingredientes' -->
-  <div v-if="recetaSeleccionada">
-    <h2>Ingredientes de la Receta: {{ recetaSeleccionada.nombre }}</h2>
+    <!-- Ingredientes de la receta seleccionada -->
+    <div v-if="recetaSeleccionada" class="ingredients-section">
+      <h2 class="title">Ingredientes de la Receta: {{ recetaSeleccionada.nombre }}</h2>
+      
+      <!-- Lista de ingredientes -->
+      <div v-for="(ingrediente, index) in ingredientesSeleccionados" :key="index" class="ingredient-item">
+        <label>Ingrediente</label>
+        <select v-model="ingrediente.idIngrediente">
+          <option v-for="ing in ingredientesStore.ingredientes" :key="ing.idIngrediente" :value="ing.idIngrediente">
+            {{ ing.nombreIngrediente }}
+          </option>
+        </select>
 
-    <div v-for="(ingrediente, index) in ingredientesSeleccionados" :key="index">
-      <label>Ingrediente</label>
-      <select v-model="ingrediente.idIngrediente">
-        <option v-for="ing in ingredientesStore.ingredientes" :key="ing.idIngrediente" :value="ing.idIngrediente">
-          {{ ing.nombreIngrediente }}
-        </option>
-      </select>
+        <label>Cantidad</label>
+        <input v-model="ingrediente.cantidad" placeholder="Cantidad" />
 
-      <label>Cantidad</label>
-      <input v-model="ingrediente.cantidad" placeholder="Cantidad" />
+        <label>Notas</label>
+        <input v-model="ingrediente.notas" placeholder="Notas" />
 
-      <label>Notas</label>
-      <input v-model="ingrediente.notas" placeholder="Notas" />
+        <label>¿Es opcional?</label>
+        <input type="checkbox" v-model="ingrediente.esOpcional" />
 
-      <label>¿Es opcional?</label>
-      <input type="checkbox" v-model="ingrediente.esOpcional" />
+        <div class="button-group">
+          <button class="btn delete-btn" @click="deleteIngrediente(index, ingrediente.idRecetaIngrediente)">Eliminar Ingrediente</button>
+        </div>
+      </div>
 
-      <div class="button-group">
-        <button @click="deleteIngrediente(index, ingrediente.idRecetaIngrediente)">Eliminar Ingrediente</button>
+      <div class="form-buttons">
+        <button class="btn add-ingredient-btn" @click="addIngrediente">Añadir Ingrediente</button>
+        <button class="btn save-btn" @click="updateIngredientes">Guardar Cambios</button>
+        <button class="btn cancel-btn" @click="cancelarIngredientes">Cancelar</button> <!-- Botón para cancelar -->
       </div>
     </div>
 
-    <button @click="addIngrediente">Añadir Ingrediente</button>
-    <button @click="updateIngredientes">Guardar Cambios</button>
+    <!-- Formulario para añadir nuevo ingrediente -->
+    <details v-if="mostrarFormularioIngrediente" open>
+      <summary class="summary-title">Añadir Nuevo Ingrediente</summary>
+      <div class="form-container">
+        <h2>Nuevo Ingrediente</h2>
+
+        <label>Nombre del Ingrediente</label>
+        <input v-model="nuevoIngrediente.nombreIngrediente" placeholder="Nombre del ingrediente" />
+
+        <label>Calorías</label>
+        <input v-model="nuevoIngrediente.calorias" placeholder="Calorías" type="number" />
+
+        <label>Contiene Alérgenos</label>
+        <input type="checkbox" v-model="nuevoIngrediente.contieneAlergenos" />
+
+        <label v-if="nuevoIngrediente.contieneAlergenos">Tipo de Alérgeno</label>
+        <input v-if="nuevoIngrediente.contieneAlergenos" v-model="nuevoIngrediente.tipoAlergeno" placeholder="Tipo de alérgeno" />
+
+        <label>Unidad de Medida</label>
+        <input v-model="nuevoIngrediente.unidadMedida" placeholder="Unidad de medida" />
+
+        <label>Fecha de Expiración</label>
+        <input v-model="nuevoIngrediente.fechaExpiracion" type="date" />
+
+        <div class="form-buttons">
+          <button class="btn save-btn" @click="guardarIngrediente">Guardar Ingrediente</button>
+          <button class="btn cancel-btn" @click="cancelarIngredienteForm">Cancelar</button>
+        </div>
+      </div>
+    </details>
   </div>
-
-  <!-- Formulario de ingredientes -->
-  <details v-if="mostrarFormularioIngrediente">
-    <summary>Añadir Nuevo Ingrediente</summary>
-    <div>
-      <h2>Nuevo Ingrediente</h2>
-
-      <label>Nombre del Ingrediente</label>
-      <input v-model="nuevoIngrediente.nombreIngrediente" placeholder="Nombre del ingrediente" />
-
-      <label>Calorías</label>
-      <input v-model="nuevoIngrediente.calorias" placeholder="Calorías" type="number" />
-
-      <label>Contiene Alérgenos</label>
-      <input type="checkbox" v-model="nuevoIngrediente.contieneAlergenos" />
-
-      <label v-if="nuevoIngrediente.contieneAlergenos">Tipo de Alérgeno</label>
-      <input v-if="nuevoIngrediente.contieneAlergenos" v-model="nuevoIngrediente.tipoAlergeno" placeholder="Tipo de alérgeno" />
-
-      <label>Unidad de Medida</label>
-      <input v-model="nuevoIngrediente.unidadMedida" placeholder="Unidad de medida" />
-
-      <label>Fecha de Expiración</label>
-      <input v-model="nuevoIngrediente.fechaExpiracion" type="date" />
-
-      <button @click="guardarIngrediente">Guardar Ingrediente</button>
-      <button @click="cancelarIngredienteForm">Cancelar</button>
-    </div>
-  </details>
 </template>
 
-
-  
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useIngredientesStore } from '../store/Ingredientes';
@@ -90,6 +107,7 @@ const nuevoIngrediente = ref<Ingrediente>({
   fechaExpiracion: new Date().toISOString().split('T')[0],
 });
 
+// Función para gestionar los ingredientes de una receta
 const manageIngredientes = async (receta: Receta) => {
   recetaSeleccionada.value = receta;
 
@@ -103,10 +121,11 @@ const manageIngredientes = async (receta: Receta) => {
   ingredientesSeleccionados.value = ingredientesStore.recetaIngredientes;
 };
 
+// Función para añadir un nuevo ingrediente a la receta
 const addIngrediente = async () => {
   const nuevoIngrediente: RecetaIngrediente = {
     idRecetaIngrediente: 0,
-    idReceta: recetaSeleccionada.value ? recetaSeleccionada.value.idReceta : 0, // ID de la receta actual
+    idReceta: recetaSeleccionada.value ? recetaSeleccionada.value.idReceta : 0, 
     idIngrediente: 0,
     cantidad: 1,
     notas: '',
@@ -118,11 +137,19 @@ const addIngrediente = async () => {
   ingredientesSeleccionados.value.push({ ...nuevoIngrediente });
 };
 
+// Función para guardar un nuevo ingrediente
 const guardarIngrediente = async () => {
   await ingredientesStore.createIngrediente(nuevoIngrediente.value);
   cancelarIngredienteForm();
 };
 
+// Función para cancelar la edición de los ingredientes de la receta
+const cancelarIngredientes = () => {
+  recetaSeleccionada.value = null;
+  ingredientesSeleccionados.value = [];
+};
+
+// Función para cancelar el formulario de nuevo ingrediente
 const cancelarIngredienteForm = () => {
   mostrarFormularioIngrediente.value = false;
   nuevoIngrediente.value = {
@@ -136,6 +163,7 @@ const cancelarIngredienteForm = () => {
   };
 };
 
+// Función para eliminar un ingrediente
 const deleteIngrediente = async (index: number, idRecetaIngrediente: number) => {
   if (idRecetaIngrediente) {
     await ingredientesStore.deleteIngredienteForReceta(idRecetaIngrediente);
@@ -143,6 +171,7 @@ const deleteIngrediente = async (index: number, idRecetaIngrediente: number) => 
   ingredientesSeleccionados.value.splice(index, 1);
 };
 
+// Función para actualizar los ingredientes
 const updateIngredientes = async () => {
   for (const ingrediente of ingredientesSeleccionados.value) {
     if (!ingrediente.idRecetaIngrediente) {
@@ -154,19 +183,108 @@ const updateIngredientes = async () => {
 };
 </script>
 
-  
-  <style scoped>
-  .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  input,
-  select {
-    display: block;
-    margin-bottom: 10px;
-    width: 100%; /* Cambiar para ocupar todo el ancho */
-  }
+<style scoped>
+/* Estilos para el contenedor y elementos */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.recipes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.recipes-table th,
+.recipes-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.ingredients-section {
+  margin-top: 20px;
+}
+
+.ingredient-item {
+  margin-bottom: 15px;
+}
+
+/* Estilos para botones */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.manage-btn {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.add-ingredient-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Estilos para grupo de botones */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px; 
+}
+
+.form-buttons { 
+  display: flex; 
+  justify-content: space-between; 
+  margin-top: 20px; 
+}
+
+.summary-title { 
+  font-size: 18px; 
+  font-weight: bold; 
+}
+
+.form-container { 
+  margin-top: 10px; 
+}
+
+/* Estilos para inputs y selectores */
+input, select { 
+  display: block; 
+  margin-bottom: 10px; 
+  padding: 8px; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+  width: 100%; }
+
+input[type="checkbox"] { 
+  display: inline-block; 
+  margin-right: 10px; 
+}
   </style>
-  

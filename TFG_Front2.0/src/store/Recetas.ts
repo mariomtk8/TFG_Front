@@ -37,9 +37,31 @@ export const useRecetasStore = defineStore('recetas', {
     pasos: [] as Paso[],
     loading: false,
     error: null as string | null,
+    resultadosBusqueda: [] as Receta[],
   }),
 
   actions: {
+
+    async searchRecetas(query: string) {
+      try {
+        const response = await fetch(`/api/Receta/search?query=${encodeURIComponent(query)}`);
+        if (!response.ok) {
+          throw new Error(`Error en la búsqueda: ${response.statusText}`);
+        }
+        const data = await response.json();
+        
+        // Asegúrate de que data sea un array
+        if (!Array.isArray(data)) {
+          throw new Error('El formato de los datos de búsqueda no es válido.');
+        }
+        
+        // Limita los resultados a un máximo de 7
+        this.resultadosBusqueda = data.slice(0, 7);
+      } catch (error: any) {
+        console.error('Error al buscar recetas:', error);
+        this.resultadosBusqueda = []; // Limpia los resultados en caso de error
+      }
+    },
     async fetchRecetaPorId(id: number) {
       try {
         this.loading = true;

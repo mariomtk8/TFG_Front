@@ -1,129 +1,108 @@
 <template>
-  <div>
-    <h2>Lista de Recetas</h2>
-    <table>
+  <div class="container">
+    <h2 class="title">Lista de Recetas</h2>
+    
+    <!-- Tabla de recetas -->
+    <table class="recipes-table">
       <thead>
         <tr>
           <th>Nombre</th>
-          <th>Recetas</th>
-          <th>Ingredientes</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
           <td>{{ receta.nombre }}</td>
-          <td>
-            <button @click="selectReceta(receta)">Editar</button>
-            <button @click="deleteReceta(receta.idReceta)">Eliminar</button>
-            <button @click="addPaso">Añadir Paso</button>
-          </td>
-          <td>
-            <button @click="manageIngredientes(receta)">
-              Gestionar Ingredientes
-            </button>
+          <td class="action-buttons">
+            <button class="btn edit-btn" @click="selectReceta(receta)">Editar</button>
+            <button class="btn delete-btn" @click="deleteReceta(receta.idReceta)">Eliminar</button>
+            <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <!-- El desplegable aparece aquí fuera de la tabla -->
-    <GestionarIngredientes
-      v-if="recetaSeleccionada"
-      :receta="recetaSeleccionada"
-      :ingredientes="ingredientesSeleccionados"
-    />
-  </div>
-  
-  <details v-if="recetaEditar">
-    <summary>Editar Receta</summary>
-    <label>Nombre de la receta</label>
-    <input v-model="recetaEditar.nombre" placeholder="Nombre de la receta" />
+    <!-- Formulario para editar receta -->
+    <div v-if="recetaEditar" class="edit-section">
+      <details open>
+        <summary class="summary-title">Editar Receta</summary>
+        <div class="form-container">
+          <label>Nombre de la receta</label>
+          <input v-model="recetaEditar.nombre" placeholder="Nombre de la receta" />
 
-    <label>Descripción</label>
-    <textarea v-model="recetaEditar.descripcion" placeholder="Descripción"></textarea>
+          <label>Descripción</label>
+          <textarea v-model="recetaEditar.descripcion" placeholder="Descripción"></textarea>
 
-    <label>URL de la imagen</label>
-    <input v-model="recetaEditar.imagen" placeholder="URL de la imagen" />
+          <label>URL de la imagen</label>
+          <input v-model="recetaEditar.imagen" placeholder="URL de la imagen" />
 
-    <label>¿Es vegano?</label>
-    <input type="checkbox" v-model="recetaEditar.esVegano" /> Vegano
+          <label>¿Es vegano?</label>
+          <input type="checkbox" v-model="recetaEditar.esVegano" /> Vegano
 
-    <label>Nivel de dificultad</label>
-    <input v-model="recetaEditar.nivelDificultad" placeholder="Nivel de dificultad" type="number" />
+          <label>Nivel de dificultad</label>
+          <input v-model="recetaEditar.nivelDificultad" placeholder="Nivel de dificultad" type="number" />
 
-    <label>Tiempo de preparación (minutos)</label>
-    <input v-model="recetaEditar.tiempoPreparacion" placeholder="Tiempo de preparación" type="number" />
+          <label>Tiempo de preparación (minutos)</label>
+          <input v-model="recetaEditar.tiempoPreparacion" placeholder="Tiempo de preparación" type="number" />
 
-    <button @click="updateReceta">Guardar Cambios</button>
-    <button @click="cancelarEdicion">Cancelar</button>
-  </details>
-
-  <details v-if="pasosSeleccionados.length > 0">
-    <summary>Editar Pasos</summary>
-    <div>
-      <h2>Editar Pasos</h2>
-      <div v-for="(paso, index) in pasosSeleccionados" :key="paso.idPaso">
-        <label>Número del Paso</label>
-        <input v-model="paso.numero" placeholder="Número del Paso" />
-        
-        <label>Descripción del Paso</label>
-        <input v-model="paso.descripcion" placeholder="Descripción del paso" />
-        
-        <label>URL de la imagen del Paso</label>
-        <input v-model="paso.imagenUrl" placeholder="URL de la imagen del paso" />
-        
-        <div class="button-group">
-          <button @click="deletePaso(index, paso.idPaso)">Eliminar Paso</button>
+          <div class="form-buttons">
+            <button class="btn save-btn" @click="updateReceta">Guardar Cambios</button>
+            <button class="btn cancel-btn" @click="cancelarEdicion">Cancelar</button>
+          </div>
         </div>
-      </div>
-      <button @click="addPaso">Añadir Paso</button>
-      <button @click="updatePaso">Guardar Pasos</button>
+      </details>
     </div>
-  </details>
+
+    <!-- Sección para editar pasos -->
+    <div v-if="pasosSeleccionados.length > 0" class="edit-steps-section">
+      <details open>
+        <summary class="summary-title">Editar Pasos</summary>
+        <div class="form-container">
+          <div v-for="(paso, index) in pasosSeleccionados" :key="paso.idPaso" class="step-item">
+            <label>Número del Paso</label>
+            <input v-model="paso.numero" placeholder="Número del Paso" />
+
+            <label>Descripción del Paso</label>
+            <input v-model="paso.descripcion" placeholder="Descripción del paso" />
+
+            <label>URL de la imagen del Paso</label>
+            <input v-model="paso.imagenUrl" placeholder="URL de la imagen del paso" />
+
+            <div class="button-group">
+              <button class="btn delete-btn" @click="deletePaso(index, paso.idPaso)">Eliminar Paso</button>
+            </div>
+          </div>
+          <div class="form-buttons">
+            <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
+            <button class="btn save-btn" @click="updatePaso">Guardar Pasos</button>
+            <button class="btn cancel-btn" @click="cancelarEdicion">Cancelar</button>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAdminStore } from '../store/Admin';
 import type { Receta, Paso } from '../store/Admin';
-import { useIngredientesStore } from '../store/Ingredientes';
-import type { RecetaIngrediente } from '../store/Ingredientes';
-import GestionarIngredientes from './GestionarIngredientes.vue';
 
 // Stores
 const adminStore = useAdminStore();
-const ingredientesStore = useIngredientesStore();
 
 // Refs
 const recetaEditar = ref<Receta | null>(null);
 const pasosSeleccionados = ref<Paso[]>([]);
-const recetaSeleccionada = ref<Receta | null>(null);
-const ingredientesSeleccionados = ref<RecetaIngrediente[]>([]);
 
 // On Mounted
 onMounted(() => {
   adminStore.getRecetas();
-  adminStore.getCategorias();
 });
-
-// Función para gestionar los ingredientes de una receta
-const manageIngredientes = async (receta: Receta) => {
-  recetaSeleccionada.value = receta;
-
-  // Obtén todos los ingredientes
-  await ingredientesStore.getAllIngredientes();
-
-  // Obtén los ingredientes de la receta seleccionada
-  await ingredientesStore.getIngredientesByRecetaId(receta.idReceta);
-
-  // Asignar los ingredientes seleccionados
-  ingredientesSeleccionados.value = ingredientesStore.recetaIngredientes;
-};
 
 // Función para seleccionar una receta y editarla
 const selectReceta = async (receta: Receta) => {
   recetaEditar.value = { ...receta };
-  // Obtener los pasos de la receta seleccionada
   pasosSeleccionados.value = await adminStore.getPasosByRecetaId(receta.idReceta);
 };
 
@@ -131,8 +110,8 @@ const selectReceta = async (receta: Receta) => {
 const updateReceta = async () => {
   if (recetaEditar.value) {
     await adminStore.updateReceta(recetaEditar.value.idReceta, recetaEditar.value);
-    recetaEditar.value = null; // Limpiar la receta seleccionada
-    pasosSeleccionados.value = []; // Limpiar los pasos seleccionados al actualizar la receta
+    recetaEditar.value = null;
+    pasosSeleccionados.value = [];
   }
 };
 
@@ -145,21 +124,21 @@ const deleteReceta = async (idReceta: number) => {
 
 // Función para cancelar la edición
 const cancelarEdicion = () => {
-  recetaEditar.value = null; // Limpiar la receta en edición
-  pasosSeleccionados.value = []; // Limpiar los pasos seleccionados
+  recetaEditar.value = null;
+  pasosSeleccionados.value = [];
 };
 
 // Añadir un nuevo paso
 const addPaso = async () => {
   if (recetaEditar.value) {
     const paso: Paso = {
-      idPaso: 0, 
+      idPaso: 0,
       idReceta: recetaEditar.value.idReceta,
       numero: pasosSeleccionados.value.length + 1,
       descripcion: '',
       imagenUrl: ''
     };
-    await adminStore.createPaso(recetaEditar.value.idReceta, paso); 
+    await adminStore.createPaso(recetaEditar.value.idReceta, paso);
     pasosSeleccionados.value.push(paso);
   }
 };
@@ -183,32 +162,99 @@ const updatePaso = async () => {
 </script>
 
 <style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
-th,
-td {
-  border: 1px solid #ccc;
-  padding: 8px;
+.title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.recipes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.recipes-table th,
+.recipes-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
   text-align: left;
 }
 
-th {
-  background-color: #f2f2f2;
+.recipes-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.add-step-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.edit-section,
+.edit-steps-section {
+  margin-top: 20px;
+}
+
+.form-container {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-title {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 input,
 textarea {
-  display: block;
-  margin-bottom: 10px;
-  width: 100%; /* Cambiar para ocupar todo el ancho */
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
 }
 
 .button-group {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 10px;
 }
 </style>

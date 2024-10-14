@@ -2,14 +2,14 @@
   <div class="receta-container">
     <h1>{{ receta?.nombre }}</h1>
 
-    <section v-if="receta" class="descripcion">
+    <section v-if="receta" class="receta__descripcion">
       <h2>Descripción</h2>
       <p>{{ receta.descripcion }}</p>
     </section>
 
-    <div v-if="receta" class="receta-layout">
-      <div class="receta-info">
-        <div class="datos">
+    <div v-if="receta" class="receta__layout">
+      <div class="receta__info">
+        <div class="receta__datos">
           <h3>Datos</h3>
           <p><strong>Nivel de dificultad:</strong> {{ receta.nivelDificultad }}</p>
           <p><strong>Tiempo de preparación:</strong> {{ receta.tiempoPreparacion }} min</p>
@@ -17,33 +17,35 @@
         </div>
       </div>
 
-      <div class="receta-detalles">
-        <section class="ingredientes">
+      <div class="receta__detalles">
+        <section class="receta__ingredientes">
           <h3>Ingredientes</h3>
           <ul>
-            <li v-for="ingrediente in ingredientes" :key="ingrediente.idIngrediente">
-              <p><strong>Nombre:</strong> {{ ingrediente.nombreIngrediente }}</p>
-              <p><strong>Cantidad:</strong> {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
-              <p><strong>Calorías:</strong> {{ ingrediente.calorias }} kcal</p>
-              <p><strong>Contiene alérgenos:</strong> {{ ingrediente.contieneAlergenos ? 'Sí' : 'No' }}</p>
-              <p v-if="ingrediente.contieneAlergenos"><strong>Tipo de alérgeno:</strong> {{ ingrediente.tipoAlergeno }}</p>
-              <p><strong>Fecha de expiración:</strong> {{ ingrediente.fechaExpiracion }}</p>
+            <li v-for="ingrediente in ingredientes" :key="ingrediente.idIngrediente" class="ingrediente" @click="ingrediente.mostrarDetalles = !ingrediente.mostrarDetalles">
+              <p class="ingrediente__nombre"> {{ ingrediente.nombreIngrediente }}</p>
+              <div v-if="ingrediente.mostrarDetalles" class="ingrediente__detalles">
+                <p><strong>Cantidad:</strong> {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
+                <p><strong>Calorías:</strong> {{ ingrediente.calorias }} kcal</p>
+                <p><strong>Contiene alérgenos:</strong> {{ ingrediente.contieneAlergenos ? 'Sí' : 'No' }}</p>
+                <p v-if="ingrediente.contieneAlergenos"><strong>Tipo de alérgeno:</strong> {{ ingrediente.tipoAlergeno }}</p>
+                <p><strong>Fecha de expiración:</strong> {{ ingrediente.fechaExpiracion }}</p>
+              </div>
             </li>
           </ul>
         </section>
 
-        <section class="pasos">
+        <section class="receta__pasos">
           <h3>Pasos</h3>
-          <div v-for="paso in pasos" :key="paso.idPaso">
+          <div v-for="paso in pasos" :key="paso.idPaso" class="paso">
             <h4>{{ paso.numero }}º Paso</h4>
             <p>{{ paso.descripcion }}</p>
-            <img class="imagen-pasos" v-if="paso.imagenUrl" :src="paso.imagenUrl" alt="Paso imagen" />
+            <img class="paso__imagen" v-if="paso.imagenUrl" :src="paso.imagenUrl" alt="Paso imagen" />
           </div>
         </section>
       </div>
     </div>
 
-    <aside class="sidebar">
+    <aside class="receta__sidebar">
       <section>
         <h3>Recetas relacionadas</h3>
       </section>
@@ -64,13 +66,19 @@ import { useRecetasStore } from '../store/Recetas';
 const recetasStore = useRecetasStore();
 
 // Extraer la receta actual desde el store
-const receta = computed(() => recetasStore.recetaActual); // Se define receta como un ref reactivo
+const receta = computed(() => recetasStore.recetaActual);
 
 // Crear una computed property para ingredientes
-const ingredientes = computed(() => recetasStore.ingredientes); // Asegúrate de que el store tenga esta propiedad
+const ingredientes = computed(() => {
+  // Añadir un atributo mostrarDetalles para controlar el desplegable
+  return recetasStore.ingredientes.map(ingrediente => ({
+    ...ingrediente,
+    mostrarDetalles: false, // Inicialmente no se muestran los detalles
+  }));
+});
 
 // Crear una computed property para pasos
-const pasos = computed(() => recetasStore.pasos); // Extraer los pasos del store
+const pasos = computed(() => recetasStore.pasos);
 
 // Obtener el ID de la receta desde la ruta
 const route = useRoute();
@@ -99,55 +107,62 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-.descripcion {
+.receta__descripcion {
   margin-bottom: 20px;
 }
 
-.receta-layout {
+.receta__layout {
   display: flex;
   gap: 20px;
 }
 
-.receta-info {
+.receta__info {
   flex: 1;
 }
 
-.receta-imagen {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.datos {
+.receta__datos {
   margin-top: 20px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
-.receta-detalles {
+.receta__detalles {
   flex: 2;
 }
 
-.ingredientes,
-.pasos {
+.receta__ingredientes,
+.receta__pasos {
   margin-top: 20px;
 }
 
-.imagen-pasos{
-  width: 200px;
+.ingrediente {
+  cursor: pointer; /* Cambia el cursor para indicar que es clickeable */
 }
 
-.pasos div {
+.ingrediente__nombre {
+  font-weight: bold;
+}
+
+.ingrediente__detalles {
+  margin-left: 20px; /* Espaciado para los detalles */
+  margin-top: 10px;
+}
+
+.paso {
   margin-bottom: 10px;
 }
 
-.sidebar {
+.paso__imagen {
+  width: 200px;
+}
+
+.receta__sidebar {
   flex: 1;
   margin-left: 20px;
 }
 
-.sidebar section {
+.receta__sidebar section {
   margin-bottom: 30px;
 }
 
