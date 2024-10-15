@@ -1,8 +1,7 @@
 <template>
     <div>
       <CrearReceta></CrearReceta>
-
-      <ListaRecetas />
+      <ListaRecetas></ListaRecetas>
       <GestionarIngredientes></GestionarIngredientes>
     </div>
   </template>
@@ -12,11 +11,10 @@
   import GestionarIngredientes from '../components/GestionarIngredientes.vue';
   import ListaRecetas from '../components/ListaRecetas.vue';
   import { ref } from 'vue';
-  
-  const ingredientesSeleccionados = ref([]);
   </script>
   
   <style scoped>
+  
 
   </style>
   

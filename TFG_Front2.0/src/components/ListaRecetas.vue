@@ -1,26 +1,30 @@
 <template>
   <div class="container">
-    <h2 class="title">Lista de Recetas</h2>
-    
-    <!-- Tabla de recetas -->
-    <table class="recipes-table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
-          <td>{{ receta.nombre }}</td>
-          <td class="action-buttons">
-            <button class="btn edit-btn" @click="selectReceta(receta)">Editar</button>
-            <button class="btn delete-btn" @click="deleteReceta(receta.idReceta)">Eliminar</button>
-            <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Tabla de recetas como desplegable -->
+    <details>
+      <summary class="recipes-summary">
+        <span class="title">Lista de Recetas</span>
+      </summary>
+      
+      <table class="recipes-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
+            <td>{{ receta.nombre }}</td>
+            <td class="action-buttons">
+              <button class="btn edit-btn" @click="selectReceta(receta)">Editar</button>
+              <button class="btn delete-btn" @click="deleteReceta(receta.idReceta)">Eliminar</button>
+              <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </details>
 
     <!-- Formulario para editar receta -->
     <div v-if="recetaEditar" class="edit-section">
@@ -162,24 +166,38 @@ const updatePaso = async () => {
 </script>
 
 <style scoped>
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-}
+
 
 .title {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
+  ont-size: 1.5em;
+    font-weight: bold;
+    cursor: pointer;
+  
+  
+}
+
+.recipes-summary {
+  cursor: pointer;
+  max-width: 600px;
+  margin: 20px auto;
+  font-size: 1.5em;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
 }
 
 .recipes-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
+    font-weight: bold;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    margin-top: -2px;
 }
 
 .recipes-table th,
@@ -223,7 +241,14 @@ const updatePaso = async () => {
 
 .edit-section,
 .edit-steps-section {
-  margin-top: 20px;
+  font-weight: bold;
+    max-width: 1000px;
+    margin: 20px auto;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    margin-top: -2px;
 }
 
 .form-container {

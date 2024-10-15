@@ -4,6 +4,7 @@ import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
 import { useCategoriasStore } from '../store/Categorias';
 import { useRecetasStore } from '../store/Recetas'; // Importar el store de recetas
+import Recetas from '@/views/Recetas.vue';
 
 const loginStore = useLoginStore();
 const router = useRouter();
@@ -25,7 +26,17 @@ const searchResults = computed(() => recetasStore.resultadosBusqueda); // Comput
 const showDropdown = ref(false); // Estado para controlar la visibilidad del dropdown
 
 const handleSearch = async () => {
-  await recetasStore.searchRecetas(searchQuery.value); // Llamar a la acción de búsqueda
+  if (searchQuery.value.trim() === '') {
+    recetasStore.resultadosBusqueda = []; // Limpiar los resultados si la búsqueda está vacía
+    return;
+  }
+  
+  try {
+    await recetasStore.searchRecetas(searchQuery.value); // Llamar a la acción de búsqueda
+    console.log(searchResults.value)
+  } catch (error) {
+    console.error('Error en la búsqueda:', error);
+  }
 };
 
 </script>
@@ -43,7 +54,7 @@ const handleSearch = async () => {
           <div v-if="showDropdown" class="dropdown" @mouseleave="showDropdown = false">
             <div class="dropdown-content">
               <ul>
-                <li v-for="(categoria, index) in categoriasComputed" :key="categoria.idCategoria">
+                <li v-for="(categoria, index) in categoriasComputed" :key="index">
                   <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
                     <img :src="categoria.icono" width="20" alt="Icono de la categoría" />
                     {{ categoria.nombreCategoria }}
@@ -65,9 +76,9 @@ const handleSearch = async () => {
         placeholder="Buscar..."
         @input="handleSearch"
       >
-      <ul v-if="searchResults.length > 0" class="search-results">
-        <li v-for="(receta, index) in searchResults" :key="receta.idReceta">
-          <RouterLink :to="{ name: 'RecetaDetalle', params: { idReceta: receta.idReceta } }">
+      <ul v-if="searchResults && searchResults.length > 0" class="search-results">
+        <li v-for="(receta, index) in searchResults" :key="index">
+          <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }">
             {{ receta.nombre }}
           </RouterLink>
         </li>
@@ -87,6 +98,7 @@ const handleSearch = async () => {
 </template>
 
 <style scoped>
+/* Estilos existentes */
 header {
     display: flex;
     align-items: center;
@@ -225,5 +237,8 @@ nav ul li a {
 
 .search-results li:hover {
   background-color: #f0f0f0; /* Color de fondo al pasar el ratón */
+}
+a{
+  text-decoration: none;
 }
 </style>

@@ -9,6 +9,7 @@ interface Receta {
   fechaCreacion: string;
   nivelDificultad: number;
   tiempoPreparacion: number;
+  idCategoria: number;
 }
 
 interface Paso {
@@ -42,24 +43,44 @@ export const useRecetasStore = defineStore('recetas', {
 
   actions: {
 
+    // async searchRecetas(query: string) {
+    //   try {
+    //     const response = await fetch(`/api/Receta/search?searchTerm=${query}`);
+    //     if (!response.ok) {
+    //       throw new Error(`Error en la búsqueda: ${response.statusText}`);
+    //     }
+    //     const data = await response.json();
+        
+    //     // Asegúrate de que data sea un array
+    //     if (!Array.isArray(data)) {
+    //       throw new Error('El formato de los datos de búsqueda no es válido.');
+    //     }
+        
+    //     // Limita los resultados a un máximo de 7
+    //     this.resultadosBusqueda = data.slice(0, 7);
+    //   } catch (error: any) {
+    //     console.error('Error al buscar recetas:', error);
+    //     this.resultadosBusqueda = []; // Limpia los resultados en caso de error
+    //   }
+    // },
     async searchRecetas(query: string) {
       try {
-        const response = await fetch(`/api/Receta/search?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`/api/Receta/search?searchTerm=${query}`, {
+          method: 'GET'
+        })
+
         if (!response.ok) {
-          throw new Error(`Error en la búsqueda: ${response.statusText}`);
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'error al obtener las recetas.')
         }
-        const data = await response.json();
-        
-        // Asegúrate de que data sea un array
-        if (!Array.isArray(data)) {
-          throw new Error('El formato de los datos de búsqueda no es válido.');
-        }
-        
-        // Limita los resultados a un máximo de 7
-        this.resultadosBusqueda = data.slice(0, 7);
-      } catch (error: any) {
-        console.error('Error al buscar recetas:', error);
-        this.resultadosBusqueda = []; // Limpia los resultados en caso de error
+
+        const data = await response.json()
+
+        this.resultadosBusqueda = data
+
+      } catch (error) {
+        console.log(error)
+        throw error
       }
     },
     async fetchRecetaPorId(id: number) {
