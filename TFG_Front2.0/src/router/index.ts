@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Index from '../views/index.vue';
 import RecetasCat from '../views/RecetasCat.vue';
 import Recetas from '../views/Recetas.vue';
-import Login from '../views/Login.vue';
+import Login from '../views/login.vue';
 import Register from '../views/Register.vue';
 import PanelAdmin from '../views/PanelAdmin.vue';
 import { useLoginStore } from '../store/Login';
+import Favoritos from '../views/Favoritos.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,6 +14,7 @@ const router = createRouter({
     { path: '/', name: 'index', component: Index },
     { path: '/RecetasCat/:idCategoria', name: 'RecetasCat', component: RecetasCat },
     { path: '/Recetas/:id', name: 'Recetas', component: Recetas },
+    { path: '/Favoritos', name: 'Favoritos', component: Favoritos },
     { path: '/Login', name: 'Login', component: Login },
     { path: '/Register', name: 'Register', component: Register },
     {

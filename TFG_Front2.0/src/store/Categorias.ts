@@ -12,14 +12,14 @@ interface Categoria {
 
 export const useCategoriasStore = defineStore('categorias', {
   state: () => ({
-    categorias: [] as Categoria[],  // Estado que almacena las categorías
-    loading: false,                  // Estado de carga
-    error: null as string | null,    // Estado de error
+    categorias: [] as Categoria[],  
+    loading: false,                 
+    error: null as string | null,    
   }),
   actions: {
     async fetchCategorias() {
-      this.loading = true;           // Iniciar carga
-      this.error = null;             // Limpiar error anterior
+      this.loading = true;           
+      this.error = null;             
 
       try {
         console.log('Iniciando petición para obtener categorías...');
@@ -35,13 +35,13 @@ export const useCategoriasStore = defineStore('categorias', {
           throw new Error('El formato de los datos obtenidos no es válido.');
         }
 
-        this.categorias = data;       // Actualizar el estado con las categorías
+        this.categorias = data;       
         console.log('Datos de categorías cargados correctamente:', this.categorias);
       } catch (error: any) {
         console.error('Error al obtener las categorías:', error);
-        this.error = error.message;   // Establecer el mensaje de error
+        this.error = error.message;   
       } finally {
-        this.loading = false;          // Finalizar carga
+        this.loading = false;          
       }
     },
   },

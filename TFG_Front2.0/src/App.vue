@@ -14,3 +14,10 @@ const route = useRoute();
   </main>
   <Footer v-if="route.name !== 'Login' && route.name !== 'Register'"></Footer>
 </template>
+
+<style>
+a{
+  text-decoration: none;
+  color: black;
+}
+</style>

@@ -9,7 +9,7 @@ interface Usuario {
   rol: boolean;
 }
 
-interface JwtPayload {
+export interface JwtPayload {
   nameid: string;
   unique_name: string;
   email: string;

@@ -3,12 +3,12 @@ import { computed, ref } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
 import { useCategoriasStore } from '../store/Categorias';
-import { useRecetasStore } from '../store/Recetas'; // Importar el store de recetas
+import { useRecetasStore } from '../store/Recetas'; 
 import Recetas from '@/views/Recetas.vue';
 
 const loginStore = useLoginStore();
 const router = useRouter();
-const recetasStore = useRecetasStore(); // Usar el store de recetas
+const recetasStore = useRecetasStore(); 
 
 const isLoggedIn = computed(() => loginStore.usuario !== null);
 const userName = computed(() => loginStore.usuario?.nombre || '');
@@ -21,18 +21,18 @@ const handleLogout = () => {
 const categoriasStore = useCategoriasStore();
 const categoriasComputed = computed(() => categoriasStore.categorias);
 
-const searchQuery = ref(''); // Estado para la búsqueda
-const searchResults = computed(() => recetasStore.resultadosBusqueda); // Computar resultados de búsqueda
-const showDropdown = ref(false); // Estado para controlar la visibilidad del dropdown
+const searchQuery = ref(''); 
+const searchResults = computed(() => recetasStore.resultadosBusqueda); 
+const showDropdown = ref(false); 
 
 const handleSearch = async () => {
   if (searchQuery.value.trim() === '') {
-    recetasStore.resultadosBusqueda = []; // Limpiar los resultados si la búsqueda está vacía
+    recetasStore.resultadosBusqueda = []; 
     return;
   }
   
   try {
-    await recetasStore.searchRecetas(searchQuery.value); // Llamar a la acción de búsqueda
+    await recetasStore.searchRecetas(searchQuery.value); 
     console.log(searchResults.value)
   } catch (error) {
     console.error('Error en la búsqueda:', error);
@@ -91,6 +91,7 @@ const handleSearch = async () => {
 
       <div v-if="isLoggedIn" class="logged-in-actions">
         <span>Bienvenido, {{ userName }}</span>
+        <RouterLink to="/Favoritos" class="nav__link">Favoritos</RouterLink>
         <button @click="handleLogout" class="logout-button">Cerrar sesión</button>
       </div>
     </div>
@@ -98,14 +99,13 @@ const handleSearch = async () => {
 </template>
 
 <style scoped>
-/* Estilos existentes */
 header {
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: #FFE5A2;
     padding: 35px 20px;
-    position: relative; /* Asegúrate de que el dropdown se posicione correctamente */
+    position: relative; 
 }
 
 header .logo img {
@@ -128,6 +128,7 @@ nav ul li {
     display: flex;
     flex-direction: column;
     margin-left: 5vh;
+    flex-direction: row;
 }
 
 nav ul li a {
