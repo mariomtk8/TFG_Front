@@ -18,7 +18,7 @@
           <td><img :src="categoria.icono" width="40" alt="Icono de la categoría"></td>
           <td>{{ categoria.nombreCategoria }}</td>
           <td>{{ categoria.descripcion }}</td>
-          <td>{{ categoria.puntuacionPromedio }}</td>
+          <td>{{ categoria.puntuacion }}</td>
           <td>
             <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
               Ver Recetas

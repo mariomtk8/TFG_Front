@@ -7,7 +7,7 @@ interface Categoria {
   Especial: boolean;
   fechaCreacion: string;
   icono: string;
-  puntuacionPromedio: number;
+  puntuacion: number;
 }
 
 export const useCategoriasStore = defineStore('categorias', {

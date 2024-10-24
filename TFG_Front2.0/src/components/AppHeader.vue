@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
 import { useCategoriasStore } from '../store/Categorias';
+import { useMenuSemanalStore } from '../store/MenuSemanal';
 import { useRecetasStore } from '../store/Recetas'; 
 import Recetas from '@/views/Recetas.vue';
 
@@ -38,6 +39,15 @@ const handleSearch = async () => {
     console.error('Error en la búsqueda:', error);
   }
 };
+// onMounted(() => {
+//   if (!isLoggedIn.value) {
+//     router.push('/Login');
+//   }
+// });
+
+// const menuSemanalStore = useMenuSemanalStore();
+// menuSemanalStore.obtenerCategorias();
+// menuSemanalStore.obtenerAlergenos();
 
 </script>
 
@@ -64,7 +74,7 @@ const handleSearch = async () => {
             </div>
           </div>
         </li>
-        <li><a href="#">Menus</a></li>
+        <RouterLink to="/PreferenciasUsuario" class="nav__link">Menu</RouterLink>
         <li><a href="#">Contacto</a></li>
       </ul>
     </nav>

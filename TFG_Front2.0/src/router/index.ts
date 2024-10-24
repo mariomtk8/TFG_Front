@@ -7,6 +7,7 @@ import Register from '../views/Register.vue';
 import PanelAdmin from '../views/PanelAdmin.vue';
 import { useLoginStore } from '../store/Login';
 import Favoritos from '../views/Favoritos.vue';
+import PreferenciasUsuario from '../views/PreferenciasUsuario.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,20 @@ const router = createRouter({
     { path: '/Favoritos', name: 'Favoritos', component: Favoritos },
     { path: '/Login', name: 'Login', component: Login },
     { path: '/Register', name: 'Register', component: Register },
+    {
+      path: '/PreferenciasUsuario',
+      name: 'PreferenciasUsuario',
+      component: () => import('@/views/PreferenciasUsuario.vue'),
+      beforeEnter: (to, from, next) => {
+        const loginStore = useLoginStore();
+        if (!loginStore.usuario) {
+          alert('Necesitas iniciar sesión para poder crear tu menú semanal');
+          next('/Login'); // Redirige al login si no está logueado
+        } else {
+          next(); // Si está logueado, permite el acceso
+        }
+      },
+    },
     {
       path: '/PanelAdmin',
       name: 'PanelAdmin',
