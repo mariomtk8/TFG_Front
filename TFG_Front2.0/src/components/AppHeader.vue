@@ -3,7 +3,7 @@ import { computed, ref, onMounted } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
 import { useCategoriasStore } from '../store/Categorias';
-import { useMenuSemanalStore } from '../store/MenuSemanal';
+import { usePreferencias } from '../store/PrefsUser';
 import { useRecetasStore } from '../store/Recetas'; 
 import Recetas from '@/views/Recetas.vue';
 

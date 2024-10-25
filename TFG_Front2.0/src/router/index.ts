@@ -8,6 +8,7 @@ import PanelAdmin from '../views/PanelAdmin.vue';
 import { useLoginStore } from '../store/Login';
 import Favoritos from '../views/Favoritos.vue';
 import PreferenciasUsuario from '../views/PreferenciasUsuario.vue';
+import MenuSemanal from '@/views/MenuSemanal.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,7 @@ const router = createRouter({
     { path: '/Favoritos', name: 'Favoritos', component: Favoritos },
     { path: '/Login', name: 'Login', component: Login },
     { path: '/Register', name: 'Register', component: Register },
+    { path: '/MenuSemanal', name: 'MenuSemanal', component: MenuSemanal },
     {
       path: '/PreferenciasUsuario',
       name: 'PreferenciasUsuario',

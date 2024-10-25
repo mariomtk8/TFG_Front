@@ -1,134 +1,94 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login';
 
-export interface UsuariosCategoria {
-    idUsuarioCategoria: number;
-    idCategoria: number;
-    idUsuario: number;
-    nombreCategoria: string;
-}
 
-export interface Categoria {
-    idCategoria: number;
-    nombreCategoria: string;
+// Receta.ts
+export interface Receta {
+    idReceta: number;
+    nombre: string;
+    imagen: string;
+    // Otros campos relevantes
   }
-
-export interface Ingrediente {
-  idIngrediente: number;
-  nombreIngrediente: string;
-}
-export interface Alergeno {
-    idAlergeno: number;
+  
+  // MenuSemanal.ts
+  export interface MenuSemanal {
+    idMenuSemanal: number;
+    descripcion: string | null;
+    fechaInicio: string;  // Puede ser `Date` si prefieres
+    tipoComida: boolean;  // true para comida, false para cena
     idUsuario: number;
-    idIngrediente: number;
-    nombreIngrediente: string;
+    usuario?: any;  // Si tienes un tipo definido para Usuario, cámbialo por el correcto
+    idReceta: number;
+    receta?: Receta;  // Asociar la receta correspondiente
   }
+  
 
-export const useMenuSemanalStore = defineStore({
-  id: 'menuSemanal',
-
+export const useMenuSemanalStore = defineStore('menuSemanal', {
   state: () => ({
-    allCategorias: [] as Categoria[],
-    categorias: [] as Categoria[],    // Define el tipo explícitamente para categorias
-    usuariosCategoria: [] as UsuariosCategoria[],
-    ingredientes: [] as Ingrediente[],
-    allIngredientes: [] as Ingrediente[], // Define el tipo explícitamente para ingredientes
+    menuSemanal: [] as Array<any>, // Inicializa con un array vacío para almacenar las recetas del menú semanal
+    recetas: [] as Array<Receta>,
   }),
 
   actions: {
+    // Obtener ID de usuario desde el token
     async obtenerIdUsuarioDesdeToken() {
       const storeLogin = useLoginStore();
       return storeLogin.usuario?.idUsuario || null;
     },
-    async fetchCategorias() {             
-        try {
-          console.log('Iniciando petición para obtener categorías...');
-          const response = await fetch('/api/Categoria');
-          if (!response.ok) {
-            throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
-          }
-          this.allCategorias = await response.json();  // El tipo Ingrediente[] se asignará correctamente
-          
-        } catch (error) {
-          console.error('Error al obtener categorias:', error);
-        }
-    },
 
-    async getAllIngredientes() {
-      try {
-        const response = await fetch('/api/Ingrediente');
-        if (!response.ok) throw new Error('Error al obtener ingredientes');
-        this.allIngredientes = await response.json();  
-        // El tipo Ingrediente[] se asignará correctamente
-      } catch (error) {
-        console.error('Error al obtener ingredientes:', error);
-      }
-    },
-
-    async guardarCategoriasSeleccionadas(categoriasSeleccionadas: any[]) {
-
+    // Obtener el menú semanal
+    async obtenerMenuSemanal() {
       const idUsuario = await this.obtenerIdUsuarioDesdeToken();
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/Usuario/${idUsuario}/Categorias`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${useLoginStore().token}`,
-          },
-          body: JSON.stringify({ categorias: categoriasSeleccionadas }),
-        });
-        if (!response.ok) throw new Error('Error al guardar categorías');
+        const response = await fetch(`/api/api/MenuSemanal/usuario/${idUsuario}`);
+        if (!response.ok) throw new Error("Error al obtener el menú semanal");
+
+        this.menuSemanal = await response.json();
       } catch (error) {
-        console.error('Error al guardar categorías seleccionadas:', error);
+        console.error('Error al obtener el menú semanal:', error);
       }
     },
 
-    async guardarAlergenosSeleccionados(alergenosSeleccionados: number[]) {
+    // Crear un nuevo menú semanal
+    async crearMenuSemanal(menu: any) {
       const idUsuario = await this.obtenerIdUsuarioDesdeToken();
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/Usuario/${idUsuario}/alergenos`, {
+        const response = await fetch(`/api/api/MenuSemanal/${idUsuario}`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${useLoginStore().token}`,
-          },
-          body: JSON.stringify({ alergenos: alergenosSeleccionados }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(menu),
         });
-        if (!response.ok) throw new Error('Error al guardar alérgenos');
+
+        if (!response.ok) throw new Error("Error al crear el menú semanal");
+
+        await this.obtenerMenuSemanal(); // Refrescar el menú
       } catch (error) {
-        console.error('Error al guardar alérgenos seleccionados:', error);
+        console.error('Error al crear el menú semanal:', error);
       }
     },
 
-    async obtenerCategorias() {
-        const idUsuario = await this.obtenerIdUsuarioDesdeToken();
-        if (!idUsuario) return;
-        try {
-          const response = await fetch(`/api/Usuario/${idUsuario}/Categorias`, {
-            headers: { 'Authorization': `Bearer ${useLoginStore().token}` },
-          });
-          if (!response.ok) throw new Error('Error al obtener categorías');
-          this.usuariosCategoria = await response.json();
-        } catch (error) {
-          console.error('Error al obtener categorías:', error);
-        }
-      },
-      async obtenerAlergenos() {
-          const idUsuario = await this.obtenerIdUsuarioDesdeToken();
-          if (!idUsuario) return;
-          try {
-            const response = await fetch(`/api/Usuario/${idUsuario}/alergenos`, {
-              headers: { 'Authorization': `Bearer ${useLoginStore().token}` },
-            });
-            if (!response.ok) throw new Error('Error al obtener categorías');
-            this.ingredientes = await response.json();
-          } catch (error) {
-            console.error('Error al obtener categorías:', error);
-          }
-        },
+    // Actualizar el menú semanal
+    async actualizarMenuSemanal(menu: any) {
+      const idUsuario = await this.obtenerIdUsuarioDesdeToken();
+      if (!idUsuario) return;
+
+      try {
+        const response = await fetch(`/api/api/MenuSemanal/${idUsuario}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(menu),
+        });
+
+        if (!response.ok) throw new Error("Error al actualizar el menú semanal");
+
+        await this.obtenerMenuSemanal(); // Refrescar el menú
+      } catch (error) {
+        console.error('Error al actualizar el menú semanal:', error);
+      }
+    },
   },
 });
