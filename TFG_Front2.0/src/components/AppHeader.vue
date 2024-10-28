@@ -6,10 +6,12 @@ import { useCategoriasStore } from '../store/Categorias';
 import { usePreferencias } from '../store/PrefsUser';
 import { useRecetasStore } from '../store/Recetas'; 
 import Recetas from '@/views/Recetas.vue';
+import { useMenuSemanalStore } from '../store/MenuSemanal';
 
 const loginStore = useLoginStore();
 const router = useRouter();
 const recetasStore = useRecetasStore(); 
+const preferenciasStore = useMenuSemanalStore();
 
 const isLoggedIn = computed(() => loginStore.usuario !== null);
 const userName = computed(() => loginStore.usuario?.nombre || '');
@@ -39,15 +41,23 @@ const handleSearch = async () => {
     console.error('Error en la búsqueda:', error);
   }
 };
-// onMounted(() => {
-//   if (!isLoggedIn.value) {
-//     router.push('/Login');
-//   }
-// });
+const checkMenuSemanal = async () => {
+  const userId = loginStore.usuario?.idUsuario; // Cambia 'id' por 'idUsuario'
+  if (!userId) return;
 
-// const menuSemanalStore = useMenuSemanalStore();
-// menuSemanalStore.obtenerCategorias();
-// menuSemanalStore.obtenerAlergenos();
+  try {
+    const hasMenuSemanal = await preferenciasStore.hasMenuSemanal(userId);
+    if (!hasMenuSemanal) {
+      alert("No se encontraron menús para el usuario.");
+      router.push('/PreferenciasUsuario');
+    } else {
+      router.push('/MenuSemanal');
+    }
+  } catch (error) {
+    console.error("Error al verificar el menú semanal:", error);
+    alert("Hubo un problema al verificar el menú semanal.");
+  }
+};
 
 </script>
 
@@ -74,8 +84,11 @@ const handleSearch = async () => {
             </div>
           </div>
         </li>
-        <RouterLink to="/PreferenciasUsuario" class="nav__link">Menu</RouterLink>
+        
+        <li v-if="isLoggedIn"><RouterLink to="/PreferenciasUsuario" class="nav__link">Seleccionar <br> Preferencias</RouterLink></li>
+        <li style="cursor: pointer;" v-if="isLoggedIn"><a @click.prevent="checkMenuSemanal" class="nav__link">Menu</a></li>
         <li><a href="#">Contacto</a></li>
+        <li><RouterLink to="/Favoritos" class="nav__link">Favoritos</RouterLink></li>
       </ul>
     </nav>
 
@@ -96,17 +109,17 @@ const handleSearch = async () => {
     </div>
 
     <div class="user-actions">
-      <RouterLink v-if="!isLoggedIn" to="/Register" class="nav__link">Register</RouterLink>
-      <RouterLink v-if="!isLoggedIn" to="/Login" class="nav__link">Login</RouterLink>
+      <li><RouterLink v-if="!isLoggedIn" to="/Register" class="nav__link">Register</RouterLink></li>
+      <li><RouterLink v-if="!isLoggedIn" to="/Login" class="nav__link">Login</RouterLink></li>
 
       <div v-if="isLoggedIn" class="logged-in-actions">
         <span>Bienvenido, {{ userName }}</span>
-        <RouterLink to="/Favoritos" class="nav__link">Favoritos</RouterLink>
         <button @click="handleLogout" class="logout-button">Cerrar sesión</button>
       </div>
     </div>
   </header>
 </template>
+
 
 <style scoped>
 header {

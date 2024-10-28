@@ -42,13 +42,18 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/api/MenuSemanal/usuario/${idUsuario}`);
+        const response = await fetch(`/api/MenuSemanal/usuario/${idUsuario}`);
         if (!response.ok) throw new Error("Error al obtener el menú semanal");
 
         this.menuSemanal = await response.json();
       } catch (error) {
         console.error('Error al obtener el menú semanal:', error);
       }
+    },
+    async hasMenuSemanal(idUsuario: number): Promise<boolean> {
+      
+      await this.obtenerMenuSemanal();
+      return this.menuSemanal.length > 0;
     },
 
     // Crear un nuevo menú semanal
@@ -57,7 +62,7 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/api/MenuSemanal/${idUsuario}`, {
+        const response = await fetch(`/api/MenuSemanal/${idUsuario}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(menu),
@@ -77,7 +82,7 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/api/MenuSemanal/${idUsuario}`, {
+        const response = await fetch(`/api/MenuSemanal/usuario/${idUsuario}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(menu),

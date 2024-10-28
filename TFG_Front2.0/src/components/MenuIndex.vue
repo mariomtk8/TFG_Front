@@ -1,0 +1,86 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useLoginStore } from '../store/Login';
+import { useRouter } from 'vue-router';
+
+const loginStore = useLoginStore();
+const router = useRouter();
+
+const isLoggedIn = computed(() => loginStore.usuario !== null);
+
+const goToMenuSemanal = () => {
+  if (isLoggedIn.value) {
+    router.push('/PreferenciasUsuario');
+  } else {
+    alert("Debes iniciar sesión para acceder al Menú Semanal.");
+    router.push('/Login');
+  }
+};
+</script>
+
+<template>
+  <section class="menu-semanal-section">
+    <div class="menu-semanal-content">
+      <h2>¡Descubre tu Menú Semanal Personalizado!</h2>
+      <p>Elige entre tus categorías favoritas y filtra según tus alérgenos para obtener un menú adaptado a tus gustos y necesidades. ¡Tu salud y tus preferencias son nuestra prioridad!</p>
+      <button @click="goToMenuSemanal" class="menu-semanal-btn">
+        Explorar Menú Semanal
+      </button>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.menu-semanal-section {
+  background-image: url('/path/to/your/background-image.jpg'); /* Puedes añadir una imagen de fondo temática de alimentos */
+  background-size: cover;
+  background-position: center;
+  color: black;
+  padding: 60px 20px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menu-semanal-content {
+  max-width: 600px;
+  background-color: #FFE5A2(0, 0, 0, 0.); /* Fondo oscuro translúcido para el texto */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.menu-semanal-content h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.menu-semanal-content p {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.menu-semanal-btn {
+  padding: 12px 24px;
+  background-color: #FF6347; /* Tomate, un color que resalta en el tema culinario */
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.menu-semanal-btn:hover {
+  background-color: #FF4500; /* Un color más oscuro al hacer hover */
+  transform: scale(1.05);
+}
+</style>
