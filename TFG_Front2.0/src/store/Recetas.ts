@@ -42,27 +42,6 @@ export const useRecetasStore = defineStore('recetas', {
   }),
 
   actions: {
-
-    // async searchRecetas(query: string) {
-    //   try {
-    //     const response = await fetch(`/api/Receta/search?searchTerm=${query}`);
-    //     if (!response.ok) {
-    //       throw new Error(`Error en la búsqueda: ${response.statusText}`);
-    //     }
-    //     const data = await response.json();
-        
-    //     // Asegúrate de que data sea un array
-    //     if (!Array.isArray(data)) {
-    //       throw new Error('El formato de los datos de búsqueda no es válido.');
-    //     }
-        
-    //     // Limita los resultados a un máximo de 7
-    //     this.resultadosBusqueda = data.slice(0, 7);
-    //   } catch (error: any) {
-    //     console.error('Error al buscar recetas:', error);
-    //     this.resultadosBusqueda = []; // Limpia los resultados en caso de error
-    //   }
-    // },
     async searchRecetas(query: string) {
       try {
         const response = await fetch(`/api/Receta/search?searchTerm=${query}`, {
@@ -110,7 +89,7 @@ export const useRecetasStore = defineStore('recetas', {
     // Obtener los pasos de una receta por su ID
     async getPasosByRecetaId(recetaId: number) {
       try {
-        const response = await fetch(`/api/Receta/Receta/${recetaId}/Pasos`);
+        const response = await fetch(`/api/Receta/${recetaId}/Pasos`);
         if (!response.ok) throw new Error('Error al obtener los pasos');
         const pasosData = await response.json(); // Guardar los pasos en una variable
         this.pasos = pasosData; // Asignar pasos a la propiedad del store

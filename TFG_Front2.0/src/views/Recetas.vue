@@ -55,9 +55,13 @@
       </section>
     </aside>
   </div>
+  <Votaciones></Votaciones>
+  <Comentarios></Comentarios>
 </template>
 
 <script setup lang="ts">
+import Comentarios from '../components/Comentarios.vue';
+import Votaciones from '../components/Votaciones.vue';
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRecetasStore } from '../store/Recetas';
