@@ -23,11 +23,13 @@
   <script lang="ts">
   import { defineComponent, onMounted, computed } from 'vue';
   import { useComentariosStore } from '../store/ComentariosVotaciones';
+  import { useRoute } from 'vue-router';
   
   export default defineComponent({
     setup() {
       const comentariosStore = useComentariosStore();
-      const recetaId = 1; // Cambia esto según tu lógica
+      const route = useRoute();
+    const recetaId = Number(route.params.id);
   
       onMounted(async () => {
         await comentariosStore.obtenerComentarios(recetaId);

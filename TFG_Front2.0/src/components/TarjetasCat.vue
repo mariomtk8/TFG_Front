@@ -114,7 +114,6 @@
   .recetas-container {
     max-width: 1200px;
     margin: 20px auto;
-    background-color: #f4f4f4;
     padding: 20px;
     border-radius: 10px;
   }
