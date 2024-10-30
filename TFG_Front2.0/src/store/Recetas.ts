@@ -85,7 +85,22 @@ export const useRecetasStore = defineStore('recetas', {
         this.loading = false;
       }
     },
-
+    
+    async fetchRecetas() {
+      try {
+        this.loading = true;
+        const response = await fetch('/api/Receta'); // Ajusta la URL según tu API
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+        }
+        const data = await response.json();
+        this.resultadosBusqueda = data; // Almacena los datos en el estado
+      } catch (error) {
+        console.error('Error al obtener recetas:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
     // Obtener los pasos de una receta por su ID
     async getPasosByRecetaId(recetaId: number) {
       try {

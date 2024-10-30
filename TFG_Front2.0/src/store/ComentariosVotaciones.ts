@@ -7,6 +7,7 @@ interface Comentario {
     recetaId: number;
     contenido: string;
     fecha: Date;
+    nombreUsuario: string; 
 }
 
 interface Votacion {
@@ -54,6 +55,23 @@ export const useComentariosStore = defineStore('comentarios', {
             }
         },
 
+        async eliminarComentario(comentarioId: number) {
+            const usuarioId = await this.obtenerIdUsuarioDesdeToken();
+            if (!usuarioId) {
+                throw new Error("Usuario no autenticado");
+            }
+
+            const response = await fetch(`/api/Comentarios/${comentarioId}/usuario/${usuarioId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                this.comentarios = this.comentarios.filter(c => c.id !== comentarioId);
+            } else {
+                console.error('Error al eliminar comentario:', response.statusText);
+            }
+        },
+
         async agregarVotacion(recetaId: number, puntuacion: number) {
             const usuarioId = await this.obtenerIdUsuarioDesdeToken();
             if (!usuarioId) {
@@ -69,7 +87,7 @@ export const useComentariosStore = defineStore('comentarios', {
             });
 
             if (response.ok) {
-                this.puntuacionSeleccionada = puntuacion; // Se actualiza la puntuación seleccionada
+                this.puntuacionSeleccionada = puntuacion;
                 await this.obtenerPromedioVotaciones(recetaId);
             } else {
                 console.error('Error al agregar votación:', response.statusText);
