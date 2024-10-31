@@ -38,10 +38,31 @@ export const useAdminStore = defineStore({
     receta: null as Receta | null,
     ingredientes: [] as Ingrediente[],
     error: null as string | null,
-    categorias: [] as Categoria[]
+    categorias: [] as Categoria[],
+    resultadosBusqueda: [] as Receta[],
   }),
 
   actions: {
+    async searchRecetas(query: string) {
+      try {
+        const response = await fetch(`/api/Receta/search?searchTerm=${query}`, {
+          method: 'GET'
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'error al obtener las recetas.')
+        }
+
+        const data = await response.json()
+
+        this.resultadosBusqueda = data
+
+      } catch (error) {
+        console.log(error)
+        throw error
+      }
+    },
     // Obtener todas las recetas
     async getRecetas() {
       try {
@@ -120,7 +141,7 @@ export const useAdminStore = defineStore({
     // Obtener los pasos de una receta por su ID
     async getPasosByRecetaId(recetaId: number) {
       try {
-        const response = await fetch(`/api/Receta/Receta/${recetaId}/Pasos`);
+        const response = await fetch(`/api/Receta/${recetaId}/Pasos`);
         if (!response.ok) throw new Error('Error al obtener los pasos');
         return await response.json();
       } catch (error: any) {

@@ -29,10 +29,12 @@ export const usePreferencias = defineStore({
 
   state: () => ({
     allCategorias: [] as Categoria[],
-    categorias: [] as Categoria[],    // Define el tipo explícitamente para categorias
+    categorias: [] as Categoria[],    
     usuariosCategoria: [] as UsuariosCategoria[],
     ingredientes: [] as Ingrediente[],
-    allIngredientes: [] as Ingrediente[], // Define el tipo explícitamente para ingredientes
+    allIngredientes: [] as Ingrediente[], 
+    categoriasBuscadas: [] as Categoria[], 
+    ingredientesBuscados: [] as Ingrediente[],
   }),
 
   actions: {
@@ -64,6 +66,27 @@ export const usePreferencias = defineStore({
         console.error('Error al obtener ingredientes:', error);
       }
     },
+
+    async buscarCategorias(query: string) {
+      try {
+          const response = await fetch(`/api/Categoria/search?query=${query}`);
+          if (!response.ok) throw new Error('Error al buscar categorías');
+          this.categoriasBuscadas = await response.json();
+      } catch (error) {
+          console.error('Error al buscar categorías:', error);
+      }
+  },
+
+  // Función para buscar ingredientes
+  async buscarIngredientes(query: string) {
+      try {
+          const response = await fetch(`/api/Ingrediente/search?query=${query}`);
+          if (!response.ok) throw new Error('Error al buscar ingredientes');
+          this.ingredientesBuscados = await response.json();
+      } catch (error) {
+          console.error('Error al buscar ingredientes:', error);
+      }
+  },
 
     async guardarCategoriasSeleccionadas(categoriasSeleccionadas: any[]) {
       const idUsuario = await this.obtenerIdUsuarioDesdeToken();

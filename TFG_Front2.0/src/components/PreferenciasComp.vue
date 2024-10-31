@@ -2,8 +2,14 @@
     <div class="preferencias-container">
         <section class="preferencias-categorias">
             <h2>Preferencias de Categorías</h2>
+            <input 
+                type="text" 
+                v-model="busquedaCategorias" 
+                placeholder="Buscar categorías..." 
+                class="buscador-categorias"
+            />
             <select v-model="categoriasSeleccionadas" multiple class="categoria-select">
-                <option v-for="categoria in categoriasComputed" :key="categoria.idCategoria" :value="categoria.idCategoria">
+                <option v-for="categoria in categoriasFiltradas" :key="categoria.idCategoria" :value="categoria.idCategoria">
                     {{ categoria.nombreCategoria }}
                 </option>
             </select>
@@ -12,8 +18,14 @@
 
         <section class="preferencias-alergenos">
             <h2>Alérgenos</h2>
+            <input 
+                type="text" 
+                v-model="busquedaAlergenos" 
+                placeholder="Buscar alérgenos..." 
+                class="buscador-alergenos"
+            />
             <select v-model="alergenosSeleccionados" multiple class="alergenos-select">
-                <option v-for="ingrediente in ingredientesComputed" :key="ingrediente.idIngrediente" :value="ingrediente.idIngrediente">
+                <option v-for="ingrediente in alergenosFiltrados" :key="ingrediente.idIngrediente" :value="ingrediente.idIngrediente">
                     {{ ingrediente.nombreIngrediente }}
                 </option>
             </select>
@@ -52,38 +64,51 @@ export default defineComponent({
         const menuSemanalStore = usePreferencias();
         const categoriasSeleccionadas = ref<number[]>([]);
         const alergenosSeleccionados = ref<number[]>([]);
-            const store = useMenuSemanalStore();
-            const router = useRouter();
+        const store = useMenuSemanalStore();
+        const router = useRouter();
 
         const categoriasGuardadas = ref<any[]>([]);
         const alergenosGuardados = ref<any[]>([]);
 
+        const busquedaCategorias = ref('');
+        const busquedaAlergenos = ref('');
+
+        const categoriasComputed = computed(() => menuSemanalStore.allCategorias);
+        const ingredientesComputed = computed(() => menuSemanalStore.allIngredientes);
+
+        const categoriasFiltradas = computed(() => {
+            return categoriasComputed.value.filter(categoria => 
+                categoria.nombreCategoria.toLowerCase().includes(busquedaCategorias.value.toLowerCase())
+            );
+        });
+
+        const alergenosFiltrados = computed(() => {
+            return ingredientesComputed.value.filter(ingrediente => 
+                ingrediente.nombreIngrediente.toLowerCase().includes(busquedaAlergenos.value.toLowerCase())
+            );
+        });
+
         const generarMenuSemanal = async () => {
-  try {
-    // Generar el objeto completo del menú semanal
-    const menu = {
-      idMenuSemanal: 0, // Puedes ajustar según tu lógica
-      descripcion: "Menú Semanal generado", // O ajustar este valor dinámicamente
-      fechaInicio: new Date().toISOString().split('T')[0], // Fecha actual en formato YYYY-MM-DD
-      tipoComida: true, // Este puede cambiar si es comida o cena, dependiendo del día
-      categorias: categoriasSeleccionadas.value, // Categorías seleccionadas por el usuario
-      alergenos: alergenosSeleccionados.value,   // Alergenos seleccionados por el usuario
-      // Añadir propiedades necesarias para el tipo MenuSemanal
-      idUsuario: 1, // Aquí se debe asignar el ID del usuario desde el token o contexto
-      recetas: [], // Si ya tienes recetas seleccionadas para incluir
-    };
+            try {
+                const menu = {
+                    idMenuSemanal: 0, 
+                    descripcion: "Menú Semanal generado", 
+                    fechaInicio: new Date().toISOString().split('T')[0],
+                    tipoComida: true, 
+                    categorias: categoriasSeleccionadas.value, 
+                    alergenos: alergenosSeleccionados.value,   
+                    idUsuario: 1, 
+                    recetas: [],
+                };
 
-    // Llamar a la acción del store con el objeto menú completo
-    await store.crearMenuSemanal(menu);
+                // Llamar a la acción del store con el objeto menú completo
+                await store.crearMenuSemanal(menu);
 
-    // Redirigir a la vista MenuSemanal.vue
-    router.push('/MenuSemanal');
-  } catch (error) {
-    console.error('Error al generar el menú semanal:', error);
-  }
-};
-
-
+                router.push('/MenuSemanal');
+            } catch (error) {
+                console.error('Error al generar el menú semanal:', error);
+            }
+        };
 
         const guardarCategorias = async () => {
             try {
@@ -118,9 +143,6 @@ export default defineComponent({
             }
         };
 
-        const categoriasComputed = computed(() => menuSemanalStore.allCategorias);
-        const ingredientesComputed = computed(() => menuSemanalStore.allIngredientes);
-
         onMounted(async () => {
             await menuSemanalStore.fetchCategorias();
             await menuSemanalStore.getAllIngredientes();
@@ -132,8 +154,10 @@ export default defineComponent({
             alergenosSeleccionados,
             categoriasGuardadas,
             alergenosGuardados,
-            categoriasComputed,
-            ingredientesComputed,
+            busquedaCategorias,
+            busquedaAlergenos,
+            categoriasFiltradas,
+            alergenosFiltrados,
             guardarCategorias,
             guardarAlergenos,
             generarMenuSemanal,
@@ -177,6 +201,15 @@ select {
     margin-bottom: 20px;
 }
 
+.buscador-categorias, .buscador-alergenos {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
 .btn-guardar {
     background-color: #4caf50;
     color: white;
@@ -202,17 +235,18 @@ li {
     color: #555;
     margin-bottom: 10px;
 }
+
 button {
-  background-color: #4CAF50; /* Verde */
-  color: white;
-  padding: 10px 20px;
-  margin-top: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
-  background-color: #45a049;
+    background-color: #45a049;
 }
 </style>

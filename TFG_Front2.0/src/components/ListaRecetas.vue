@@ -1,5 +1,16 @@
 <template>
   <div class="container">
+    <!-- Campo de búsqueda -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        @input="filterRecetas" 
+        placeholder="Buscar receta por nombre"
+        class="search-input"
+      />
+    </div>
+
     <!-- Tabla de recetas como desplegable -->
     <details>
       <summary class="recipes-summary">
@@ -14,7 +25,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
+          <tr v-for="receta in filteredRecetas" :key="receta.idReceta">
             <td>{{ receta.nombre }}</td>
             <td class="action-buttons">
               <button class="btn edit-btn" @click="selectReceta(receta)">Editar</button>
@@ -87,6 +98,7 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAdminStore } from '../store/Admin';
@@ -98,10 +110,13 @@ const adminStore = useAdminStore();
 // Refs
 const recetaEditar = ref<Receta | null>(null);
 const pasosSeleccionados = ref<Paso[]>([]);
+const searchQuery = ref(''); // Query para buscar recetas
+const filteredRecetas = ref<Receta[]>([]); // Recetas filtradas
 
 // On Mounted
-onMounted(() => {
-  adminStore.getRecetas();
+onMounted(async () => {
+  await adminStore.getRecetas();
+  filteredRecetas.value = adminStore.recetas; // Inicializa con todas las recetas
 });
 
 // Función para seleccionar una receta y editarla
@@ -163,17 +178,39 @@ const updatePaso = async () => {
     }
   }
 };
+
+// Filtrar recetas según la búsqueda
+const filterRecetas = async () => {
+  if (searchQuery.value.trim() === '') {
+    filteredRecetas.value = adminStore.recetas; // Muestra todas si no hay búsqueda
+  } else {
+    await adminStore.searchRecetas(searchQuery.value);
+    filteredRecetas.value = adminStore.resultadosBusqueda; // Actualiza con resultados de búsqueda
+  }
+};
 </script>
+
 
 <style scoped>
 
 
 .title {
-  ont-size: 1.5em;
     font-weight: bold;
     cursor: pointer;
   
   
+}
+.search-container {
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
 }
 
 .recipes-summary {
