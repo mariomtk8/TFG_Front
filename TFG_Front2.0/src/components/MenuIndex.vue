@@ -45,6 +45,7 @@ const goToMenuSemanal = () => {
   justify-content: center;
   flex-direction: column;
   gap: 20px;
+  margin-top: 4vh;
 }
 
 .menu-semanal-content {

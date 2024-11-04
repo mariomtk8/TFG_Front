@@ -38,10 +38,12 @@
         <Populares />
       </aside>
     </div>
+
     <Votaciones />
     <Comentarios />
   </div>
 </template>
+
 <script setup lang="ts">
 import Comentarios from '../components/Comentarios.vue';
 import Votaciones from '../components/Votaciones.vue';
@@ -70,6 +72,7 @@ onMounted(() => {
   }
 });
 </script>
+
 <style scoped>
 .receta-container {
   max-width: 1000px;
@@ -82,7 +85,7 @@ onMounted(() => {
 
 .receta-titulo {
   font-size: 2rem;
-  color: #333;
+  color: rgb(63, 25, 124); /* Color principal */
   margin-bottom: 20px;
   text-align: center;
 }
@@ -102,10 +105,10 @@ onMounted(() => {
 .receta__info,
 .receta__ingredientes,
 .receta__pasos {
-  
   padding: 15px;
   border-radius: 8px;
-  
+  background-color: #F9F9F9; /* Color neutro suave */
+  border: 1px solid #E0E0E0; /* Color de borde suave */
 }
 
 .receta__info h3,
@@ -113,7 +116,7 @@ onMounted(() => {
 .receta__pasos h3 {
   margin-top: 0;
   font-size: 1.2rem;
-  color: #4CAF50;
+  color: #4CAF50; /* Color secundario */
 }
 
 .ingrediente {
@@ -140,13 +143,13 @@ onMounted(() => {
 
 .receta__sidebar h3 {
   font-size: 1.5rem;
-  color: #4CAF50;
+  color: #4CAF50; /* Color secundario */
   text-align: center;
   margin-bottom: 10px;
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #4CAF50; /* Color secundario */
   color: white;
   border: none;
   padding: 10px 20px;
@@ -156,6 +159,44 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #45a049; /* Color secundario más oscuro */
+}
+@media (max-width: 768px) {
+  .receta__layout {
+    grid-template-columns: 1fr; /* Cambiar a una sola columna en pantallas pequeñas */
+  }
+
+  .receta__sidebar {
+    position: relative; /* Cambiar la posición para no ser sticky en móviles */
+    margin-top: 20px; /* Espacio superior para separarlo del contenido */
+  }
+
+  .receta-titulo {
+    font-size: 1.5rem; /* Ajustar el tamaño del título */
+  }
+
+  .receta__info h3,
+  .receta__ingredientes h3,
+  .receta__pasos h3 {
+    font-size: 1.2rem; /* Ajustar el tamaño de los subtítulos */
+  }
+}
+
+@media (max-width: 480px) {
+  .receta-titulo {
+    font-size: 1.25rem; /* Ajustar aún más para pantallas pequeñas */
+  }
+
+  .receta__descripcion {
+    font-size: 0.9rem; /* Reducir tamaño de texto */
+  }
+
+  .ingrediente {
+    font-size: 0.9rem; /* Reducir tamaño de texto de ingredientes */
+  }
+
+  button {
+    padding: 8px 16px; /* Ajustar tamaño de botón */
+  }
 }
 </style>

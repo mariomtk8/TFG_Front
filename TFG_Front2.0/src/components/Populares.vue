@@ -3,8 +3,10 @@
     <h1>Recetas Populares</h1>
     <div v-if="filtradosStore.recetasPopulares.length > 0" class="recetas-container">
       <div v-for="receta in filtradosStore.recetasPopulares" :key="receta.idReceta" class="receta-card">
-        <img :src="receta.imagen" :alt="receta.nombre" class="receta-imagen" />
-        <h2>{{ receta.nombre }}</h2>
+        <RouterLink :to="`/Recetas/${receta.idReceta}`">
+          <img :src="receta.imagen" :alt="receta.nombre" class="receta-imagen" />
+          <h2>{{ receta.nombre }}</h2>
+        </RouterLink>
         <div class="stars">
           <!-- Estrellas llenas -->
           <svg v-for="n in Math.floor(receta.promedioVotos)" :key="`filled-${n}`" class="filled" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor">

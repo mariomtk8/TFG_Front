@@ -1,11 +1,11 @@
 <template>
     <PortadaIndex></PortadaIndex>
-    <BannerBienvenida></BannerBienvenida>
-    <MenuIndex></MenuIndex>
-    <Populares></Populares>
-    <FiltrarPorNivelDificultad></FiltrarPorNivelDificultad>
-    <FiltrarPorTiempoPreparacion></FiltrarPorTiempoPreparacion>
     <Categorias></Categorias>
+    <BannerBienvenida></BannerBienvenida>
+    <Populares></Populares>
+    <MenuIndex></MenuIndex>
+    <FiltrarPorNivelDificultad></FiltrarPorNivelDificultad>
+    <FiltrarPorTiempoPreparacion></FiltrarPorTiempoPreparacion> 
 </template>
 
 <script setup lang="ts">

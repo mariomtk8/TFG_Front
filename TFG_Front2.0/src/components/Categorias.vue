@@ -8,8 +8,6 @@
         <tr>
           <th>Icono</th>
           <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Puntuación Promedio</th>
           <th>Acción</th>
         </tr>
       </thead>
@@ -17,8 +15,6 @@
         <tr v-for="categoria in categoriasComputed" :key="categoria.idCategoria">
           <td><img :src="categoria.icono" width="40" alt="Icono de la categoría"></td>
           <td>{{ categoria.nombreCategoria }}</td>
-          <td>{{ categoria.descripcion }}</td>
-          <td>{{ categoria.puntuacion }}</td>
           <td>
             <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
               Ver Recetas
@@ -114,6 +110,11 @@ tr:nth-child(even) {
   th, td {
     font-size: 0.8em;
     padding: 8px;
+  }
+
+  /* No ocultar columnas, mostrar todas */
+  th, td {
+    display: table-cell; /* Asegúrate de que todas las celdas se muestren */
   }
 }
 </style>

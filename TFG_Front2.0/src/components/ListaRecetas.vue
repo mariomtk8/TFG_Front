@@ -33,6 +33,9 @@
               <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
             </td>
           </tr>
+          <tr v-if="filteredRecetas.length === 0">
+            <td colspan="2">No se encontraron recetas.</td>
+          </tr>
         </tbody>
       </table>
     </details>
@@ -98,7 +101,6 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useAdminStore } from '../store/Admin';
@@ -131,6 +133,7 @@ const updateReceta = async () => {
     await adminStore.updateReceta(recetaEditar.value.idReceta, recetaEditar.value);
     recetaEditar.value = null;
     pasosSeleccionados.value = [];
+    await filterRecetas(); // Refresca la lista de recetas
   }
 };
 
@@ -138,6 +141,7 @@ const updateReceta = async () => {
 const deleteReceta = async (idReceta: number) => {
   if (confirm('¿Estás seguro de que quieres eliminar esta receta?')) {
     await adminStore.deleteReceta(idReceta);
+    await filterRecetas(); // Refresca la lista de recetas
   }
 };
 
@@ -190,16 +194,12 @@ const filterRecetas = async () => {
 };
 </script>
 
-
 <style scoped>
-
-
 .title {
     font-weight: bold;
     cursor: pointer;
-  
-  
 }
+
 .search-container {
   margin: 20px auto;
   max-width: 600px;
@@ -227,26 +227,22 @@ const filterRecetas = async () => {
 .recipes-table {
   width: 100%;
   border-collapse: collapse;
-    font-weight: bold;
-    max-width: 900px;
-    margin: 20px auto;
-    background-color: #f4f4f4;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    margin-top: -2px;
-}
-
-.recipes-table th,
-.recipes-table td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
-
-.recipes-table th {
-  background-color: #f4f4f4;
   font-weight: bold;
+  max-width: 900px;
+  margin: 20px auto;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+}
+
+th {
+  background-color: #e0e0e0;
+}
+
+td {
+  padding: 10px;
+  border: 1px solid #ddd;
 }
 
 .action-buttons {
@@ -254,69 +250,43 @@ const filterRecetas = async () => {
   gap: 10px;
 }
 
+.edit-section, .edit-steps-section {
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.form-container {
+  margin: 10px 0;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+
 .btn {
-  padding: 8px 12px;
+  padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.edit-btn {
-  background-color: #007bff;
+.save-btn {
+  background-color: #4CAF50;
   color: white;
 }
 
-.delete-btn {
-  background-color: #dc3545;
+.cancel-btn {
+  background-color: #f44336;
   color: white;
 }
 
-.add-step-btn {
-  background-color: #28a745;
+.add-step-btn, .delete-btn {
+  background-color: #008CBA;
   color: white;
-}
-
-.edit-section,
-.edit-steps-section {
-  font-weight: bold;
-    max-width: 1000px;
-    margin: 20px auto;
-    background-color: #f4f4f4;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    margin-top: -2px;
-}
-
-.form-container {
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.summary-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.form-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-.button-group {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
 }
 </style>

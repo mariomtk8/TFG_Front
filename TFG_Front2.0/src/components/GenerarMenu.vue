@@ -12,8 +12,10 @@
           <td>Comida</td>
           <td v-for="(dia, index) in diasSemana" :key="`comida-${index}`">
             <div v-if="menuRecetas[dia]?.comida">
-              <p>{{ menuRecetas[dia].comida.nombre }}</p>
-              <img :src="menuRecetas[dia].comida.imagen" alt="Imagen de la receta" width="100" />
+              <router-link :to="`/Recetas/${menuRecetas[dia].comida.id}`" class="receta-link">
+                <p class="receta-nombre">{{ menuRecetas[dia].comida.nombre }}</p>
+                <img :src="menuRecetas[dia].comida.imagen" alt="Imagen de la receta" />
+              </router-link>
             </div>
             <span v-else>Sin receta asignada</span>
           </td>
@@ -22,8 +24,10 @@
           <td>Cena</td>
           <td v-for="(dia, index) in diasSemana" :key="`cena-${index}`">
             <div v-if="menuRecetas[dia]?.cena">
-              <p>{{ menuRecetas[dia].cena.nombre }}</p>
-              <img :src="menuRecetas[dia].cena.imagen" alt="Imagen de la receta" width="100" />
+              <router-link :to="`/Recetas/${menuRecetas[dia].cena.id}`" class="receta-link">
+                <p class="receta-nombre">{{ menuRecetas[dia].cena.nombre }}</p>
+                <img :src="menuRecetas[dia].cena.imagen" alt="Imagen de la receta" />
+              </router-link>
             </div>
             <span v-else>Sin receta asignada</span>
           </td>
@@ -32,7 +36,7 @@
     </table>
     <div class="botones">
       <button @click="actualizarMenuSemanal">Actualizar Menú</button>
-      <router-link to="/PreferenciasUsuario">Volver a Preferencias</router-link>
+      <router-link to="/PreferenciasUsuario" class="volver-link">Volver a Preferencias</router-link>
     </div>
   </div>
 </template>
@@ -53,10 +57,10 @@ export default defineComponent({
       return store.menuSemanal || [];
     },
     menuRecetas() {
-      const recetasMapeadas: Record<string, { comida?: { nombre: string; imagen?: string }; cena?: { nombre: string; imagen?: string } }> = {};
+      const recetasMapeadas: Record<string, { comida?: { nombre: string; imagen?: string; id: number }; cena?: { nombre: string; imagen?: string; id: number } }> = {};
       
       let recetaIndex = 0;
-      this.diasSemana.forEach((dia, index) => {
+      this.diasSemana.forEach((dia) => {
         recetasMapeadas[dia] = {};
         
         // Asignar receta para "comida"
@@ -64,6 +68,7 @@ export default defineComponent({
           recetasMapeadas[dia].comida = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
             imagen: this.menuSemanal[recetaIndex].receta.imagen || undefined,
+            id: this.menuSemanal[recetaIndex].receta.id,
           };
           recetaIndex++;
         }
@@ -73,6 +78,7 @@ export default defineComponent({
           recetasMapeadas[dia].cena = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
             imagen: this.menuSemanal[recetaIndex].receta.imagen || undefined,
+            id: this.menuSemanal[recetaIndex].receta.id,
           };
           recetaIndex++;
         }
@@ -98,33 +104,55 @@ export default defineComponent({
 .menu-semanal {
   margin: 20px auto;
   max-width: 800px;
+  overflow-x: auto; /* Para permitir el desplazamiento horizontal */
 }
+
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
+
 th,
 td {
-  padding: 12px;
+  padding: 16px;
   text-align: center;
   border: 1px solid #ddd;
 }
+
 thead {
   background-color: #3f197c;
   color: #fff;
 }
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Alternar color de fila */
+}
+
+.receta-link {
+  text-decoration: none;
+  color: #3f197c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.receta-nombre {
+  margin: 8px 0;
+}
+
 img {
   width: 80px;
   height: 80px;
   object-fit: cover;
   border-radius: 8px;
-  margin: 8px 0;
 }
+
 .botones {
   display: flex;
   justify-content: space-between;
 }
+
 button {
   background-color: #3f197c;
   color: white;
@@ -133,18 +161,38 @@ button {
   border-radius: 4px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: #5a3ab0;
 }
-router-link {
+
+.volver-link {
   color: #3f197c;
   text-decoration: none;
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #3f197c;
 }
-router-link:hover {
+
+.volver-link:hover {
   background-color: #3f197c;
   color: white;
+}
+
+/* Estilos responsivos */
+@media (max-width: 600px) {
+  th,
+  td {
+    padding: 8px;
+  }
+
+  img {
+    width: 60px;
+    height: 60px;
+  }
+
+  button, .volver-link {
+    padding: 8px;
+  }
 }
 </style>

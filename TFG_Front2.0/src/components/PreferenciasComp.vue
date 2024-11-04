@@ -49,7 +49,7 @@
                 </ul>
             </div>
         </section>
-        <button @click="generarMenuSemanal">Generar Menú Semanal</button>
+        <button @click="generarMenuSemanal" class="btn-generar-menu">Generar Menú Semanal</button>
     </div>
 </template>
 
@@ -189,7 +189,7 @@ export default defineComponent({
 h2 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #333;
+    color: #4f3f77; /* Color principal */
 }
 
 select {
@@ -210,8 +210,8 @@ select {
     margin-bottom: 20px;
 }
 
-.btn-guardar {
-    background-color: #4caf50;
+.btn-guardar, .btn-generar-menu {
+    background-color: #4caf50; /* Verde */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -221,8 +221,8 @@ select {
     transition: background-color 0.3s ease;
 }
 
-.btn-guardar:hover {
-    background-color: #45a049;
+.btn-guardar:hover, .btn-generar-menu:hover {
+    background-color: #45a049; /* Verde más oscuro */
 }
 
 ul {
@@ -236,17 +236,23 @@ li {
     margin-bottom: 10px;
 }
 
-button {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-    padding: 10px 20px;
-    margin-top: 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
+/* Estilos responsive */
+@media (max-width: 768px) {
+    .preferencias-container {
+        padding: 10px;
+    }
 
-button:hover {
-    background-color: #45a049;
+    h2 {
+        font-size: 20px;
+    }
+
+    .btn-guardar, .btn-generar-menu {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    select, .buscador-categorias, .buscador-alergenos {
+        font-size: 14px;
+    }
 }
 </style>
