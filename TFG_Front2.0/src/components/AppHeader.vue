@@ -289,25 +289,97 @@ const checkMenuSemanal = async () => {
   background-color: #d96b45;
 }
 
-/* Responsive para móvil */
+@media (max-width: 1200px) {
+  .header__content {
+    width: 95%;
+    max-width: 1000px;
+  }
+
+  .header__logo img {
+    height: 70px; /* Disminuir tamaño del logo */
+  }
+
+  .header__nav-list {
+    gap: 10px; /* Reducir espacio entre los elementos del menú */
+  }
+
+  .header__nav-link {
+    font-size: 0.9em; /* Reducir tamaño de fuente */
+  }
+
+  .header__search-input {
+    width: 120px; /* Reducir ancho de la barra de búsqueda */
+    padding: 6px; /* Reducir padding */
+  }
+
+  .header__user-link {
+    font-size: 0.9em; /* Reducir tamaño de fuente */
+  }
+
+  .header__username {
+    font-size: 0.9em; /* Reducir tamaño de fuente */
+  }
+}
+
+/* Responsive para móviles */
 @media (max-width: 844px) {
   .header__content {
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 10px; 
   }
 
   .header__nav-list {
     flex-direction: column;
-    gap: 10px;
+    gap: 8px; 
+  }
+
+  .header__logo img {
+    height: 60px; 
+  }
+
+  .header__nav-link {
+    font-size: 0.85em;
   }
 
   .header__search-input {
-    width: 100%;
+    width: 90%; 
+    padding: 4px; 
   }
 
-  .header__dropdown {
-    width: 200px;
+  .header__logged-in {
+    flex-direction: column;
+    gap: 5px; 
+  }
+
+  .header__logout-button {
+    padding: 6px 10px; 
+    font-size: 0.85em; 
+  }
+}
+
+/* Responsive para pantallas muy pequeñas */
+@media (max-width: 500px) {
+  .header__content {
+    width: 100%;
+    padding: 10px; /* Reducir padding */
+  }
+
+  .header__logo img {
+    height: 50px; /* Disminuir el tamaño del logo aún más */
+  }
+
+  .header__nav-link {
+    font-size: 0.75em; /* Reducir tamaño de fuente a 75% */
+  }
+
+  .header__search-input {
+    width: 80%; /* Ancho de búsqueda en pantallas pequeñas */
+  }
+
+  .header__user-actions {
+    flex-direction: column; /* Apilar botones de usuario */
+    gap: 5px; /* Espaciado reducido */
   }
 }
 </style>

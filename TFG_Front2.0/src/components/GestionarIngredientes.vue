@@ -1,10 +1,16 @@
 <template>
   <div class="container">
-    <!-- Desplegable para gestionar ingredientes de las recetas -->
-    <details>
-      <summary class="summary-title">Gestionar Ingredientes de las Recetas</summary>
-      
-      <!-- Tabla de recetas -->
+    <!-- Campo de búsqueda -->
+    <div class="search-container">
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        @input="filterRecetas" 
+        placeholder="Buscar receta por nombre"
+        class="search-input"/>   
+
+    <!-- Lista de recetas -->
+    <div class="recipes-list">
       <table class="recipes-table">
         <thead>
           <tr>
@@ -13,20 +19,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="receta in adminStore.recetas" :key="receta.idReceta">
+          <tr v-for="receta in filteredRecetas" :key="receta.idReceta">
             <td>{{ receta.nombre }}</td>
             <td>
               <button class="btn manage-btn" @click="manageIngredientes(receta)">Gestionar Ingredientes</button>
             </td>
           </tr>
+          <tr v-if="filteredRecetas.length === 0">
+            <td colspan="2">No se encontraron recetas.</td>
+          </tr>
         </tbody>
       </table>
+    </div>
+  </div>
 
-      <!-- Ingredientes de la receta seleccionada -->
+    <!-- Formulario de gestión de ingredientes y nuevo ingrediente -->
+    <div class="form-section">
       <div v-if="recetaSeleccionada" class="ingredients-section">
         <h2 class="title">Ingredientes de la Receta: {{ recetaSeleccionada.nombre }}</h2>
 
-        <!-- Lista de ingredientes -->
+        <!-- Lista de ingredientes de la receta seleccionada -->
         <div v-for="(ingrediente, index) in ingredientesSeleccionados" :key="index" class="ingredient-item">
           <label>Ingrediente</label>
           <select v-model="ingrediente.idIngrediente">
@@ -57,47 +69,46 @@
       </div>
 
       <!-- Formulario para añadir nuevo ingrediente -->
-      <details v-if="mostrarFormularioIngrediente" open>
-        <summary class="summary-title">Añadir Nuevo Ingrediente</summary>
-        <div class="form-container">
-          <h2>Nuevo Ingrediente</h2>
+      <div v-if="mostrarFormularioIngrediente" class="new-ingredient-form">
+        <h2>Nuevo Ingrediente</h2>
 
-          <label>Nombre del Ingrediente</label>
-          <input v-model="nuevoIngrediente.nombreIngrediente" placeholder="Nombre del ingrediente" />
+        <label>Nombre del Ingrediente</label>
+        <input v-model="nuevoIngrediente.nombreIngrediente" placeholder="Nombre del ingrediente" />
 
-          <label>Calorías</label>
-          <input v-model="nuevoIngrediente.calorias" placeholder="Calorías" type="number" />
+        <label>Calorías</label>
+        <input v-model="nuevoIngrediente.calorias" placeholder="Calorías" type="number" />
 
-          <label>Contiene Alérgenos</label>
-          <input type="checkbox" v-model="nuevoIngrediente.contieneAlergenos" />
+        <label>Contiene Alérgenos</label>
+        <input type="checkbox" v-model="nuevoIngrediente.contieneAlergenos" />
 
-          <label v-if="nuevoIngrediente.contieneAlergenos">Tipo de Alérgeno</label>
-          <input v-if="nuevoIngrediente.contieneAlergenos" v-model="nuevoIngrediente.tipoAlergeno" placeholder="Tipo de alérgeno" />
+        <label v-if="nuevoIngrediente.contieneAlergenos">Tipo de Alérgeno</label>
+        <input v-if="nuevoIngrediente.contieneAlergenos" v-model="nuevoIngrediente.tipoAlergeno" placeholder="Tipo de alérgeno" />
 
-          <label>Unidad de Medida</label>
-          <input v-model="nuevoIngrediente.unidadMedida" placeholder="Unidad de medida" />
+        <label>Unidad de Medida</label>
+        <input v-model="nuevoIngrediente.unidadMedida" placeholder="Unidad de medida" />
 
-          <label>Fecha de Expiración</label>
-          <input v-model="nuevoIngrediente.fechaExpiracion" type="date" />
+        <label>Fecha de Expiración</label>
+        <input v-model="nuevoIngrediente.fechaExpiracion" type="date" />
 
-          <div class="form-buttons">
-            <button class="btn save-btn" @click="guardarIngrediente">Guardar Ingrediente</button>
-            <button class="btn cancel-btn" @click="cancelarIngredienteForm">Cancelar</button>
-          </div>
+        <div class="form-buttons">
+          <button class="btn save-btn" @click="guardarIngrediente">Guardar Ingrediente</button>
+          <button class="btn cancel-btn" @click="cancelarIngredienteForm">Cancelar</button>
         </div>
-      </details>
-    </details>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useIngredientesStore } from '../store/Ingredientes';
 import { useAdminStore } from '../store/Admin';
 import type { RecetaIngrediente, Ingrediente } from '../store/Ingredientes';
 import type { Receta } from '../store/Admin';
 
 const adminStore = useAdminStore();
+const searchQuery = ref('');
+const filteredRecetas = ref<Receta[]>([]);
 const recetaSeleccionada = ref<Receta | null>(null);
 const ingredientesStore = useIngredientesStore();
 const ingredientesSeleccionados = ref<RecetaIngrediente[]>([]);
@@ -110,6 +121,20 @@ const nuevoIngrediente = ref<Ingrediente>({
   tipoAlergeno: '',
   unidadMedida: '',
   fechaExpiracion: new Date().toISOString().split('T')[0],
+});
+
+const filterRecetas = async () => {
+  if (searchQuery.value.trim() === '') {
+    filteredRecetas.value = adminStore.recetas;
+  } else {
+    await adminStore.searchRecetas(searchQuery.value);
+    filteredRecetas.value = adminStore.resultadosBusqueda;
+  }
+};
+
+onMounted(async () => {
+  await adminStore.getRecetas();
+  filteredRecetas.value = adminStore.recetas;
 });
 
 // Función para gestionar los ingredientes de una receta
@@ -196,6 +221,25 @@ const updateIngredientes = async () => {
   margin-bottom: 10px;
 }
 
+.search-container {
+  margin: 20px auto;
+  max-width: 600px;
+}
+.search-input {
+  width: 80%;
+  margin-left: 2vh;
+  margin-bottom: 3vh;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+th {
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px;
+}
+
 .recipes-table {
   width: 100%;
   border-collapse: collapse;
@@ -216,6 +260,10 @@ const updateIngredientes = async () => {
   padding: 12px;
   text-align: left;
 }
+.form-section{
+  margin-right: 10vh;
+  margin-top: 5vh;
+}
 
 .ingredients-section {
     font-weight: bold;
@@ -234,14 +282,16 @@ const updateIngredientes = async () => {
 
 /* Estilos para botones */
 .btn {
-  padding: 8px 12px;
+  padding: 10px 15px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #2c3e50;
+  color:white;
 }
 
 .manage-btn {
-  background-color: #17a2b8;
+  background-color: #2c3e50;
   color: white;
 }
 
@@ -289,5 +339,30 @@ const updateIngredientes = async () => {
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     margin-top: -2px;
+}
+
+@media (max-width: 768px) {
+  .recipes-table {
+    font-size: 14px; /* Ajusta el tamaño de fuente para pantallas pequeñas */
+  }
+
+  .btn {
+    width: 100%; /* Botones ocupan todo el ancho en pantallas pequeñas */
+    margin-bottom: 10px; /* Espacio entre botones */
+  }
+
+  .form-buttons {
+    flex-direction: column; /* Coloca los botones en columna */
+    align-items: stretch; /* Estira los botones para ocupar todo el ancho */
+  }
+
+  .search-input {
+    margin-bottom: 15px; /* Espacio adicional en pantallas pequeñas */
+  }
+
+  .ingredient-item label {
+    display: block; /* Muestra etiquetas en bloque */
+    margin-top: 10px; /* Espacio entre etiquetas y campos */
+  }
 }
 </style>

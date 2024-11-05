@@ -5,8 +5,8 @@
       <label class="selector-label">
         Ordenar por Tiempo:
         <select v-model="ascendente" @change="cambiarOrden" class="custom-select">
-          <option value="true">Mayor a Menor</option>
-          <option value="false">Menor a Mayor</option>
+          <option value="true">Menor a Mayor</option>
+          <option value="false">Mayor a Menor</option>
         </select>
       </label>
     </div>
