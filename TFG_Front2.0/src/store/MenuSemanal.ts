@@ -17,9 +17,9 @@ export interface Receta {
     fechaInicio: string;  // Puede ser `Date` si prefieres
     tipoComida: boolean;  // true para comida, false para cena
     idUsuario: number;
-    usuario?: any;  // Si tienes un tipo definido para Usuario, cámbialo por el correcto
+    usuario: any;  // Si tienes un tipo definido para Usuario, cámbialo por el correcto
     idReceta: number;
-    receta?: Receta;  // Asociar la receta correspondiente
+    receta: Receta;  // Asociar la receta correspondiente
   }
   
 

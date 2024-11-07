@@ -12,9 +12,9 @@
           <td>Comida</td>
           <td v-for="(dia, index) in diasSemana" :key="`comida-${index}`">
             <div v-if="menuRecetas[dia]?.comida">
-              <router-link :to="`/Recetas/${menuRecetas[dia].comida.id}`" class="receta-link">
-                <p class="receta-nombre">{{ menuRecetas[dia].comida.nombre }}</p>
-                <img :src="menuRecetas[dia].comida.imagen" alt="Imagen de la receta" />
+              <router-link :to="`/Recetas/${menuRecetas[dia]?.comida?.idReceta}`" class="receta-link">
+                <p class="receta-nombre">{{ menuRecetas[dia]?.comida?.nombre }}</p>
+                <img :src="menuRecetas[dia]?.comida?.imagen" alt="Imagen de la receta" />
               </router-link>
             </div>
             <span v-else>Sin receta asignada</span>
@@ -24,9 +24,9 @@
           <td>Cena</td>
           <td v-for="(dia, index) in diasSemana" :key="`cena-${index}`">
             <div v-if="menuRecetas[dia]?.cena">
-              <router-link :to="`/Recetas/${menuRecetas[dia].cena.id}`" class="receta-link">
-                <p class="receta-nombre">{{ menuRecetas[dia].cena.nombre }}</p>
-                <img :src="menuRecetas[dia].cena.imagen" alt="Imagen de la receta" />
+              <router-link :to="`/Recetas/${menuRecetas[dia]?.cena?.idReceta}`" class="receta-link">
+                <p class="receta-nombre">{{ menuRecetas[dia]?.cena?.nombre }}</p>
+                <img :src="menuRecetas[dia]?.cena?.imagen" alt="Imagen de la receta" />
               </router-link>
             </div>
             <span v-else>Sin receta asignada</span>
@@ -40,6 +40,7 @@
     </div>
   </div>
 </template>
+
 
 <script lang="ts">
 import { defineComponent } from 'vue';
@@ -57,7 +58,7 @@ export default defineComponent({
       return store.menuSemanal || [];
     },
     menuRecetas() {
-      const recetasMapeadas: Record<string, { comida?: { nombre: string; imagen?: string; id: number }; cena?: { nombre: string; imagen?: string; id: number } }> = {};
+      const recetasMapeadas: Record<string, { comida?: { nombre: string; imagen?: string; idReceta: number }; cena?: { nombre: string; imagen?: string; idReceta: number } }> = {};
       
       let recetaIndex = 0;
       this.diasSemana.forEach((dia) => {
@@ -68,7 +69,7 @@ export default defineComponent({
           recetasMapeadas[dia].comida = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
             imagen: this.menuSemanal[recetaIndex].receta.imagen || undefined,
-            id: this.menuSemanal[recetaIndex].receta.id,
+            idReceta: this.menuSemanal[recetaIndex].receta.idReceta,
           };
           recetaIndex++;
         }
@@ -78,7 +79,7 @@ export default defineComponent({
           recetasMapeadas[dia].cena = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
             imagen: this.menuSemanal[recetaIndex].receta.imagen || undefined,
-            id: this.menuSemanal[recetaIndex].receta.id,
+            idReceta: this.menuSemanal[recetaIndex].receta.idReceta,
           };
           recetaIndex++;
         }
