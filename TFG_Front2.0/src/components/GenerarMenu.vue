@@ -1,6 +1,6 @@
 <template>
   <div class="menu-semanal">
-    <table>
+    <table class="responsive-table">
       <thead>
         <tr>
           <th></th>
@@ -41,7 +41,6 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useMenuSemanalStore } from '../store/MenuSemanal';
@@ -64,7 +63,6 @@ export default defineComponent({
       this.diasSemana.forEach((dia) => {
         recetasMapeadas[dia] = {};
         
-        // Asignar receta para "comida"
         if (this.menuSemanal[recetaIndex]) {
           recetasMapeadas[dia].comida = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
@@ -74,7 +72,6 @@ export default defineComponent({
           recetaIndex++;
         }
         
-        // Asignar receta para "cena"
         if (this.menuSemanal[recetaIndex]) {
           recetasMapeadas[dia].cena = {
             nombre: this.menuSemanal[recetaIndex].receta.nombre,
@@ -104,13 +101,13 @@ export default defineComponent({
 <style scoped>
 .menu-semanal {
   margin: 20px auto;
-  max-width: 800px;
-  overflow-x: auto; /* Para permitir el desplazamiento horizontal */
+  max-width: 1000px;
+  overflow-x: auto;
 }
 
-table {
+.responsive-table {
   width: 100%;
-  border-collapse: collapse;
+  
   margin-bottom: 20px;
 }
 
@@ -122,17 +119,17 @@ td {
 }
 
 thead {
-  background-color: #3f197c;
+  background-color: #FF8A5C;
   color: #fff;
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9; /* Alternar color de fila */
+  background-color: #f9f9f9;
 }
 
 .receta-link {
   text-decoration: none;
-  color: #3f197c;
+  color: #000000;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -151,11 +148,11 @@ img {
 
 .botones {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 button {
-  background-color: #3f197c;
+  background-color: #FF8A5C;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -164,27 +161,28 @@ button {
 }
 
 button:hover {
-  background-color: #5a3ab0;
+  background-color: #ffcab5;
 }
 
 .volver-link {
-  color: #3f197c;
+  background-color: #FF8A5C;
+  color: #fafafa;
   text-decoration: none;
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid #3f197c;
 }
 
 .volver-link:hover {
-  background-color: #3f197c;
+  background-color: #ffcab5;
   color: white;
 }
 
 /* Estilos responsivos */
 @media (max-width: 600px) {
-  th,
-  td {
+  .responsive-table th,
+  .responsive-table td {
     padding: 8px;
+    font-size: 0.9em;
   }
 
   img {

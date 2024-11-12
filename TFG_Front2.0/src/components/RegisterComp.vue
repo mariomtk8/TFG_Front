@@ -1,21 +1,39 @@
 <template>
-  <div class="cont-form">
+  <div class="register-page">
     <div class="register-container">
       <h2>Registro de Usuario</h2>
       <form @submit.prevent="register">
         <div class="input-group">
           <label for="nombre">Nombre</label>
-          <input type="text" id="nombre" v-model="nombre" placeholder="Ingrese su nombre" required />
+          <input
+            type="text"
+            id="nombre"
+            v-model="nombre"
+            placeholder="Ingrese su nombre"
+            required
+          />
         </div>
 
         <div class="input-group">
           <label for="email">Correo electrónico</label>
-          <input type="email" id="email" v-model="correo" placeholder="Ingrese su correo" required />
+          <input
+            type="email"
+            id="email"
+            v-model="correo"
+            placeholder="Ingrese su correo electrónico"
+            required
+          />
         </div>
 
         <div class="input-group">
           <label for="password">Contraseña</label>
-          <input type="password" id="password" v-model="password" placeholder="Ingrese su contraseña" required />
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Ingrese su contraseña"
+            required
+          />
         </div>
 
         <button type="submit" :disabled="loading">
@@ -25,6 +43,9 @@
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       </form>
+      <div class="link-container">
+        <router-link to="/">Volver al inicio</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -69,49 +90,72 @@ const register = async () => {
 </script>
 
 <style scoped>
-.cont-form {
-  padding: 200px;
-}
-
-.register-container {
-  max-width: 400px;
-  margin: auto;
+/* Contenedor principal */
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
+  background-color: #fafafa;
   padding: 20px;
-  background-color: #f5f5f5;
+}
+
+/* Contenedor del formulario */
+.register-container {
+  width: 100%;
+  max-width: 450px;
+  background-color: #fff;
+  padding: 30px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin-bottom: 20px;
 }
 
+/* Título del formulario */
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Estilo de los campos de entrada */
 .input-group {
   margin-bottom: 15px;
 }
 
 .input-group label {
   display: block;
+  text-align: left;
+  font-weight: bold;
+  color: #333;
   margin-bottom: 5px;
 }
 
 .input-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
+  width: 75%;
+  padding: 12px;
+  border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
+.input-group input:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+/* Estilo del botón */
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 button:disabled {
@@ -119,15 +163,69 @@ button:disabled {
   cursor: not-allowed;
 }
 
+button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+/* Estilo de mensaje de error */
 .error-message {
   margin-top: 10px;
   color: red;
+  font-size: 0.9rem;
   text-align: center;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
 }
 
+/* Estilo de mensaje de éxito */
 .success-message {
   margin-top: 10px;
   color: green;
+  font-size: 0.9rem;
   text-align: center;
+  padding: 10px;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}
+.link-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.router-link {
+  color: #4caf50;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.router-link:hover {
+  text-decoration: underline;
+}
+
+/* Media Queries para adaptabilidad */
+@media (max-width: 480px) {
+  .register-container {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .input-group input {
+    font-size: 0.9rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
+
+  .error-message,
+  .success-message {
+    font-size: 0.8rem;
+  }
 }
 </style>

@@ -4,16 +4,24 @@
       <div class="header__logo">
         <RouterLink to="/"><img src="../assets/Logo-design.png" alt="Logo" /></RouterLink>
       </div>
-      
-      <nav class="header__nav">
+
+      <!-- Botón de menú hamburguesa para pantallas pequeñas -->
+      <button class="header__toggle" @click="isMobileMenuOpen = !isMobileMenuOpen">
+        ☰
+      </button>
+
+      <!-- Menú de navegación con condicional para pantallas pequeñas -->
+      <nav :class="['header__nav', { 'header__nav--open': isMobileMenuOpen }]">
         <ul class="header__nav-list">
-          <li class="header__nav-item" @mouseover="showCategoryDropdown = true" @mouseleave="showCategoryDropdown = false">
+          <li class="header__nav-item" @mouseover="showCategoryDropdown = true"
+            @mouseleave="showCategoryDropdown = false">
             <a href="#" class="header__nav-link">Categorías</a>
             <div v-if="showCategoryDropdown" class="header__dropdown">
               <div class="header__dropdown-content">
                 <ul>
                   <li v-for="(categoria, index) in categoriasComputed" :key="index" class="header__dropdown-item">
-                    <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
+                    <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }"
+                      @click.prevent="handleCategoryClick">
                       <img :src="categoria.icono" width="20" alt="Icono de la categoría" />
                       {{ categoria.nombreCategoria }}
                     </RouterLink>
@@ -22,30 +30,28 @@
               </div>
             </div>
           </li>
-          <li class="header__nav-item" >
+          <li class="header__nav-item">
             <RouterLink to="/PreferenciasUsuario" class="header__nav-link">Preferencias</RouterLink>
           </li>
-          <li class="header__nav-item" >
+          <li class="header__nav-item">
             <a @click.prevent="checkMenuSemanal" class="header__nav-link">Menú Semanal</a>
           </li>
           <li class="header__nav-item"><a href="#" class="header__nav-link">Contacto</a></li>
-          <li class="header__nav-item"><RouterLink to="/Favoritos" class="header__nav-link">Favoritos</RouterLink></li>
+          <li class="header__nav-item">
+            <RouterLink to="/Favoritos" class="header__nav-link">Favoritos</RouterLink>
+          </li>
         </ul>
       </nav>
 
       <div class="header__search">
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Buscar..."
-          @input="handleSearch"
-          class="header__search-input"
-        />
+        <input type="text" v-model="searchQuery" placeholder="Buscar..." @input="handleSearch" @keyup.esc="clearSearch"
+          class="header__search-input" />
         <ul v-if="showSearchResults && searchResults.length" class="header__search-results">
           <li v-for="(receta, index) in searchResults" :key="index" class="header__search-item">
-            <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }">
+            <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" @click.prevent="handleRecipeClick">
               {{ receta.nombre }}
             </RouterLink>
+
           </li>
         </ul>
       </div>
@@ -55,7 +61,7 @@
         <RouterLink v-if="!isLoggedIn" to="/Login" class="header__user-link">Login</RouterLink>
 
         <div v-if="isLoggedIn" class="header__logged-in">
-          <span class="header__username">Bienvenido, {{ userName }}</span>
+          <span @click="goToPanelAdmin" class="header__username">Bienvenido, {{ userName }}</span>
           <button @click="handleLogout" class="header__logout-button">Cerrar sesión</button>
         </div>
       </div>
@@ -63,11 +69,11 @@
   </header>
 </template>
 
-
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useLoginStore } from '../store/Login';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 import { useCategoriasStore } from '../store/Categorias';
 import { useRecetasStore } from '../store/Recetas';
 import { useMenuSemanalStore } from '../store/MenuSemanal';
@@ -81,8 +87,11 @@ const isLoggedIn = computed(() => loginStore.usuario !== null);
 const userName = computed(() => loginStore.usuario?.nombre || '');
 
 const handleLogout = () => {
-  loginStore.logout();
-  router.push('/');
+  const loginStore = useLoginStore();
+  const router = useRouter();
+
+  loginStore.logout(); 
+    window.location.reload();  
 };
 
 const categoriasStore = useCategoriasStore();
@@ -92,6 +101,44 @@ const searchQuery = ref('');
 const searchResults = computed(() => recetasStore.resultadosBusqueda);
 const showCategoryDropdown = ref(false);
 const showSearchResults = ref(false);
+const isMobileMenuOpen = ref(false); 
+
+const goToPanelAdmin = () => {
+  const userRole = loginStore.rol; 
+
+  if (userRole) {
+    router.push('/PanelAdmin'); //
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Acceso denegado',
+      text: 'Solo los administradores pueden acceder a esta página.',
+      confirmButtonText: 'Aceptar'
+    });
+  }
+};
+
+const handleCategoryClick = (e: Event) => {
+  // Evitar que se recargue la página
+  e.preventDefault();
+  
+  // Aquí puedes agregar lógica adicional si es necesario, como realizar peticiones o actualizar algún estado
+  const idCategoria = (e.target as HTMLElement).getAttribute('data-id');
+  if (idCategoria) {
+    router.push({ name: 'RecetasCat', params: { idCategoria } });
+  }
+};
+
+const handleRecipeClick = (e: Event) => {
+  e.preventDefault();
+  
+  const recetaId = (e.target as HTMLElement).getAttribute('data-id');
+  if (recetaId) {
+    router.push({ name: 'Recetas', params: { id: recetaId } });
+  }
+};
+
+
 
 const handleSearch = async () => {
   if (searchQuery.value.trim() === '') {
@@ -105,6 +152,10 @@ const handleSearch = async () => {
   } catch (error) {
     console.error('Error en la búsqueda:', error);
   }
+};
+const clearSearch = () => {
+  searchQuery.value = '';
+  showSearchResults.value = false;
 };
 
 const checkMenuSemanal = async () => {
@@ -133,6 +184,7 @@ const checkMenuSemanal = async () => {
   display: flex;
   justify-content: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .header__content {
@@ -140,33 +192,38 @@ const checkMenuSemanal = async () => {
   align-items: center;
   width: 90%;
   max-width: 1200px;
-  flex-wrap: wrap; 
-  justify-content: flex-start;
-}
-
-.header__content--right {
-  justify-content: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .header__logo img {
-  height: 90px;
+  height: 60px;
+}
+
+.header__toggle {
+  display: none;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4A4A4A;
 }
 
 .header__nav {
   list-style: none;
-  padding: 0;
-  margin: 0 40px;
   display: flex;
   align-items: center;
   gap: 15px;
 }
 
 .header__nav-list {
-  list-style: none;
   display: flex;
   gap: 15px;
-  padding: 0;
-  margin: 0;
+  list-style: none;
+}
+
+.header__nav--open {
+  display: block;
 }
 
 .header__nav-item {
@@ -177,6 +234,7 @@ const checkMenuSemanal = async () => {
   text-decoration: none;
   color: #4A4A4A;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .header__dropdown {
@@ -191,7 +249,6 @@ const checkMenuSemanal = async () => {
   z-index: 1000;
   width: 300px;
 }
-
 .header__dropdown-content ul{
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -232,17 +289,18 @@ const checkMenuSemanal = async () => {
 .header__search-results {
   position: absolute;
   top: 100%;
+  width: 60%;
   left: 0;
   background: white;
   border: 1px solid #ccc;
   max-height: 200px;
   overflow-y: auto;
-  width: 100%;
+  width: 75%;
   z-index: 1000;
   list-style-type: none;
   padding: 0;
+  list-style: none;
 }
-
 .header__search-item {
   padding: 8px;
 }
@@ -256,25 +314,6 @@ const checkMenuSemanal = async () => {
   align-items: center;
   gap: 20px;
 }
-
-.header__user-link {
-  text-decoration: none;
-  color: #4A4A4A;
-  font-weight: bold;
-}
-
-.header__logged-in {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 20px;
-}
-
-.header__username {
-  margin-right: 10px;
-  color: #4A4A4A;
-}
-
 .header__logout-button {
   background-color: #FF8A5C;
   color: white;
@@ -288,98 +327,35 @@ const checkMenuSemanal = async () => {
 .header__logout-button:hover {
   background-color: #d96b45;
 }
-
-@media (max-width: 1200px) {
-  .header__content {
-    width: 95%;
-    max-width: 1000px;
-  }
-
-  .header__logo img {
-    height: 70px; /* Disminuir tamaño del logo */
-  }
-
-  .header__nav-list {
-    gap: 10px; /* Reducir espacio entre los elementos del menú */
-  }
-
-  .header__nav-link {
-    font-size: 0.9em; /* Reducir tamaño de fuente */
-  }
-
-  .header__search-input {
-    width: 120px; /* Reducir ancho de la barra de búsqueda */
-    padding: 6px; /* Reducir padding */
-  }
-
-  .header__user-link {
-    font-size: 0.9em; /* Reducir tamaño de fuente */
-  }
-
-  .header__username {
-    font-size: 0.9em; /* Reducir tamaño de fuente */
-  }
+.header__username{
+  margin-right: 10px;
 }
 
-/* Responsive para móviles */
-@media (max-width: 844px) {
-  .header__content {
+@media (max-width: 768px) {
+  .header__toggle {
+    display: block;
+  }
+  .header__nav {
+    display: none;
     flex-direction: column;
-    align-items: center;
-    gap: 10px; 
-  }
-
-  .header__nav-list {
-    flex-direction: column;
-    gap: 8px; 
-  }
-
-  .header__logo img {
-    height: 60px; 
-  }
-
-  .header__nav-link {
-    font-size: 0.85em;
-  }
-
-  .header__search-input {
-    width: 90%; 
-    padding: 4px; 
-  }
-
-  .header__logged-in {
-    flex-direction: column;
-    gap: 5px; 
-  }
-
-  .header__logout-button {
-    padding: 6px 10px; 
-    font-size: 0.85em; 
-  }
-}
-
-/* Responsive para pantallas muy pequeñas */
-@media (max-width: 500px) {
-  .header__content {
     width: 100%;
-    padding: 10px; /* Reducir padding */
+    background-color: #FFE5A2;
   }
-
-  .header__logo img {
-    height: 50px; /* Disminuir el tamaño del logo aún más */
+  .header__nav-list{
+    flex-direction: column;
   }
-
-  .header__nav-link {
-    font-size: 0.75em; /* Reducir tamaño de fuente a 75% */
+  .header__nav--open {
+    display: flex;
+    font-size: 0.75em;
   }
-
-  .header__search-input {
-    width: 80%; /* Ancho de búsqueda en pantallas pequeñas */
+  .header__user-link{
+    margin-top: 15px;
   }
-
-  .header__user-actions {
-    flex-direction: column; /* Apilar botones de usuario */
-    gap: 5px; /* Espaciado reducido */
+  .header__search-input{
+    margin: 10px;
+  }
+  .header__logged-in{
+    margin: 10px;
   }
 }
 </style>

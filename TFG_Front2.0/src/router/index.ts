@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 import Index from '../views/index.vue';
 import RecetasCat from '../views/RecetasCat.vue';
 import Recetas from '../views/Recetas.vue';
@@ -16,10 +17,42 @@ const router = createRouter({
     { path: '/', name: 'index', component: Index },
     { path: '/RecetasCat/:idCategoria', name: 'RecetasCat', component: RecetasCat },
     { path: '/Recetas/:id', name: 'Recetas', component: Recetas },
-    { path: '/Favoritos', name: 'Favoritos', component: Favoritos },
     { path: '/Login', name: 'Login', component: Login },
     { path: '/Register', name: 'Register', component: Register },
-    { path: '/MenuSemanal', name: 'MenuSemanal', component: MenuSemanal },
+    { path: '/MenuSemanal', 
+      name: 'MenuSemanal', 
+      component: MenuSemanal,
+      beforeEnter: (to, from, next) => {
+        const loginStore = useLoginStore();
+        if (!loginStore.usuario) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Acceso restringido',
+            text: 'Necesitas iniciar sesión para acceder tu menú semanal',
+            confirmButtonText: 'Aceptar'
+          })
+        } else {
+          next(); 
+        }
+      },
+    },
+    { path: '/Favoritos', 
+      name: 'Favoritos', 
+      component: Favoritos,
+      beforeEnter: (to, from, next) => {
+        const loginStore = useLoginStore();
+        if (!loginStore.usuario) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Acceso restringido',
+            text: 'Necesitas iniciar sesión para utilizar esta funcion',
+            confirmButtonText: 'Aceptar'
+          })
+        } else {
+          next(); 
+        }
+      },
+    },
     {
       path: '/PreferenciasUsuario',
       name: 'PreferenciasUsuario',
@@ -27,10 +60,14 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const loginStore = useLoginStore();
         if (!loginStore.usuario) {
-          alert('Necesitas iniciar sesión para poder crear tu menú semanal');
-          next('/Login'); // Redirige al login si no está logueado
+          Swal.fire({
+            icon: 'warning',
+            title: 'Acceso restringido',
+            text: 'Necesitas iniciar sesión para poder crear tu menú semanal',
+            confirmButtonText: 'Aceptar'
+          })
         } else {
-          next(); // Si está logueado, permite el acceso
+          next(); 
         }
       },
     },
@@ -43,9 +80,16 @@ const router = createRouter({
         if (loginStore.rol) {
           next();
         } else {
-          next('/Login');
+          Swal.fire({
+            icon: 'error',
+            title: 'Acceso denegado',
+            text: 'Inicia sesión como administrador para acceder a esta página',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            next('/Login'); // Redirige al login si no tiene rol de admin
+          });
         }
-      }
+      },
     },
   ],
 });

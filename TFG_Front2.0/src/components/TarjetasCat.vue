@@ -29,7 +29,7 @@
               width="24"
               height="24"
             >
-              <path d="M12 2c-1.1 0-2 .9-2 2v4h-4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h4v4c0 1.1.9 2 2 2s2-.9 2-2v-4h4c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2h-4V4c0-1.1-.9-2-2-2z"/>
+            <path d="M30 2C4.9 2 4 2.9 4 4v16c0 .3.1.6.4.8.2.1.5.2.7.1l6.9-3.1 6.9 3.1c.1.1.3.1.5.1s.4-.1.5-.1c.3-.2.4-.5.4-.8V4c0-1.1-.9-2-2-2H6zm0 2h12v13.5l-6-2.7-6 2.7V4z"/>
             </svg>
           </button>
         </div>
@@ -188,5 +188,18 @@ a {
   padding: 4px 8px;
   color: #333;
   font-weight: 600;
+}
+@media (max-width: 600px) {
+  /* Reduce icon size for mobile */
+  .favorito-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .receta-item{
+    max-width: 200px;
+  }
+  .imagen-receta{
+    max-width: 200px;
+  }
 }
 </style>
