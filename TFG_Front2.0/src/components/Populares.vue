@@ -47,6 +47,7 @@ onMounted(async () => {
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
+  margin: 0 auto;
 }
 
 .receta-card {
@@ -54,9 +55,15 @@ onMounted(async () => {
   border-radius: 8px;
   overflow: hidden;
   text-align: center;
-  padding: 10px;
-  width: 150px; /* Ancho fijo para los recuadros */
+  padding: 20px; /* Aumentado el tamaño del contenido */
+  width: 200px; /* Aumento del ancho de las tarjetas */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición para hover */
+}
+
+.receta-card:hover {
+  transform: scale(1.05); /* Efecto al pasar el ratón */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .receta-imagen {

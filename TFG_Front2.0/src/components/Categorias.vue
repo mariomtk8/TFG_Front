@@ -1,33 +1,64 @@
 <template>
-  <div class="contenedor-tabla">
-    <h1>Categorías</h1>
-    <div v-if="loading">Cargando categorías...</div>
-    <div v-if="error" class="error">{{ error }}</div>
-    <table v-else>
-      <thead>
-        <tr>
-          <th>Icono</th>
-          <th>Nombre</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="categoria in categoriasComputed" :key="categoria.idCategoria">
-          <td><img :src="categoria.icono" width="40" alt="Icono de la categoría"></td>
-          <td>{{ categoria.nombreCategoria }}</td>
-          <td>
-            <RouterLink :to="{ name: 'RecetasCat', params: { idCategoria: categoria.idCategoria } }">
-              Ver Recetas
-            </RouterLink>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <v-container class="contenedor-tabla" fluid>
+    <v-row justify="center">
+      <v-col cols="12" sm="10" md="8">
+        <v-card>
+          <v-card-title class="headline">Categorías</v-card-title>
+
+          <!-- Mensajes de carga o error -->
+          <v-alert v-if="loading" type="info" class="mt-3">Cargando categorías...</v-alert>
+          <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
+
+          <!-- Buscador centrado -->
+          <v-row class="mt-3" justify="center">
+            <v-col cols="12" md="8">
+              <v-text-field
+                v-model="search"
+                label="Buscar Categoría"
+                append-icon="mdi-magnify"
+                clearable
+                class="mx-auto"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <!-- Tabla de categorías -->
+          <v-data-table
+            v-if="!loading && !error"
+            :headers="headers"
+            :items="filteredCategories"
+            item-key="idCategoria"
+            class="my-4"
+            hide-default-footer
+            :items-per-page="20"
+          >
+            <template v-slot:item.icono="{ item }">
+              <v-img :src="item.icono" max-width="40" max-height="40" contain />
+            </template>
+
+            <template v-slot:item.nombreCategoria="{ item }">
+              {{ item.nombreCategoria }}
+            </template>
+
+            <template v-slot:item.actions="{ item }">
+              <v-btn
+                color="#FFE5A2"
+                :to="{ name: 'RecetasCat', params: { idCategoria: item.idCategoria } }"
+                class="ma-2"
+                depressed
+              >
+                Ver Recetas
+              </v-btn>
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useCategoriasStore } from '../store/Categorias';
 
 // Inicializar el store de categorías
@@ -39,6 +70,30 @@ const error = categoriasStore.error;
 // Computed para obtener las categorías
 const categoriasComputed = computed(() => categoriasStore.categorias);
 
+// Filtros
+const search = ref('');
+
+// Computed para las categorías filtradas por búsqueda
+const filteredCategories = computed(() => {
+  let categories = categoriasComputed.value;
+
+  // Filtro de búsqueda por nombre
+  if (search.value) {
+    categories = categories.filter(category =>
+      category.nombreCategoria.toLowerCase().includes(search.value.toLowerCase())
+    );
+  }
+
+  return categories;
+});
+
+// Definir los encabezados de la tabla
+const headers = [
+  { text: 'Icono', align: 'start', key: 'icono' },
+  { text: 'Nombre', align: 'start', key: 'nombreCategoria' },
+  { text: 'Acción', align: 'center', key: 'actions' }
+];
+
 // Cargar las categorías al montar el componente
 onMounted(async () => {
   await fetchCategorias();
@@ -46,36 +101,43 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Centrar el contenedor */
 .contenedor-tabla {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 30px;
+  margin-top: 5vh;
 }
 
-/* Centrar y estilizar el título */
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
+/* Título de la tabla */
+.headline {
   font-size: 1.8em;
   color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Estilo del botón */
+.v-btn {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: #FFE5A2;
+  border-radius: 4px;
+  text-transform: none;
+}
+
+.v-btn:hover {
+  background-color: #d6b86b;
 }
 
 /* Estilizar la tabla */
-table {
-  width: 80%;
-  max-width: 800px;
-  border-collapse: collapse;
-  margin-top: 10px;
+.v-data-table {
   background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilizar las celdas */
-th, td {
+/* Estilizar la tabla con bordes */
+.v-data-table th,
+.v-data-table td {
   padding: 12px;
   text-align: center;
   border: 1px solid #ddd;
@@ -83,38 +145,27 @@ th, td {
 }
 
 /* Estilizar los encabezados */
-th {
+.v-data-table th {
   background-color: #FFE5A2;
   color: black;
   font-weight: bold;
 }
 
 /* Estilizar las filas */
-tr:nth-child(even) {
+.v-data-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-/* Estilo del error */
-.error {
-  color: red;
-  margin-top: 20px;
-  text-align: center;
-}
-
-/* Adaptar tabla a dispositivos pequeños */
-@media screen and (max-width: 768px) {
-  table {
-    width: 95%;
-  }
-
-  th, td {
+/* Responsividad */
+@media (max-width: 768px) {
+  .v-data-table {
     font-size: 0.8em;
-    padding: 8px;
   }
-
-  /* No ocultar columnas, mostrar todas */
-  th, td {
-    display: table-cell; /* Asegúrate de que todas las celdas se muestren */
+  .v-btn {
+    font-size: 12px;
+  }
+  .headline {
+    font-size: 1.5em;
   }
 }
 </style>

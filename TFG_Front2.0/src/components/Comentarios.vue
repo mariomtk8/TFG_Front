@@ -1,31 +1,54 @@
 <template>
-  <div class="comentarios">
-    <h2>Comentarios</h2>
-    <div v-if="comentariosOrdenados.length === 0" class="sin-comentarios">
-      <p>No hay comentarios aún. ¡Sé el primero en comentar!</p>
-    </div>
-    <div v-for="comentario in comentariosOrdenados" :key="comentario.id" class="comentario">
-      <p class="contenido">{{ comentario.contenido }}</p>
-      <small class="info">
-        Por {{ comentario.nombreUsuario }} el {{ new Date(comentario.fecha).toLocaleString() }}
-      </small>
-      <button
-        v-if="idUsuarioLogeado === comentario.usuarioId"
-        @click="eliminarComentario(comentario.id)"
-        class="btn-eliminar"
-      >
-        Eliminar
-      </button>
-    </div>
-    <form @submit.prevent="enviarComentario" class="form-comentario">
-      <textarea
-        v-model="nuevoComentario"
-        placeholder="Escribe tu comentario aquí..."
-        required
-      ></textarea>
-      <button type="submit" class="btn-enviar">Agregar Comentario</button>
-    </form>
-  </div>
+  <v-container class="comentarios" max-width="750">
+    <v-card elevation="2">
+      <v-card-title>
+        <h2>Comentarios</h2>
+      </v-card-title>
+      <v-card-text>
+        <div v-if="comentariosOrdenados.length === 0" class="sin-comentarios">
+          <v-alert type="info" dense>No hay comentarios aún. ¡Sé el primero en comentar!</v-alert>
+        </div>
+        <v-list>
+          <v-list-item
+            v-for="comentario in comentariosOrdenados"
+            :key="comentario.id"
+            class="comentario"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ comentario.contenido }}</v-list-item-title>
+              <v-list-item-subtitle>
+                Por {{ comentario.nombreUsuario }} el {{ new Date(comentario.fecha).toLocaleString() }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn
+                v-if="idUsuarioLogeado === comentario.usuarioId"
+                icon
+                color="red"
+                @click="eliminarComentario(comentario.id)"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-form @submit.prevent="enviarComentario" class="form-comentario">
+          <v-textarea
+            v-model="nuevoComentario"
+            label="Escribe tu comentario aquí..."
+            rows="2"
+            width="500px"
+            outlined
+            required
+          ></v-textarea>
+          <v-btn type="submit" color="green">Agregar Comentario</v-btn>
+        </v-form>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -77,104 +100,58 @@ export default defineComponent({
 
 <style scoped>
 .comentarios {
-  max-width: 750px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: #f7f7fb;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  color: #3f197c;
-  font-size: 1.8rem;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.sin-comentarios {
-  text-align: center;
-  font-style: italic;
-  color: #888;
-  margin-bottom: 1rem;
-}
-
-.comentario {
+  margin: 2rem auto;
   padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 6px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: background-color 0.3s;
 }
 
-.comentario:hover {
-  background-color: #f0f4fa;
+/* Estilo para los comentarios */
+.v-list-item-content {
+  padding-bottom: 0.5rem;
 }
 
-.contenido {
-  font-size: 1rem;
-  color: #333;
-  margin: 0.5rem 0;
+.v-list-item-title {
+  font-size: 1.1em;
 }
 
-.info {
-  font-size: 0.8rem;
-  color: #666;
-  display: block;
-  margin-top: 0.5rem;
+.v-list-item-subtitle {
+  font-size: 0.9em;
 }
 
-.btn-eliminar {
-  margin-top: 0.5rem;
-  padding: 0.3rem 0.6rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #e74c3c;
-  color: white;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: background-color 0.3s;
+/* Estilos responsivos para dispositivos pequeños */
+@media (max-width: 768px) {
+  /* Centrar los elementos y asegurar que estén uno debajo del otro */
+  .comentarios, .votaciones {
+    padding: 1rem;
+  }
+
+  .v-list-item-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .v-card-subtitle h3 {
+    text-align: center;
+    font-size: 1.1em;
+  }
 }
 
-.btn-eliminar:hover {
-  background-color: #c0392b;
-}
+/* Para escritorio */
+@media (min-width: 768px) {
+  .v-icon {
+    font-size: 36px;
+  }
 
-.form-comentario {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .v-list-item-content {
+    padding-bottom: 1rem;
+  }
 
-textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  resize: none;
-  margin-bottom: 1rem;
-}
+  .v-list-item-title {
+    font-size: 1.2em;
+  }
 
-textarea:focus {
-  border-color: #3f197c;
-  outline: none;
-}
-
-.btn-enviar {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 4px;
-  background-color: #4caf50;
-  color: white;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-}
-
-.btn-enviar:hover {
-  background-color: #45a049;
+  .v-list-item-subtitle {
+    font-size: 1em;
+  }
 }
 </style>

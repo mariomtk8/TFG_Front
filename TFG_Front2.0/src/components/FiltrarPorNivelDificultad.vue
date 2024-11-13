@@ -5,12 +5,12 @@
       <label class="selector-label">
         Ordenar por Dificultad:
         <select v-model="ascendente" @change="cambiarOrden" class="custom-select">
-          <option value="true">Menor a Mayor</option>Menor a Mayor
+          <option value="true">Menor a Mayor</option>
           <option value="false">Mayor a Menor</option>
         </select>
       </label>
     </div>
-    <div class="recetas-grid" >
+    <div class="recetas-grid">
       <RouterLink
         class="receta-card"
         v-for="receta in recetasPorNivel"
@@ -90,7 +90,7 @@ export default defineComponent({
 .recetas-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Espaciado más amplio entre las tarjetas */
+  gap: 30px; /* Espaciado más amplio entre las tarjetas */
   justify-content: center;
 }
 
@@ -99,26 +99,27 @@ export default defineComponent({
   border-radius: 8px;
   overflow: hidden;
   text-align: center;
-  padding: 10px;
-  width: 150px; /* Ancho fijo para los recuadros */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 200px; /* Ancho mayor para las tarjetas */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .receta-card:hover {
-  transform: translateY(-5px); /* Efecto de elevación al pasar el ratón */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
+  transform: translateY(-10px); /* Efecto de elevación al pasar el ratón */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
 }
 
 .receta-imagen {
   max-width: 100%;
-  max-height: auto; /* Altura de imagen más amplia */
+  max-height: 180px; /* Altura de imagen más grande */
   object-fit: cover;
   border-radius: 10px; /* Esquinas más redondeadas */
 }
 
 .receta-nombre {
-  font-size: 16px; /* Aumento de tamaño de fuente */
-  margin: 10px 0;
+  font-size: 18px; /* Aumento de tamaño de fuente */
+  margin: 15px 0;
   color: #333; /* Color de texto más oscuro */
 }
 

@@ -1,7 +1,7 @@
 <template>
     <PortadaIndex></PortadaIndex>
-    <Categorias></Categorias>
     <BannerBienvenida></BannerBienvenida>
+    <Categorias></Categorias>
     <Populares></Populares>
     <MenuIndex></MenuIndex>
     <FiltrarPorNivelDificultad></FiltrarPorNivelDificultad>

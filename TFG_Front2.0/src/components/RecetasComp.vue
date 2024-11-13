@@ -1,47 +1,80 @@
 <template>
-  <div class="receta-container">
-    <h1 class="receta-titulo">{{ receta?.nombre }}</h1>
+  <v-container max-width="lg" class="py-5 receta-container">
+    <v-card elevation="2" class="pa-5">
+      <v-card-title class="text-h4 receta-titulo text-center">
+        {{ receta?.nombre }}
+      </v-card-title>
 
-    <section v-if="receta" class="receta__descripcion">
-      <h2>Descripción</h2>
-      <p>{{ receta.descripcion }}</p>
-    </section>
+      <v-divider></v-divider>
 
-    <div class="receta__layout">
-      <div class="receta__info">
-        <h3>Detalles de la receta</h3>
-        <p><strong>Dificultad:</strong> {{ receta?.nivelDificultad }}</p>
-        <p><strong>Preparación:</strong> {{ receta?.tiempoPreparacion }} min</p>
-        <p><strong>Tipo:</strong> Primer plato</p>
-      </div>
+      <v-card-text>
+        <section v-if="receta" class="receta__descripcion mb-4">
+          <v-subheader>Descripción</v-subheader>
+          <p>{{ receta.descripcion }}</p>
+        </section>
 
-      <section class="receta__ingredientes">
-        <h3>Ingredientes</h3>
-        <ul>
-          <li v-for="ingrediente in ingredientes" :key="ingrediente.idIngrediente" class="ingrediente">
-            <p><strong>{{ ingrediente.nombreIngrediente }}</strong> - {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
-          </li>
-        </ul>
-      </section>
+        <v-row class="receta__layout" dense>
+          <v-col cols="12" md="8">
+            <v-card class="pa-4 mb-4 receta__info">
+              <v-subheader>Detalles de la receta</v-subheader>
+              <p><strong>Dificultad:</strong> {{ receta?.nivelDificultad }}</p>
+              <p><strong>Preparación:</strong> {{ receta?.tiempoPreparacion }} min</p>
+              <p><strong>Tipo:</strong> Primer plato</p>
+            </v-card>
 
-      <section class="receta__pasos">
-        <h3>Pasos</h3>
-        <div v-for="paso in pasos" :key="paso.idPaso" class="paso">
-          <h4>{{ paso.numero }}º Paso</h4>
-          <p>{{ paso.descripcion }}</p>
-          <img v-if="paso.imagenUrl" :src="paso.imagenUrl" alt="Imagen del paso" class="paso__imagen"/>
-        </div>
-      </section>
+            <v-card class="pa-4 mb-4 receta__ingredientes">
+              <v-subheader>Ingredientes</v-subheader>
+              <v-list dense>
+                <v-list-item
+                  v-for="ingrediente in ingredientes"
+                  :key="ingrediente.idIngrediente"
+                >
+                  <v-list-item-content>
+                    <p><strong>{{ ingrediente.nombreIngrediente }}</strong> - {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card>
 
-      <aside class="receta__sidebar">
-        <h3>Recetas Populares</h3>
-        <Populares />
-      </aside>
-    </div>
+            <v-card class="pa-4 mb-4 receta__pasos">
+              <v-subheader>Pasos</v-subheader>
+              <div v-for="paso in pasos" :key="paso.idPaso" class="mb-3">
+                <h4 class="text-h6">{{ paso.numero }}º Paso</h4>
+                <p>{{ paso.descripcion }}</p>
+                <v-img
+                  v-if="paso.imagenUrl"
+                  :src="paso.imagenUrl"
+                  alt="Imagen del paso"
+                  class="paso__imagen mb-2"
+                  max-width="400"
+                />
+              </div>
+            </v-card>
+          </v-col>
 
-    <Votaciones />
-    <Comentarios />
-  </div>
+          <v-col cols="12" md="4">
+            <v-card class="pa-4 receta__sidebar sticky-top">
+              <v-subheader class="text-center">Recetas Populares</v-subheader>
+              <Populares />
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-divider></v-divider>
+
+      <v-card-actions class="justify-center">
+        <v-row class="d-flex flex-column" align="center">
+          <v-col cols="12" class="mb-4">
+            <Votaciones />
+          </v-col>
+          <v-col cols="12">
+            <Comentarios />
+          </v-col>
+        </v-row>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -75,128 +108,47 @@ onMounted(() => {
 
 <style scoped>
 .receta-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  max-width: 1400px;
+  margin-top: 3vh;
 }
 
 .receta-titulo {
-  font-size: 2rem;
-  color: rgb(63, 25, 124); /* Color principal */
-  margin-bottom: 20px;
-  text-align: center;
+  color: rgb(63, 25, 124);
 }
 
-.receta__descripcion {
-  margin-bottom: 20px;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.receta__layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
-}
-
+.receta__descripcion,
 .receta__info,
 .receta__ingredientes,
-.receta__pasos {
-  padding: 15px;
+.receta__pasos,
+.receta__sidebar {
+  background-color: #fafafa;
   border-radius: 8px;
-  background-color: #F9F9F9; /* Color neutro suave */
-  border: 1px solid #E0E0E0; /* Color de borde suave */
-}
-
-.receta__info h3,
-.receta__ingredientes h3,
-.receta__pasos h3 {
-  margin-top: 0;
-  font-size: 1.2rem;
-  color: #4CAF50; /* Color secundario */
-}
-
-.ingrediente {
-  font-size: 1rem;
-  color: #333;
-  padding: 5px 0;
-}
-
-.paso {
-  margin-bottom: 15px;
 }
 
 .paso__imagen {
-  width: 100%;
-  max-width: 400px;
   border-radius: 8px;
-  margin-top: 10px;
 }
 
-.receta__sidebar {
+.sticky-top {
   position: sticky;
   top: 20px;
 }
 
-.receta__sidebar h3 {
-  font-size: 1.5rem;
-  color: #4CAF50; /* Color secundario */
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-button {
-  background-color: #4CAF50; /* Color secundario */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #45a049; /* Color secundario más oscuro */
-}
-@media (max-width: 768px) {
+/* Ajustes para el responsive */
+@media (max-width: 600px) {
   .receta__layout {
-    grid-template-columns: 1fr; /* Cambiar a una sola columna en pantallas pequeñas */
+    flex-direction: column;
   }
 
   .receta__sidebar {
-    position: relative; /* Cambiar la posición para no ser sticky en móviles */
-    margin-top: 20px; /* Espacio superior para separarlo del contenido */
+    margin-top: 20px;
   }
 
-  .receta-titulo {
-    font-size: 1.5rem; /* Ajustar el tamaño del título */
-  }
-
-  .receta__info h3,
-  .receta__ingredientes h3,
-  .receta__pasos h3 {
-    font-size: 1.2rem; /* Ajustar el tamaño de los subtítulos */
-  }
-}
-
-@media (max-width: 480px) {
-  .receta-titulo {
-    font-size: 1.25rem; /* Ajustar aún más para pantallas pequeñas */
-  }
-
-  .receta__descripcion {
-    font-size: 0.9rem; /* Reducir tamaño de texto */
-  }
-
-  .ingrediente {
-    font-size: 0.9rem; /* Reducir tamaño de texto de ingredientes */
-  }
-
-  button {
-    padding: 8px 16px; /* Ajustar tamaño de botón */
+  .receta__info,
+  .receta__ingredientes,
+  .receta__pasos {
+    margin-bottom: 20px;
   }
 }
 </style>

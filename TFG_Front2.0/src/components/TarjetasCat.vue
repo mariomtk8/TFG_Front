@@ -1,46 +1,86 @@
 <template>
-  <div>
-    <h1>Recetas de {{ categoriaNombre }}</h1>
+  <v-container>
+    <v-col>
+      <v-row class="text-center">
+        <h1>Recetas de {{ categoriaNombre }}</h1>
+      </v-row>
 
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <!-- Mensaje de error -->
+      <v-alert v-if="errorMessage" type="error" dismissible>{{ errorMessage }}</v-alert>
 
-    <div class="recetas-container" v-if="recetas && recetas.length > 0">
-      <div class="recetas-grid">
-        <div v-for="receta in recetas" :key="receta.idReceta" class="receta-item">
+      <!-- Controles de filtro -->
+      <v-row class="filtros" no-gutters>
+        <v-col cols="12" md="6" class="filtro-tiempo">
+          <v-text-field
+            v-model.number="tiempoMin"
+            label="Tiempo de preparación (Min)"
+            type="number"
+            hide-details
+            outlined
+          ></v-text-field>
+          <v-text-field
+            v-model.number="tiempoMax"
+            label="Tiempo de preparación (Max)"
+            type="number"
+            hide-details
+            outlined
+          ></v-text-field>
+          <v-btn icon @click="filtrarPorTiempo" color="primary">
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
+        </v-col>
+
+        <v-col cols="12" md="6" class="filtro-dificultad">
+          <v-select
+            v-model.number="nivelDificultad"
+            :items="[1, 2, 3, 4, 5]"
+            label="Dificultad (1-5)"
+            outlined
+            hide-details
+          ></v-select>
+          <v-btn icon @click="filtrarPorDificultad" color="primary">
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <!-- Lista de recetas -->
+      <div v-if="recetasFiltradas && recetasFiltradas.length > 0" class="recetas-grid">
+        <v-card
+          v-for="receta in recetasFiltradas"
+          :key="receta.idReceta"
+          class="receta-item"
+        >
           <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" class="receta-link">
-            <img class="imagen-receta" v-if="receta.imagen" :src="receta.imagen" alt="Imagen de la receta" />
-            <h3>{{ receta.nombre }}</h3>
-            <p>{{ receta.descripcion }}</p>
-            <span class="etiqueta">{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</span>
-            <span class="etiqueta">Dificultad: {{ receta.nivelDificultad }}</span>
-            <span class="etiqueta">Tiempo: {{ receta.tiempoPreparacion }} min</span>
+            <v-img v-if="receta.imagen" :src="receta.imagen" aspect-ratio="16/9"></v-img>
+            <v-card-title>{{ receta.nombre }}</v-card-title>
+            <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
+            <v-card-text>
+              <v-chip>{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</v-chip>
+              <v-chip>Dificultad: {{ receta.nivelDificultad }}</v-chip>
+              <v-chip>Tiempo: {{ receta.tiempoPreparacion }} min</v-chip>
+            </v-card-text>
           </RouterLink>
 
-          <!-- Botón de favoritos -->
-          <button
-            @click="toggleFavorito(receta.idReceta)"
-            :class="{ 'favorito-guardado': esFavorito(receta.idReceta) }"
-            class="favorito-btn"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              :fill="esFavorito(receta.idReceta) ? 'yellow' : 'gray'"
-              width="24"
-              height="24"
+          <v-card-actions>
+            <v-btn
+              icon
+              @click="toggleFavorito(receta.idReceta)"
+              :color="esFavorito(receta.idReceta) ? 'yellow' : 'grey'"
             >
-            <path d="M30 2C4.9 2 4 2.9 4 4v16c0 .3.1.6.4.8.2.1.5.2.7.1l6.9-3.1 6.9 3.1c.1.1.3.1.5.1s.4-.1.5-.1c.3-.2.4-.5.4-.8V4c0-1.1-.9-2-2-2H6zm0 2h12v13.5l-6-2.7-6 2.7V4z"/>
-            </svg>
-          </button>
-        </div>
+              <v-icon>mdi-star</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </div>
-    </div>
 
-    <div v-else>
-      <p>No hay recetas disponibles en esta categoría.</p>
-    </div>
-  </div>
+      <v-row v-else>
+        <p>No hay recetas disponibles en esta categoría.</p>
+      </v-row>
+    </v-col>
+  </v-container>
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
@@ -59,6 +99,10 @@ const idCategoria = computed(() => parseInt(route.params.idCategoria as string))
 const categoriaNombre = ref<string | null>(null);
 
 const recetas = ref<any[]>([]);
+const recetasFiltradas = ref<any[]>([]);
+const tiempoMin = ref<number | null>(null);
+const tiempoMax = ref<number | null>(null);
+const nivelDificultad = ref<number | null>(null);
 
 const isLoggedIn = computed(() => loginStore.usuario !== null);
 
@@ -67,11 +111,36 @@ const cargarRecetas = async (id: number) => {
     errorMessage.value = null;
     const fetchedRecetas = await recetasStore.fetchRecetasPorCategoria(id);
     recetas.value = fetchedRecetas;
+    recetasFiltradas.value = fetchedRecetas; // Inicialmente muestra todas
     categoriaNombre.value = await recetasStore.fetchNombreCategoria(id);
   } catch (error) {
     console.error('Error al cargar recetas:', error);
     errorMessage.value = 'Error al cargar las recetas. Por favor, intente más tarde.';
   }
+};
+
+// Filtrar recetas por tiempo de preparación
+const filtrarPorTiempo = () => {
+  if (tiempoMin.value != null && tiempoMax.value != null && tiempoMin.value > tiempoMax.value) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Rango de tiempo inválido',
+      text: 'El tiempo mínimo no puede ser mayor que el tiempo máximo.',
+    });
+    return;
+  }
+  recetasFiltradas.value = recetas.value.filter(receta => {
+    const tiempoValido = (tiempoMin.value == null || receta.tiempoPreparacion >= tiempoMin.value) &&
+                         (tiempoMax.value == null || receta.tiempoPreparacion <= tiempoMax.value);
+    return tiempoValido;
+  });
+};
+
+// Filtrar recetas por nivel de dificultad
+const filtrarPorDificultad = () => {
+  recetasFiltradas.value = recetas.value.filter(receta => {
+    return nivelDificultad.value == null || receta.nivelDificultad === nivelDificultad.value;
+  });
 };
 
 // Función para agregar o eliminar de favoritos
@@ -119,7 +188,7 @@ h1 {
 }
 
 .recetas-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 20px auto;
   padding: 20px;
   border-radius: 10px;
@@ -133,12 +202,19 @@ a {
 
 .recetas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   justify-items: center;
+  max-width: 1300px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .receta-item {
+  max-width: 350px;
   position: relative;
   padding: 16px;
   border: 1px solid #ddd;
@@ -148,7 +224,6 @@ a {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
   text-decoration: none;
-  max-width: 300px;
 }
 
 .imagen-receta {
@@ -189,6 +264,52 @@ a {
   color: #333;
   font-weight: 600;
 }
+.filtros {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filtro-tiempo, .filtro-dificultad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filtro-tiempo input, .filtro-dificultad select {
+  width: 70px;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filtro-tiempo input:focus, .filtro-dificultad select:focus {
+  border-color: #666;
+}
+
+.filtro-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.filtro-btn:hover {
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  transform: scale(1.1);
+}
 @media (max-width: 600px) {
   /* Reduce icon size for mobile */
   .favorito-icon {
@@ -200,6 +321,15 @@ a {
   }
   .imagen-receta{
     max-width: 200px;
+  }
+  .filtros {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .filtro-tiempo, .filtro-dificultad {
+    justify-content: center;
   }
 }
 </style>

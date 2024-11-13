@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="filtrar-container">
     <h2>Recetas por Tiempo de Preparación</h2>
     <div class="selector-container">
@@ -57,7 +57,6 @@ export default defineComponent({
 .filtrar-container {
   text-align: center;
   padding: 20px;
-  
 }
 
 .selector-container {
@@ -91,40 +90,41 @@ export default defineComponent({
 .recetas-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Espaciado más amplio entre las tarjetas */
+  gap: 30px; /* Aumentar separación entre tarjetas */
   justify-content: center;
 }
 
 .receta-card {
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 12px; /* Esquinas más redondeadas */
   overflow: hidden;
   text-align: center;
-  padding: 10px;
-  width: 150px; /* Ancho fijo para los recuadros */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 200px; /* Aumento del ancho de las tarjetas */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+  transition: transform 0.2s ease-in-out;
 }
 
 .receta-card:hover {
-  transform: translateY(-5px); /* Efecto de elevación al pasar el ratón */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
+  transform: translateY(-8px); /* Efecto de elevación más pronunciado */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
 }
 
 .receta-imagen {
   max-width: 100%;
-  max-height: auto; /* Altura de imagen más amplia */
+  max-height: 150px; /* Aumento de altura para la imagen */
   object-fit: cover;
-  border-radius: 10px; /* Esquinas más redondeadas */
+  border-radius: 10px;
 }
 
 .receta-nombre {
-  font-size: 16px; /* Aumento de tamaño de fuente */
-  margin: 10px 0;
-  color: #333; /* Color de texto más oscuro */
+  font-size: 18px; /* Aumento de tamaño de fuente */
+  margin: 15px 0;
+  color: #333;
 }
 
 .receta-atributo {
-  font-size: 14px;
-  color: #777; /* Color de texto más claro para los atributos */
+  font-size: 16px; /* Aumento de tamaño de texto */
+  color: #777;
 }
 </style>

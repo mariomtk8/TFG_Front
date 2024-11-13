@@ -36,7 +36,9 @@
           <li class="header__nav-item">
             <a @click.prevent="checkMenuSemanal" class="header__nav-link">Menú Semanal</a>
           </li>
-          <li class="header__nav-item"><a href="#" class="header__nav-link">Contacto</a></li>
+          <li class="header__nav-item">
+            <RouterLink to="/Contactanos" class="header__nav-link">Contactanos</RouterLink>
+          </li>
           <li class="header__nav-item">
             <RouterLink to="/Favoritos" class="header__nav-link">Favoritos</RouterLink>
           </li>
