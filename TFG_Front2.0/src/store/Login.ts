@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode'
+import urlStore from '@/store/Url';
 
 
 interface Usuario {
@@ -39,7 +40,8 @@ export const useLoginStore = defineStore({
       const login = { correo, contrasena };
 
       try {
-        const response = await fetch(`/api/Usuario/login`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Usuario/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -83,8 +85,8 @@ export const useLoginStore = defineStore({
           correo: correo
 
         };
-
-        const response = await fetch('/api/Usuario/register', {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Usuario/register`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

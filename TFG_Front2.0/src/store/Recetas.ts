@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import urlStore from '@/store/Url';
 
 interface Receta {
   idReceta: number;
@@ -44,7 +45,8 @@ export const useRecetasStore = defineStore('recetas', {
   actions: {
     async searchRecetas(query: string) {
       try {
-        const response = await fetch(`/api/Receta/search?searchTerm=${query}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/search?searchTerm=${query}`, {
           method: 'GET'
         })
 
@@ -64,10 +66,11 @@ export const useRecetasStore = defineStore('recetas', {
     },
     async fetchRecetaPorId(id: number) {
       try {
+        const url = urlStore.baseUrl
         this.loading = true;
         this.error = null;
 
-        const response = await fetch(`/api/Receta/${id}`);
+        const response = await fetch(`${url}/Receta/${id}`);
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
         }
@@ -88,8 +91,9 @@ export const useRecetasStore = defineStore('recetas', {
     
     async fetchRecetas() {
       try {
+        const url = urlStore.baseUrl
         this.loading = true;
-        const response = await fetch('/api/Receta'); // Ajusta la URL según tu API
+        const response = await fetch(`${url}/Receta`); // Ajusta la URL según tu API
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
         }
@@ -104,7 +108,8 @@ export const useRecetasStore = defineStore('recetas', {
     // Obtener los pasos de una receta por su ID
     async getPasosByRecetaId(recetaId: number) {
       try {
-        const response = await fetch(`/api/Receta/${recetaId}/Pasos`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${recetaId}/Pasos`);
         if (!response.ok) throw new Error('Error al obtener los pasos');
         const pasosData = await response.json(); // Guardar los pasos en una variable
         this.pasos = pasosData; // Asignar pasos a la propiedad del store
@@ -117,7 +122,8 @@ export const useRecetasStore = defineStore('recetas', {
 
     async fetchIngredientesPorRecetaId(id: number) {
       try {
-        const response = await fetch(`/api/RecetaIngredientes/receta/${id}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/RecetaIngredientes/receta/${id}`);
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
         }

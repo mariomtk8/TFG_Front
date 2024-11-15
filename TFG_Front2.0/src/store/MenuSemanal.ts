@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login';
+import urlStore from '@/store/Url';
 
 
 // Receta.ts
@@ -42,7 +43,8 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/MenuSemanal/usuario/${idUsuario}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/MenuSemanal/usuario/${idUsuario}`);
         if (!response.ok) throw new Error("Error al obtener el menú semanal");
 
         this.menuSemanal = await response.json();
@@ -62,7 +64,8 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/MenuSemanal/${idUsuario}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/MenuSemanal/${idUsuario}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(menu),
@@ -82,7 +85,8 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
       if (!idUsuario) return;
 
       try {
-        const response = await fetch(`/api/MenuSemanal/usuario/${idUsuario}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/MenuSemanal/usuario/${idUsuario}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(menu),

@@ -12,14 +12,15 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  },server: {
-    proxy: {
-      // Ejemplo: redirige las peticiones de /api a http://localhost:8005
-      '/api': {
-        target: 'http://aff862f51e4504fe1acded660850e62f-573730554.us-east-1.elb.amazonaws.com/', // URL base de tu backend
-        changeOrigin: true, // Necesario para evitar problemas de CORS
-        rewrite: path => path.replace(/^\/api/, ''), // Opcional: elimina el prefijo /api en la petición redirigida
-      },
-    },
   }
+  // ,server: {
+  //   proxy: {
+  //     // Ejemplo: redirige las peticiones de /api a http://localhost:8005
+  //     '/api': {
+  //       target: 'http://aff862f51e4504fe1acded660850e62f-573730554.us-east-1.elb.amazonaws.com/', // URL base de tu backend
+  //       changeOrigin: true, // Necesario para evitar problemas de CORS
+  //       rewrite: path => path.replace(/^\/api/, ''), // Opcional: elimina el prefijo /api en la petición redirigida
+  //     },
+  //   },
+  // }
 })

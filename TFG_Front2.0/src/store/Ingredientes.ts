@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { useLoginStore } from './Login'; 
+import { useLoginStore } from './Login';
+import urlStore from '@/store/Url';
 
 export interface Ingrediente {
     idIngrediente: number;
@@ -36,7 +37,8 @@ export const useIngredientesStore = defineStore({
   actions: {
     async getAllIngredientes() {
       try {
-        const response = await fetch('/api/Ingrediente');
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Ingrediente`);
         if (!response.ok) throw new Error('Error al obtener ingredientes');
         this.ingredientes = await response.json();
       } catch (error: any) {
@@ -46,7 +48,8 @@ export const useIngredientesStore = defineStore({
 
     async getIngredientesByRecetaId(recetaId: number) {
       try {
-        const response = await fetch(`/api/RecetaIngredientes/receta/${recetaId}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/RecetaIngredientes/receta/${recetaId}`);
         if (!response.ok) throw new Error('Error al obtener los ingredientes de la receta');
         this.recetaIngredientes = await response.json();
       } catch (error: any) {
@@ -58,7 +61,8 @@ export const useIngredientesStore = defineStore({
       const loginStore = useLoginStore();
       const token = loginStore.token;
       try {
-        const response = await fetch('/api/ingrediente', {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/ingrediente`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -82,7 +86,8 @@ export const useIngredientesStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch(`/api/RecetaIngredientes`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/RecetaIngredientes`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -101,7 +106,8 @@ export const useIngredientesStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch(`/api/RecetaIngredientes/${recetaIngrediente.idRecetaIngrediente}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/RecetaIngredientes/${recetaIngrediente.idRecetaIngrediente}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -120,7 +126,8 @@ export const useIngredientesStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch(`/api/RecetaIngredientes/${idRecetaIngrediente}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/RecetaIngredientes/${idRecetaIngrediente}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,

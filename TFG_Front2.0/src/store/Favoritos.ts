@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login';
+import urlStore from '@/store/Url';
 
 export interface Receta {
   idReceta: number;
@@ -66,7 +67,8 @@ export const useFavoritosStore = defineStore({
       }
 
       try {
-        const response = await fetch(`/api/Favorito/usuario/${idUsuario}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Favorito/usuario/${idUsuario}`, {
           headers: {
             'Authorization': `Bearer ${useLoginStore().token}`, // Si necesitas pasar el token
           },
@@ -96,7 +98,8 @@ export const useFavoritosStore = defineStore({
       }
 
       try {
-        const response = await fetch(`/api/Favorito`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Favorito`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +120,8 @@ export const useFavoritosStore = defineStore({
 
     async eliminarFavorito(favoritoId: number) {
       try {
-        const response = await fetch(`/api/Favorito/${favoritoId}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Favorito/${favoritoId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

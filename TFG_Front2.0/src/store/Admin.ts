@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login'; 
+import urlStore from '@/store/Url';
 
 export interface Paso {
   idPaso: number;
@@ -45,7 +46,8 @@ export const useAdminStore = defineStore({
   actions: {
     async searchRecetas(query: string) {
       try {
-        const response = await fetch(`/api/Receta/search?searchTerm=${query}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/search?searchTerm=${query}`, {
           method: 'GET'
         })
 
@@ -66,7 +68,8 @@ export const useAdminStore = defineStore({
     // Obtener todas las recetas
     async getRecetas() {
       try {
-        const response = await fetch('/api/Receta');
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta`);
         if (!response.ok) throw new Error('Error al obtener recetas');
         this.recetas = await response.json();
       } catch (error: any) {
@@ -77,7 +80,8 @@ export const useAdminStore = defineStore({
     // Obtener todas las categorías
     async getCategorias() {
       try {
-        const response = await fetch('/api/Categoria');
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Categoria`);
         if (!response.ok) throw new Error('Error al obtener categorías');
         this.categorias = await response.json();
       } catch (error: any) {
@@ -88,7 +92,8 @@ export const useAdminStore = defineStore({
     // Obtener una receta por su ID
     async getRecetaById(id: number) {
       try {
-        const response = await fetch(`/api/Receta/${id}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${id}`);
         if (!response.ok) throw new Error(`Error al obtener la receta con id ${id}`);
         this.receta = await response.json();
       } catch (error: any) {
@@ -102,7 +107,8 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch('/api/Receta', {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -122,9 +128,10 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
     
       try {
+        const url = urlStore.baseUrl
         console.log("Datos enviados:", JSON.stringify(recetaActualizada));
     
-        const response = await fetch(`/api/Receta/${id}`, {
+        const response = await fetch(`${url}/Receta/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +148,8 @@ export const useAdminStore = defineStore({
     // Obtener los pasos de una receta por su ID
     async getPasosByRecetaId(recetaId: number) {
       try {
-        const response = await fetch(`/api/Receta/${recetaId}/Pasos`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${recetaId}/Pasos`);
         if (!response.ok) throw new Error('Error al obtener los pasos');
         return await response.json();
       } catch (error: any) {
@@ -155,7 +163,8 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
     
       try {
-        const response = await fetch(`/api/Receta/${recetaId}/paso`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${recetaId}/paso`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -174,7 +183,8 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
     
       try {
-        const response = await fetch(`/api/Receta/${recetaId}/paso`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${recetaId}/paso`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -193,7 +203,8 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch(`/api/Paso/${idPaso}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Paso/${idPaso}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -211,7 +222,8 @@ export const useAdminStore = defineStore({
       const token = loginStore.token;
 
       try {
-        const response = await fetch(`/api/Receta/${id}`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}` 

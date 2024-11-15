@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import urlStore from '@/store/Url';
 
 interface Receta {
   idReceta: number;
@@ -19,7 +20,8 @@ export const useFiltradosStore = defineStore('filtrados', {
   actions: {
     async fetchRecetasPopulares() {
       try {
-        const response = await fetch('/api/Votaciones/populares');
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Votaciones/populares`);
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}. Respuesta: ${errorText}`);
@@ -34,7 +36,8 @@ export const useFiltradosStore = defineStore('filtrados', {
 
     async filtrarPorNivelDificultad(ascendente: boolean) {
       try {
-        const response = await fetch(`/api/Receta/filtrarPorNivelDificultad?ascendente=${ascendente}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/filtrarPorNivelDificultad?ascendente=${ascendente}`);
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}. Respuesta: ${errorText}`);
@@ -49,7 +52,8 @@ export const useFiltradosStore = defineStore('filtrados', {
 
     async filtrarPorTiempoPreparacion(ascendente: boolean) {
       try {
-        const response = await fetch(`/api/Receta/filtrarPorTiempoPreparacion?ascendente=${ascendente}`);
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Receta/filtrarPorTiempoPreparacion?ascendente=${ascendente}`);
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}. Respuesta: ${errorText}`);

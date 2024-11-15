@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login';
+import urlStore from '@/store/Url';
 
 export interface UsuariosCategoria {
     idUsuarioCategoria: number;
@@ -44,8 +45,9 @@ export const usePreferencias = defineStore({
     },
     async fetchCategorias() {             
         try {
+          const url = urlStore.baseUrl
           console.log('Iniciando petición para obtener categorías...');
-          const response = await fetch('/api/Categoria');
+          const response = await fetch(`${url}/Categoria`);
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
           }
@@ -58,7 +60,8 @@ export const usePreferencias = defineStore({
 
     async getAllIngredientes() {
       try {
-        const response = await fetch('/api/Ingrediente');
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Ingrediente`);
         if (!response.ok) throw new Error('Error al obtener ingredientes');
         this.allIngredientes = await response.json();  
         // El tipo Ingrediente[] se asignará correctamente
@@ -69,7 +72,8 @@ export const usePreferencias = defineStore({
 
     async buscarCategorias(query: string) {
       try {
-          const response = await fetch(`/api/Categoria/search?query=${query}`);
+        const url = urlStore.baseUrl
+          const response = await fetch(`${url}/Categoria/search?query=${query}`);
           if (!response.ok) throw new Error('Error al buscar categorías');
           this.categoriasBuscadas = await response.json();
       } catch (error) {
@@ -80,7 +84,8 @@ export const usePreferencias = defineStore({
   // Función para buscar ingredientes
   async buscarIngredientes(query: string) {
       try {
-          const response = await fetch(`/api/Ingrediente/search?query=${query}`);
+        const url = urlStore.baseUrl
+          const response = await fetch(`${url}/Ingrediente/search?query=${query}`);
           if (!response.ok) throw new Error('Error al buscar ingredientes');
           this.ingredientesBuscados = await response.json();
       } catch (error) {
@@ -98,7 +103,8 @@ export const usePreferencias = defineStore({
       }));
     
       try {
-        const response = await fetch(`/api/Usuario/${idUsuario}/Categorias`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Usuario/${idUsuario}/Categorias`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -123,7 +129,8 @@ export const usePreferencias = defineStore({
       }));
     
       try {
-        const response = await fetch(`/api/Usuario/${idUsuario}/alergenos`, {
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Usuario/${idUsuario}/alergenos`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +148,8 @@ export const usePreferencias = defineStore({
         const idUsuario = await this.obtenerIdUsuarioDesdeToken();
         if (!idUsuario) return;
         try {
-          const response = await fetch(`/api/Usuario/${idUsuario}/Categorias`, {
+          const url = urlStore.baseUrl
+          const response = await fetch(`${url}/Usuario/${idUsuario}/Categorias`, {
             headers: { 'Authorization': `Bearer ${useLoginStore().token}` },
           });
           if (!response.ok) throw new Error('Error al obtener categorías');
@@ -154,7 +162,8 @@ export const usePreferencias = defineStore({
           const idUsuario = await this.obtenerIdUsuarioDesdeToken();
           if (!idUsuario) return;
           try {
-            const response = await fetch(`/api/Usuario/${idUsuario}/alergenos`, {
+            const url = urlStore.baseUrl
+            const response = await fetch(`${url}/Usuario/${idUsuario}/alergenos`, {
               headers: { 'Authorization': `Bearer ${useLoginStore().token}` },
             });
             if (!response.ok) throw new Error('Error al obtener categorías');

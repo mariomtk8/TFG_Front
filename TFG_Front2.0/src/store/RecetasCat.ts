@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import urlStore from '@/store/Url';
 
 interface Receta {
   idReceta: number;
@@ -20,7 +21,7 @@ interface Categoria {
 
 export const useRecetasStore = defineStore({
   id: 'recetasCat',
-  
+
   state: () => ({
     recetas: [] as Receta[],
     categorias: [] as Categoria[], // Agregamos el estado para las categorías
@@ -31,10 +32,12 @@ export const useRecetasStore = defineStore({
   actions: {
     async fetchRecetasPorCategoria(idCategoria: number): Promise<Receta[]> {
       try {
+        const url = urlStore.baseUrl
+
         this.loading = true;
         this.error = null;
 
-        const response = await fetch(`/api/Receta/categoria/${idCategoria}`);
+        const response = await fetch(`${url}/Receta/categoria/${idCategoria}`);
 
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
@@ -53,7 +56,8 @@ export const useRecetasStore = defineStore({
 
     async fetchNombreCategoria(idCategoria: number): Promise<string | null> {
       try {
-        const response = await fetch(`/api/Categoria/${idCategoria}`); // Asegúrate de que la API soporte esta ruta
+        const url = urlStore.baseUrl
+        const response = await fetch(`${url}/Categoria/${idCategoria}`); // Asegúrate de que la API soporte esta ruta
 
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLoginStore } from './Login';
+import urlStore from '@/store/Url';
 
 interface Comentario {
     id: number;
@@ -28,8 +29,8 @@ export const useComentariosStore = defineStore('comentarios', {
             if (!usuarioId) {
                 throw new Error("Usuario no autenticado");
             }
-
-            const url = `/api/Comentarios?usuarioId=${usuarioId}&recetaId=${recetaId}&contenido=${encodeURIComponent(contenido)}`;
+            const Url = urlStore.baseUrl
+            const url = `${Url}/Comentarios?usuarioId=${usuarioId}&recetaId=${recetaId}&contenido=${encodeURIComponent(contenido)}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -47,7 +48,8 @@ export const useComentariosStore = defineStore('comentarios', {
         },
 
         async obtenerComentarios(recetaId: number) {
-            const response = await fetch(`/api/Comentarios/${recetaId}`);
+            const url = urlStore.baseUrl
+            const response = await fetch(`${url}/Comentarios/${recetaId}`);
             if (response.ok) {
                 this.comentarios = await response.json();
             } else {
@@ -60,8 +62,8 @@ export const useComentariosStore = defineStore('comentarios', {
             if (!usuarioId) {
                 throw new Error("Usuario no autenticado");
             }
-
-            const response = await fetch(`/api/Comentarios/${comentarioId}/usuario/${usuarioId}`, {
+            const url = urlStore.baseUrl
+            const response = await fetch(`${url}/Comentarios/${comentarioId}/usuario/${usuarioId}`, {
                 method: 'DELETE',
             });
 
@@ -77,8 +79,8 @@ export const useComentariosStore = defineStore('comentarios', {
             if (!usuarioId) {
                 throw new Error("Usuario no autenticado");
             }
-
-            const url = `/api/Votaciones?usuarioId=${usuarioId}&recetaId=${recetaId}&puntuacion=${puntuacion}`;
+            const Url = urlStore.baseUrl
+            const url = `${Url}Votaciones?usuarioId=${usuarioId}&recetaId=${recetaId}&puntuacion=${puntuacion}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -95,7 +97,8 @@ export const useComentariosStore = defineStore('comentarios', {
         },
 
         async obtenerPromedioVotaciones(recetaId: number) {
-            const response = await fetch(`/api/Votaciones/promedio/${recetaId}`);
+            const url = urlStore.baseUrl
+            const response = await fetch(`${url}/Votaciones/promedio/${recetaId}`);
             if (response.ok) {
                 this.promedioVotaciones = await response.json();
             } else {
