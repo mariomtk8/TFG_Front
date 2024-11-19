@@ -71,37 +71,61 @@ export default defineComponent({
 
 <style scoped>
 .votaciones {
-  margin: 2rem auto;
+  margin: 1rem auto;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Estilo para las estrellas */
 .estrellas {
   display: flex;
   justify-content: center;
+  gap: 10px; 
   margin-bottom: 1rem;
 }
-
-.v-icon {
-  margin: 0 4px;
-}
-
-/* Para hacer las estrellas más grandes en escritorio */
-@media (min-width: 768px) {
-  .v-icon {
-    font-size: 36px; /* Aumentar tamaño de las estrellas en escritorio */
+.estrellas .v-icon {
+    font-size: 33px; 
   }
+
+.v-btn {
+  margin-top: 1rem; 
+}
+.v-card-actions{
+  justify-content: center
+}
+.v-btn__content{
+  text-align: center;
+    line-height: 2.425;
+}
+.v-card .v-card-title {
+  text-align: center;
+    line-height: 2.425;
+}
+.v-card .v-card-subtitle {
+  text-align: center;
+    line-height: 2.425;
 }
 
-/* Estilos responsivos para dispositivos pequeños */
+
 @media (max-width: 768px) {
-  .v-icon {
-    font-size: 28px; /* Estrellas más pequeñas en móviles */
+  .votaciones {
+  margin: 1rem auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+  .estrellas .v-icon {
+    font-size: 28px; 
+  }
+
+  .v-card {
+    padding: 1rem;
   }
 
   .v-card-subtitle h3 {
     text-align: center;
-    font-size: 1.1em;
+    font-size: 1em;
   }
 }
 </style>

@@ -51,7 +51,7 @@ export const usePreferencias = defineStore({
           if (!response.ok) {
             throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
           }
-          this.allCategorias = await response.json();  // El tipo Ingrediente[] se asignará correctamente
+          this.allCategorias = await response.json(); 
           
         } catch (error) {
           console.error('Error al obtener categorias:', error);
@@ -64,7 +64,6 @@ export const usePreferencias = defineStore({
         const response = await fetch(`${url}/Ingrediente`);
         if (!response.ok) throw new Error('Error al obtener ingredientes');
         this.allIngredientes = await response.json();  
-        // El tipo Ingrediente[] se asignará correctamente
       } catch (error) {
         console.error('Error al obtener ingredientes:', error);
       }
@@ -124,7 +123,7 @@ export const usePreferencias = defineStore({
     
       // Convertir el array de alergenosSeleccionados al formato adecuado
       const alergenosData = alergenosSeleccionados.map(idIngrediente => ({
-        idAlergeno: 0,  // Puedes actualizar esta lógica si idAlergeno tiene un valor diferente
+        idAlergeno: 0,  
         idIngrediente
       }));
     
@@ -136,7 +135,7 @@ export const usePreferencias = defineStore({
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${useLoginStore().token}`,
           },
-          body: JSON.stringify(alergenosData),  // Enviar el array de objetos
+          body: JSON.stringify(alergenosData),  
         });
         if (!response.ok) throw new Error('Error al guardar alérgenos');
       } catch (error) {

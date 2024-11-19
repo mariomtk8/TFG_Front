@@ -15,18 +15,18 @@ export interface Receta {
   export interface MenuSemanal {
     idMenuSemanal: number;
     descripcion: string | null;
-    fechaInicio: string;  // Puede ser `Date` si prefieres
-    tipoComida: boolean;  // true para comida, false para cena
+    fechaInicio: string;  
+    tipoComida: boolean;  
     idUsuario: number;
-    usuario: any;  // Si tienes un tipo definido para Usuario, cámbialo por el correcto
+    usuario: any;  
     idReceta: number;
-    receta: Receta;  // Asociar la receta correspondiente
+    receta: Receta;  
   }
   
 
 export const useMenuSemanalStore = defineStore('menuSemanal', {
   state: () => ({
-    menuSemanal: [] as Array<any>, // Inicializa con un array vacío para almacenar las recetas del menú semanal
+    menuSemanal: [] as Array<any>, 
     recetas: [] as Array<Receta>,
   }),
 
@@ -73,7 +73,7 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
 
         if (!response.ok) throw new Error("Error al crear el menú semanal");
 
-        await this.obtenerMenuSemanal(); // Refrescar el menú
+        await this.obtenerMenuSemanal(); 
       } catch (error) {
         console.error('Error al crear el menú semanal:', error);
       }
@@ -94,7 +94,7 @@ export const useMenuSemanalStore = defineStore('menuSemanal', {
 
         if (!response.ok) throw new Error("Error al actualizar el menú semanal");
 
-        await this.obtenerMenuSemanal(); // Refrescar el menú
+        await this.obtenerMenuSemanal(); 
       } catch (error) {
         console.error('Error al actualizar el menú semanal:', error);
       }

@@ -316,6 +316,13 @@ a {
     width: 20px;
     height: 20px;
   }
+  h1 {
+  margin-top: 5vh;
+  margin-left: 5vh;
+  margin-bottom: 5vh;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
   .receta-item{
     max-width: 200px;
   }

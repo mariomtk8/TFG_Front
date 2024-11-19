@@ -44,7 +44,9 @@
             outlined
             required
           ></v-textarea>
-          <v-btn type="submit" color="green">Agregar Comentario</v-btn>
+          <v-card-actions class="d-flex flex-column align-center">
+  <v-btn type="submit" color="green">Agregar Comentario</v-btn>
+</v-card-actions>
         </v-form>
       </v-card-actions>
     </v-card>
@@ -100,58 +102,66 @@ export default defineComponent({
 
 <style scoped>
 .comentarios {
-  margin: 2rem auto;
+  margin: 1rem auto;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Estilo para los comentarios */
+.v-card-title,
+.v-card-actions {
+  justify-content: center;
+}
+
+.sin-comentarios {
+  text-align: center;
+}
+
 .v-list-item-content {
-  padding-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  text-align: left; 
 }
 
-.v-list-item-title {
-  font-size: 1.1em;
+.v-btn {
+  margin-top: 1rem;
 }
 
-.v-list-item-subtitle {
-  font-size: 0.9em;
-}
-
-/* Estilos responsivos para dispositivos pequeños */
+/* Estilos responsivos */
 @media (max-width: 768px) {
-  /* Centrar los elementos y asegurar que estén uno debajo del otro */
-  .comentarios, .votaciones {
-    padding: 1rem;
+  .comentarios {
+    width: 65%; 
+    margin: auto;
+  }
+  .v-card-title{
+    text-align: center
+  }
+  .v-list-item-content{
+    text-align: center;
+  }
+
+  .v-card {
+    padding: 1rem; 
   }
 
   .v-list-item-content {
+    margin-bottom: 1rem;
+    text-align: left; 
+  }
+
+  .v-textarea {
+    width: 50%; 
+  }
+  .v-field__input{
+    width: 50%;
+  }
+
+  .form-comentario {
     display: flex;
     flex-direction: column;
-    align-items: center;
-  }
-
-  .v-card-subtitle h3 {
-    text-align: center;
-    font-size: 1.1em;
-  }
-}
-
-/* Para escritorio */
-@media (min-width: 768px) {
-  .v-icon {
-    font-size: 36px;
-  }
-
-  .v-list-item-content {
-    padding-bottom: 1rem;
-  }
-
-  .v-list-item-title {
-    font-size: 1.2em;
-  }
-
-  .v-list-item-subtitle {
-    font-size: 1em;
+    
+    width: 120%;
   }
 }
 </style>

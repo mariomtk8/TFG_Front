@@ -80,7 +80,7 @@ export const useComentariosStore = defineStore('comentarios', {
                 throw new Error("Usuario no autenticado");
             }
             const Url = urlStore.baseUrl
-            const url = `${Url}Votaciones?usuarioId=${usuarioId}&recetaId=${recetaId}&puntuacion=${puntuacion}`;
+            const url = `${Url}/Votaciones?usuarioId=${usuarioId}&recetaId=${recetaId}&puntuacion=${puntuacion}`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

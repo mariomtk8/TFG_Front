@@ -1,7 +1,7 @@
 <template>
     <div class="preferencias-container">
         <section class="preferencias-categorias">
-            <h2>Preferencias de Categorías</h2>
+            <h2>Selecciona las categorias que no desees</h2>
             <input 
                 type="text" 
                 v-model="busquedaCategorias" 
@@ -17,7 +17,7 @@
         </section>
 
         <section class="preferencias-alergenos">
-            <h2>Alérgenos</h2>
+            <h2>Selecciona tus Alérgenos</h2>
             <input 
                 type="text" 
                 v-model="busquedaAlergenos" 

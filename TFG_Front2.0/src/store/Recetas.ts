@@ -135,7 +135,7 @@ export const useRecetasStore = defineStore('recetas', {
 
         // Mapear cada ingrediente para obtener detalles adicionales
         this.ingredientes = await Promise.all(data.map(async (ingrediente: Ingrediente) => {
-          const detalleResponse = await fetch(`/api/Ingrediente/${ingrediente.idIngrediente}`);
+          const detalleResponse = await fetch(`${url}/Ingrediente/${ingrediente.idIngrediente}`);
           if (!detalleResponse.ok) {
             throw new Error(`Error al obtener el detalle del ingrediente: ${detalleResponse.statusText}`);
           }
