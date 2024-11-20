@@ -37,7 +37,7 @@
             <a @click.prevent="checkMenuSemanal" class="header__nav-link">Menú Semanal</a>
           </li>
           <li class="header__nav-item">
-            <RouterLink to="/Contactanos" class="header__nav-link">Contactanos</RouterLink>
+            <RouterLink to="/Contactanos" class="header__nav-link">Contáctanos</RouterLink>
           </li>
           <li class="header__nav-item">
             <RouterLink to="/Favoritos" class="header__nav-link">Favoritos</RouterLink>
@@ -59,12 +59,19 @@
       </div>
 
       <div class="header__user-actions">
-        <RouterLink v-if="!isLoggedIn" to="/Register" class="header__user-link">Register</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/Login" class="header__user-link">Login</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/Register" class="header__user-link">Registrase</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/Login" class="header__user-link">Iniciar Sesión</RouterLink>
 
         <div v-if="isLoggedIn" class="header__logged-in">
-          <span @click="goToPanelAdmin" class="header__username">Bienvenido, {{ userName }}</span>
+          <span class="header__username">Bienvenido, {{ userName }}</span>
           <button @click="handleLogout" class="header__logout-button">Cerrar sesión</button>
+          <button 
+        v-if="isAdmin" 
+        @click="goToPanelAdmin" 
+        class="header__logout-button"
+      >
+        Panel Admin
+      </button>
         </div>
       </div>
     </div>
@@ -87,6 +94,7 @@ const preferenciasStore = useMenuSemanalStore();
 
 const isLoggedIn = computed(() => loginStore.usuario !== null);
 const userName = computed(() => loginStore.usuario?.nombre || '');
+const isAdmin = computed(() => loginStore.rol)
 
 const handleLogout = () => {
   const loginStore = useLoginStore();
@@ -324,6 +332,7 @@ const checkMenuSemanal = async () => {
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+  margin-right: 5px ;
 }
 
 .header__logout-button:hover {

@@ -9,21 +9,21 @@
 
       <v-card-text>
         <section v-if="receta" class="receta__descripcion mb-4">
-          <v-subheader>Descripción</v-subheader>
-          <p>{{ receta.descripcion }}</p>
+          <h2>Descripción</h2>
+          <p style="margin-left: 3vh; max-width: 600px;">{{ receta.descripcion }}</p>
         </section>
 
         <v-row class="receta__layout" dense>
           <v-col cols="12" md="8">
             <v-card class="pa-4 mb-4 receta__info">
-              <v-subheader>Detalles de la receta</v-subheader>
+              <h2>Detalles de la receta</h2>
               <p><strong>Dificultad:</strong> {{ receta?.nivelDificultad }}</p>
               <p><strong>Preparación:</strong> {{ receta?.tiempoPreparacion }} min</p>
-              <p><strong>Tipo:</strong> Primer plato</p>
+              <p><strong>Vegano:</strong> {{ receta?.esVegano ? 'Vegano' : 'No Vegano' }}</p>
             </v-card>
 
             <v-card class="pa-4 mb-4 receta__ingredientes">
-              <v-subheader>Ingredientes</v-subheader>
+              <h2>Ingredientes</h2>
               <v-list dense>
                 <v-list-item
                   v-for="ingrediente in ingredientes"
@@ -54,7 +54,6 @@
 
           <v-col cols="12" md="4">
             <v-card class="pa-4 receta__sidebar sticky-top">
-              <v-subheader class="text-center">Recetas Populares</v-subheader>
               <Populares />
             </v-card>
           </v-col>
@@ -111,6 +110,13 @@ onMounted(() => {
   background-color: #f5f5f5;
   max-width: 1400px;
   margin-top: 3vh;
+}
+h2{
+  padding: 2vh;
+  margin-bottom: 2vh;
+}
+p{
+  font-size: 15px
 }
 
 .receta-titulo {

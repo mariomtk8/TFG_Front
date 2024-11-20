@@ -32,7 +32,7 @@ import { useFiltradosStore } from '../store/Filtrados';
 export default defineComponent({
   setup() {
     const store = useFiltradosStore();
-    const ascendente = ref(true);
+    const ascendente = ref(false);
 
     onMounted(() => {
       store.filtrarPorNivelDificultad(ascendente.value);
@@ -90,7 +90,7 @@ export default defineComponent({
 .recetas-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px; /* Espaciado más amplio entre las tarjetas */
+  gap: 30px; 
   justify-content: center;
 }
 
@@ -100,31 +100,33 @@ export default defineComponent({
   overflow: hidden;
   text-align: center;
   padding: 20px;
-  width: 200px; /* Ancho mayor para las tarjetas */
+  width: 200px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .receta-card:hover {
-  transform: translateY(-10px); /* Efecto de elevación al pasar el ratón */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
+  transform: translateY(-10px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
 
+
 .receta-imagen {
-  max-width: 100%;
-  max-height: 180px; /* Altura de imagen más grande */
-  object-fit: cover;
-  border-radius: 10px; /* Esquinas más redondeadas */
+  width: 100%;
+  height: 150px; 
+  object-fit: cover; 
+  border: 2px solid #ddd; 
+  border-radius: 8px; 
 }
 
 .receta-nombre {
-  font-size: 18px; /* Aumento de tamaño de fuente */
+  font-size: 18px;
   margin: 15px 0;
-  color: #333; /* Color de texto más oscuro */
+  color: #333;
 }
 
 .receta-atributo {
   font-size: 14px;
-  color: #777; /* Color de texto más claro para los atributos */
+  color: #777;
 }
 </style>

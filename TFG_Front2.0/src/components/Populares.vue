@@ -55,20 +55,23 @@ onMounted(async () => {
   border-radius: 8px;
   overflow: hidden;
   text-align: center;
-  padding: 20px; /* Aumentado el tamaño del contenido */
-  width: 200px; /* Aumento del ancho de las tarjetas */
+  padding: 10px; 
+  width: 200px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición para hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .receta-card:hover {
-  transform: scale(1.05); /* Efecto al pasar el ratón */
+  transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
+
 .receta-imagen {
   width: 100%;
-  height: auto;
+  height: 150px; 
+  object-fit: cover;
+  border: 2px solid #ddd; 
   border-radius: 5px;
 }
 
@@ -83,14 +86,14 @@ h1 {
 }
 
 .stars .filled {
-  color: #FFD700; 
+  color: #FFD700;
 }
 
 .stars .half {
-  color: #FFD700; 
+  color: #FFD700;
 }
 
 .stars svg {
-  color: #ccc; /* Color gris para estrellas vacías */
+  color: #ccc;
 }
 </style>

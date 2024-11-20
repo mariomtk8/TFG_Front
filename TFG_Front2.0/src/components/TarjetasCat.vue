@@ -47,31 +47,37 @@
       <!-- Lista de recetas -->
       <div v-if="recetasFiltradas && recetasFiltradas.length > 0" class="recetas-grid">
         <v-card
-          v-for="receta in recetasFiltradas"
-          :key="receta.idReceta"
-          class="receta-item"
-        >
-          <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" class="receta-link">
-            <v-img v-if="receta.imagen" :src="receta.imagen" aspect-ratio="16/9"></v-img>
-            <v-card-title>{{ receta.nombre }}</v-card-title>
-            <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
-            <v-card-text>
-              <v-chip>{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</v-chip>
-              <v-chip>Dificultad: {{ receta.nivelDificultad }}</v-chip>
-              <v-chip>Tiempo: {{ receta.tiempoPreparacion }} min</v-chip>
-            </v-card-text>
-          </RouterLink>
+  v-for="receta in recetasFiltradas"
+  :key="receta.idReceta"
+  class="receta-item"
+>
+  <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" class="receta-link">
+    <v-sheet class="imagen-container" elevation="2" rounded>
+      <v-img 
+        v-if="receta.imagen" 
+        :src="receta.imagen" 
+        class="imagen-ajustada"
+      ></v-img>
+    </v-sheet>
+    <v-card-title>{{ receta.nombre }}</v-card-title>
+    <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
+    <v-card-text>
+      <v-chip>{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</v-chip>
+      <v-chip>Dificultad: {{ receta.nivelDificultad }}</v-chip>
+      <v-chip>Tiempo: {{ receta.tiempoPreparacion }} min</v-chip>
+    </v-card-text>
+  </RouterLink>
 
-          <v-card-actions>
-            <v-btn
-              icon
-              @click="toggleFavorito(receta.idReceta)"
-              :color="esFavorito(receta.idReceta) ? 'yellow' : 'grey'"
-            >
-              <v-icon>mdi-star</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card>
+  <v-card-actions>
+    <v-btn
+      icon
+      @click="toggleFavorito(receta.idReceta)"
+      :color="esFavorito(receta.idReceta) ? 'yellow' : 'grey'"
+    >
+      <v-icon>mdi-star</v-icon>
+    </v-btn>
+  </v-card-actions>
+</v-card>
       </div>
 
       <v-row v-else>
@@ -198,6 +204,23 @@ h1 {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.imagen-container {
+  width: 300px; 
+  height: 200px; 
+  overflow: hidden; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid #ddd; 
+  border-radius: 8px; 
+}
+
+.imagen-ajustada {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
 }
 
 .recetas-grid {

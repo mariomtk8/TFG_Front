@@ -58,6 +58,7 @@ import { defineComponent, ref, onMounted, computed } from 'vue';
 import { useComentariosStore } from '../store/ComentariosVotaciones';
 import { useLoginStore } from '../store/Login';
 import { useRoute } from 'vue-router';
+import Swal from 'sweetalert2'; 
 
 export default defineComponent({
   setup() {
@@ -67,18 +68,65 @@ export default defineComponent({
     const recetaId = Number(route.params.id);
     const nuevoComentario = ref('');
     
+    
     onMounted(async () => {
       await comentariosStore.obtenerComentarios(recetaId);
     });
 
+   
     const enviarComentario = async () => {
-      await comentariosStore.agregarComentario(recetaId, nuevoComentario.value);
-      await comentariosStore.obtenerComentarios(recetaId);
-      nuevoComentario.value = '';
+      if (!loginStore.usuario) {
+        
+        Swal.fire({
+          icon: 'warning',
+          title: 'Inicia sesión',
+          text: 'Debes iniciar sesión para poder comentar.',
+          confirmButtonText: 'Aceptar',
+        });
+        return;
+      }
+ 
+      if (nuevoComentario.value.trim() !== '') {
+        await comentariosStore.agregarComentario(recetaId, nuevoComentario.value);
+        await comentariosStore.obtenerComentarios(recetaId);
+        nuevoComentario.value = '';
+  
+        Swal.fire({
+          icon: 'success',
+          title: 'Comentario enviado',
+          text: '¡Gracias por tu comentario!',
+          confirmButtonText: 'Aceptar',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Comentario vacío',
+          text: 'Debes escribir algo antes de enviar el comentario.',
+          confirmButtonText: 'Aceptar',
+        });
+      }
     };
-
     const eliminarComentario = async (comentarioId: number) => {
-      await comentariosStore.eliminarComentario(comentarioId);
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Este comentario será eliminado permanentemente.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await comentariosStore.eliminarComentario(comentarioId);
+          await comentariosStore.obtenerComentarios(recetaId);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Comentario eliminado',
+            text: 'El comentario ha sido eliminado exitosamente.',
+            confirmButtonText: 'Aceptar',
+          });
+        }
+      });
     };
 
     const idUsuarioLogeado = computed(() => loginStore.usuario?.idUsuario);
@@ -100,9 +148,9 @@ export default defineComponent({
 });
 </script>
 
+
 <style scoped>
 .comentarios {
-  margin: 1rem auto;
   padding: 1rem;
   display: flex;
   flex-direction: column;

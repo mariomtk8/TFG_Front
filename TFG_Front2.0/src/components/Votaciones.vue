@@ -1,5 +1,5 @@
 <template>
-  <v-container class="votaciones" max-width="600">
+  <v-container class="votaciones" max-width="740">
     <v-card elevation="2">
       <v-card-title>
         <h2>Votaciones</h2>
@@ -31,32 +31,53 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, computed } from 'vue';
+import Swal from 'sweetalert2';
 import { useComentariosStore } from '../store/ComentariosVotaciones';
 import { useRoute } from 'vue-router';
+import { useLoginStore } from '../store/Login';
 
 export default defineComponent({
   setup() {
     const comentariosStore = useComentariosStore();
+    const loginStore = useLoginStore();
     const route = useRoute();
     const recetaId = Number(route.params.id);
 
+    const isLoggedIn = computed(() => loginStore.usuario !== null);
+
     onMounted(async () => {
       await comentariosStore.obtenerComentarios(recetaId);
-      await comentariosStore.obtenerPromedioVotaciones(recetaId); 
+      await comentariosStore.obtenerPromedioVotaciones(recetaId);
     });
 
     const puntuacionSeleccionada = computed(() => comentariosStore.puntuacionSeleccionada as number);
 
     const enviarVotacion = async () => {
+      if (!isLoggedIn.value) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Inicia sesión',
+          text: 'Debes iniciar sesión para poder votar.',
+          confirmButtonText: 'Aceptar',
+        });
+        return;
+      }
+
       await comentariosStore.agregarVotacion(recetaId, puntuacionSeleccionada.value);
+      Swal.fire({
+        icon: 'success',
+        title: 'Votación enviada',
+        text: '¡Gracias por tu voto!',
+        confirmButtonText: 'Aceptar',
+      });
     };
 
     const promedioPuntuacion = computed(() => {
-      return comentariosStore.promedioVotaciones as number; 
+      return comentariosStore.promedioVotaciones as number;
     });
 
     const seleccionarPuntuacion = (puntuacion: number) => {
-      comentariosStore.puntuacionSeleccionada = puntuacion; 
+      comentariosStore.puntuacionSeleccionada = puntuacion;
     };
 
     return {
@@ -64,6 +85,7 @@ export default defineComponent({
       promedioPuntuacion,
       seleccionarPuntuacion,
       puntuacionSeleccionada,
+      isLoggedIn,
     };
   },
 });
