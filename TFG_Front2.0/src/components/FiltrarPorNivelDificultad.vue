@@ -1,12 +1,12 @@
 <template>
   <div class="filtrar-container">
-    <h2>Recetas por Nivel de Dificultad</h2>
+    <h2>{{ $t('filtrar.dificultadTitle') }}</h2>
     <div class="selector-container">
       <label class="selector-label">
-        Ordenar por Dificultad:
+        {{ $t('filtrar.ordenarPorDificultad') }}:
         <select v-model="ascendente" @change="cambiarOrden" class="custom-select">
-          <option value="true">Menor a Mayor</option>
-          <option value="false">Mayor a Menor</option>
+          <option value="true">{{ $t('filtrar.menorAMayor') }}</option>
+          <option value="false">{{ $t('filtrar.mayorAMenor') }}</option>
         </select>
       </label>
     </div>
@@ -19,7 +19,7 @@
       >
         <img :src="receta.imagen" alt="Imagen de la receta" class="receta-imagen" />
         <h3 class="receta-nombre">{{ receta.nombre }}</h3>
-        <p class="receta-atributo">Dificultad: {{ receta.nivelDificultad }}</p>
+        <p class="receta-atributo">{{ $t('filtrar.dificultad') }}: {{ receta.nivelDificultad }}</p>
       </RouterLink>
     </div>
   </div>

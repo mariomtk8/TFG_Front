@@ -3,10 +3,10 @@
     <v-row justify="center">
       <v-col cols="12" sm="10" md="8">
         <v-card>
-          <v-card-title class="headline">Categorías</v-card-title>
+          <v-card-title class="headline">{{ $t('categories.title') }}</v-card-title>
 
           <!-- Mensajes de carga o error -->
-          <v-alert v-if="loading" type="info" class="mt-3">Cargando categorías...</v-alert>
+          <v-alert v-if="loading" type="info" class="mt-3">{{ $t('categories.loadingMessage') }}</v-alert>
           <v-alert v-if="error" type="error" class="mt-3">{{ error }}</v-alert>
 
           <!-- Buscador centrado -->
@@ -14,7 +14,7 @@
             <v-col cols="12" md="8">
               <v-text-field
                 v-model="search"
-                label="Buscar Categoría"
+                :label="$t('categories.searchLabel')"
                 append-icon="mdi-magnify"
                 clearable
                 class="mx-auto"
@@ -47,7 +47,7 @@
                 class="ma-2"
                 depressed
               >
-                Ver Recetas
+                {{ $t('categories.viewRecipes') }}
               </v-btn>
             </template>
           </v-data-table>

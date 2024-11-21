@@ -1,12 +1,12 @@
-<template> 
+<template>
   <div class="filtrar-container">
-    <h2>Recetas por Tiempo de Preparación</h2>
+    <h2>{{ $t('filtrarT.tiempoTitle') }}</h2>
     <div class="selector-container">
       <label class="selector-label">
-        Ordenar por Tiempo:
+        {{ $t('filtrarT.ordenarPorTiempo') }}:
         <select v-model="ascendente" @change="cambiarOrden" class="custom-select">
-          <option value="true">Menor a Mayor</option>
-          <option value="false">Mayor a Menor</option>
+          <option value="true">{{ $t('filtrarT.menorAMayor') }}</option>
+          <option value="false">{{ $t('filtrarT.mayorAMenor') }}</option>
         </select>
       </label>
     </div>
@@ -19,7 +19,7 @@
       >
         <img :src="receta.imagen" alt="Imagen de la receta" class="receta-imagen" />
         <h3 class="receta-nombre">{{ receta.nombre }}</h3>
-        <p class="receta-atributo">Tiempo: {{ receta.tiempoPreparacion }} min</p>
+        <p class="receta-atributo">{{ $t('filtrarT.tiempo') }}: {{ receta.tiempoPreparacion }} min</p>
       </RouterLink>
     </div>
   </div>

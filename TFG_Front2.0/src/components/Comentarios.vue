@@ -2,11 +2,11 @@
   <v-container class="comentarios" max-width="750">
     <v-card elevation="2">
       <v-card-title>
-        <h2>Comentarios</h2>
+        <h2>{{ $t('comentarios.title') }}</h2>
       </v-card-title>
       <v-card-text>
         <div v-if="comentariosOrdenados.length === 0" class="sin-comentarios">
-          <v-alert type="info" dense>No hay comentarios aún. ¡Sé el primero en comentar!</v-alert>
+          <v-alert type="info" dense>{{ $t('comentarios.noComments') }}</v-alert>
         </div>
         <v-list>
           <v-list-item
@@ -17,7 +17,7 @@
             <v-list-item-content>
               <v-list-item-title>{{ comentario.contenido }}</v-list-item-title>
               <v-list-item-subtitle>
-                Por {{ comentario.nombreUsuario }} el {{ new Date(comentario.fecha).toLocaleString() }}
+                {{ $t('comentarios.commentBy') }} {{ comentario.nombreUsuario }} {{ $t('comentarios.on') }} {{ new Date(comentario.fecha).toLocaleString() }}
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
@@ -38,15 +38,15 @@
         <v-form @submit.prevent="enviarComentario" class="form-comentario">
           <v-textarea
             v-model="nuevoComentario"
-            label="Escribe tu comentario aquí..."
+            :label="$t('comentarios.writeComment')"
             rows="2"
             width="500px"
             outlined
             required
           ></v-textarea>
           <v-card-actions class="d-flex flex-column align-center">
-  <v-btn type="submit" color="green">Agregar Comentario</v-btn>
-</v-card-actions>
+            <v-btn type="submit" color="green">{{ $t('comentarios.addComment') }}</v-btn>
+          </v-card-actions>
         </v-form>
       </v-card-actions>
     </v-card>

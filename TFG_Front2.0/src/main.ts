@@ -2,6 +2,9 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import { createPinia } from 'pinia';
+import i18n from './vue-i18n';
+
+
 
 // Importar Vuetify y el CSS necesario
 import { createVuetify } from 'vuetify';
@@ -24,5 +27,6 @@ const app = createApp(App);
 app.use(router);
 app.use(createPinia());
 app.use(vuetify); // Añadir Vuetify a la app
+app.use(i18n);
 
 app.mount('#app');

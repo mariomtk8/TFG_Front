@@ -15,7 +15,7 @@
         <ul class="header__nav-list">
           <li class="header__nav-item" @mouseover="showCategoryDropdown = true"
             @mouseleave="showCategoryDropdown = false">
-            <a href="#" class="header__nav-link">Categorías</a>
+            <a href="#" class="header__nav-link">{{ $t('header.categories') }}</a>
             <div v-if="showCategoryDropdown" class="header__dropdown">
               <div class="header__dropdown-content">
                 <ul>
@@ -31,16 +31,16 @@
             </div>
           </li>
           <li class="header__nav-item">
-            <RouterLink to="/PreferenciasUsuario" class="header__nav-link">Preferencias</RouterLink>
+            <RouterLink to="/PreferenciasUsuario" class="header__nav-link">{{ $t('header.preferences') }}</RouterLink>
           </li>
           <li class="header__nav-item">
-            <a @click.prevent="checkMenuSemanal" class="header__nav-link">Menú Semanal</a>
+            <a @click.prevent="checkMenuSemanal" class="header__nav-link">{{ $t('header.weeklyMenu') }}</a>
           </li>
           <li class="header__nav-item">
-            <RouterLink to="/Contactanos" class="header__nav-link">Contáctanos</RouterLink>
+            <RouterLink to="/Contactanos" class="header__nav-link">{{ $t('header.contact') }}</RouterLink>
           </li>
           <li class="header__nav-item">
-            <RouterLink to="/Favoritos" class="header__nav-link">Favoritos</RouterLink>
+            <RouterLink to="/Favoritos" class="header__nav-link">{{ $t('header.favorites') }}</RouterLink>
           </li>
         </ul>
       </nav>
@@ -59,21 +59,25 @@
       </div>
 
       <div class="header__user-actions">
-        <RouterLink v-if="!isLoggedIn" to="/Register" class="header__user-link">Registrase</RouterLink>
-        <RouterLink v-if="!isLoggedIn" to="/Login" class="header__user-link">Iniciar Sesión</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/Register" class="header__user-link">{{ $t('header.register') }}</RouterLink>
+        <RouterLink v-if="!isLoggedIn" to="/Login" class="header__user-link">{{ $t('header.login') }}</RouterLink>
 
         <div v-if="isLoggedIn" class="header__logged-in">
-          <span class="header__username">Bienvenido, {{ userName }}</span>
-          <button @click="handleLogout" class="header__logout-button">Cerrar sesión</button>
+          <span class="header__username">{{ $t('header.welcome') }}, {{ userName }}</span>
+          <button @click="handleLogout" class="header__logout-button">{{ $t('header.logout') }}</button>
           <button 
         v-if="isAdmin" 
         @click="goToPanelAdmin" 
         class="header__logout-button"
       >
-        Panel Admin
+        {{ $t('header.adminPanel') }}
       </button>
         </div>
       </div>
+      <div class="language-switcher">
+      <button class="Español" @click="changeLanguage('es')">Español</button>
+      <button class="Ingles" @click="changeLanguage('en')">English</button>
+    </div>
     </div>
   </header>
 </template>
@@ -86,6 +90,13 @@ import Swal from 'sweetalert2';
 import { useCategoriasStore } from '../store/Categorias';
 import { useRecetasStore } from '../store/Recetas';
 import { useMenuSemanalStore } from '../store/MenuSemanal';
+import { useI18n } from 'vue-i18n';
+
+
+const { locale } = useI18n();
+const changeLanguage = (lang: string) => {
+  locale.value = lang;
+};
 
 const loginStore = useLoginStore();
 const router = useRouter();
@@ -188,6 +199,28 @@ const checkMenuSemanal = async () => {
 </script>
 
 <style scoped>
+.language-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-left: 20px;
+}
+
+.language-switcher button {
+  padding: 6px 12px;
+  background-color: #FF8A5C;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  width: 100px; /* Ajustar al tamaño deseado */
+}
+
+.language-switcher button:hover {
+  background-color: #d96b45;
+}
 .header {
   background-color: #FFE5A2;
   padding: 20px 0;
@@ -195,19 +228,20 @@ const checkMenuSemanal = async () => {
   justify-content: center;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   position: relative;
+  width: 100%;
 }
 
 .header__content {
   display: flex;
   align-items: center;
   width: 90%;
-  max-width: 1200px;
+  max-width: 1500px;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
 .header__logo img {
-  height: 60px;
+  max-width: 120px;
 }
 
 .header__toggle {
@@ -289,10 +323,10 @@ const checkMenuSemanal = async () => {
 }
 
 .header__search-input {
-  padding: 8px;
+  padding: 10px;
   border: 2px solid #FF8A5C;
-  border-radius: 8px;
-  width: 160px;
+  border-radius: 20px;
+  width: 200px;
   margin-right: 10vh;
 }
 
