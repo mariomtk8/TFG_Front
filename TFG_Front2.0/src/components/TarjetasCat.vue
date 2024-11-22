@@ -2,7 +2,7 @@
   <v-container>
     <v-col>
       <v-row class="text-center">
-        <h1>Recetas de {{ categoriaNombre }}</h1>
+        <h1>{{ $t('categoriesS.title') }} {{ categoriaNombre }}</h1>
       </v-row>
 
       <!-- Mensaje de error -->
@@ -13,14 +13,14 @@
         <v-col cols="12" md="6" class="filtro-tiempo">
           <v-text-field
             v-model.number="tiempoMin"
-            label="Tiempo de preparación (Min)"
+            :label="$t('filtrarT.tiempoTitle')"
             type="number"
             hide-details
             outlined
           ></v-text-field>
           <v-text-field
             v-model.number="tiempoMax"
-            label="Tiempo de preparación (Max)"
+            :label="$t('filtrarT.ordenarPorTiempo')"
             type="number"
             hide-details
             outlined
@@ -34,7 +34,7 @@
           <v-select
             v-model.number="nivelDificultad"
             :items="[1, 2, 3, 4, 5]"
-            label="Dificultad (1-5)"
+            :label="$t('filtrar.dificultad')"
             outlined
             hide-details
           ></v-select>
@@ -47,46 +47,45 @@
       <!-- Lista de recetas -->
       <div v-if="recetasFiltradas && recetasFiltradas.length > 0" class="recetas-grid">
         <v-card
-  v-for="receta in recetasFiltradas"
-  :key="receta.idReceta"
-  class="receta-item"
->
-  <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" class="receta-link">
-    <v-sheet class="imagen-container" elevation="2" rounded>
-      <v-img 
-        v-if="receta.imagen" 
-        :src="receta.imagen" 
-        class="imagen-ajustada"
-      ></v-img>
-    </v-sheet>
-    <v-card-title>{{ receta.nombre }}</v-card-title>
-    <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
-    <v-card-text>
-      <v-chip>{{ receta.esVegano ? 'Vegano' : 'No Vegano' }}</v-chip>
-      <v-chip>Dificultad: {{ receta.nivelDificultad }}</v-chip>
-      <v-chip>Tiempo: {{ receta.tiempoPreparacion }} min</v-chip>
-    </v-card-text>
-  </RouterLink>
+          v-for="receta in recetasFiltradas"
+          :key="receta.idReceta"
+          class="receta-item"
+        >
+          <RouterLink :to="{ name: 'Recetas', params: { id: receta.idReceta } }" class="receta-link">
+            <v-sheet class="imagen-container" elevation="2" rounded>
+              <v-img 
+                v-if="receta.imagen" 
+                :src="receta.imagen" 
+                class="imagen-ajustada"
+              ></v-img>
+            </v-sheet>
+            <v-card-title>{{ receta.nombre }}</v-card-title>
+            <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
+            <v-card-text>
+              <v-chip>{{ receta.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</v-chip>
+              <v-chip>{{ $t('receta.difficulty') }}: {{ receta.nivelDificultad }}</v-chip>
+              <v-chip>{{ $t('receta.preparationTime') }}: {{ receta.tiempoPreparacion }} min</v-chip>
+            </v-card-text>
+          </RouterLink>
 
-  <v-card-actions>
-    <v-btn
-      icon
-      @click="toggleFavorito(receta.idReceta)"
-      :color="esFavorito(receta.idReceta) ? 'yellow' : 'grey'"
-    >
-      <v-icon>mdi-star</v-icon>
-    </v-btn>
-  </v-card-actions>
-</v-card>
+          <v-card-actions>
+            <v-btn
+              icon
+              @click="toggleFavorito(receta.idReceta)"
+              :color="esFavorito(receta.idReceta) ? 'yellow' : 'grey'"
+            >
+              <v-icon>mdi-star</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </div>
 
       <v-row v-else>
-        <p>No hay recetas disponibles en esta categoría.</p>
+        <p>{{ $t('categoriesS.noRecipesMessage') }}</p>
       </v-row>
     </v-col>
   </v-container>
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
@@ -225,7 +224,7 @@ a {
 
 .recetas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, 1fr); 
   gap: 20px;
   justify-items: center;
   max-width: 1300px;
@@ -333,11 +332,16 @@ a {
   border-radius: 50%;
   transform: scale(1.1);
 }
-@media (max-width: 600px) {
+@media (max-width: 1300px) {
+  .recetas-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas para pantallas medianas */
+  }
+}
+@media (max-width: 750px) {
   /* Reduce icon size for mobile */
-  .favorito-icon {
-    width: 20px;
-    height: 20px;
+  
+  .recetas-grid {
+    grid-template-columns: 1fr;
   }
   h1 {
   margin-top: 5vh;
@@ -346,9 +350,6 @@ a {
   font-family: 'Arial', sans-serif;
   color: #333;
 }
-  .receta-item{
-    max-width: 200px;
-  }
   .imagen-receta{
     max-width: 200px;
   }
@@ -362,4 +363,5 @@ a {
     justify-content: center;
   }
 }
+
 </style>

@@ -21,14 +21,15 @@ const goToMenuSemanal = () => {
 <template>
   <section class="menu-semanal-section">
     <div class="menu-semanal-content">
-      <h2>¡Descubre tu Menú Semanal Personalizado!</h2>
-      <p>Elige entre tus categorías favoritas y filtra según tus alérgenos para obtener un menú adaptado a tus gustos y necesidades. ¡Tu salud y tus preferencias son nuestra prioridad!</p>
+      <h2>{{ $t('menuSemanalC.title') }}</h2>
+      <p>{{ $t('menuSemanalC.description') }}</p>
       <button @click="goToMenuSemanal" class="menu-semanal-btn">
-        Explorar Menú Semanal
+        {{ $t('menuSemanalC.button') }}
       </button>
     </div>
   </section>
 </template>
+
 
 <style scoped>
 .menu-semanal-section {

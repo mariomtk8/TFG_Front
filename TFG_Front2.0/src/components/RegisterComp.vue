@@ -1,54 +1,55 @@
 <template>
   <div class="register-page">
     <div class="register-container">
-      <h2>Registro de Usuario</h2>
+      <h2>{{ $t('register.title') }}</h2>
       <form @submit.prevent="register">
         <div class="input-group">
-          <label for="nombre">Nombre</label>
+          <label for="nombre">{{ $t('register.name') }}</label>
           <input
             type="text"
             id="nombre"
             v-model="nombre"
-            placeholder="Ingrese su nombre"
+            :placeholder="$t('register.namePlaceholder')"
             required
           />
         </div>
 
         <div class="input-group">
-          <label for="email">Correo electrónico</label>
+          <label for="email">{{ $t('register.email') }}</label>
           <input
             type="email"
             id="email"
             v-model="correo"
-            placeholder="Ingrese su correo electrónico"
+            :placeholder="$t('register.emailPlaceholder')"
             required
           />
         </div>
 
         <div class="input-group">
-          <label for="password">Contraseña</label>
+          <label for="password">{{ $t('register.password') }}</label>
           <input
             type="password"
             id="password"
             v-model="password"
-            placeholder="Ingrese su contraseña"
+            :placeholder="$t('register.passwordPlaceholder')"
             required
           />
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? "Registrando..." : "Registrarse" }}
+          {{ loading ? $t('register.registering') : $t('register.registerButton') }}
         </button>
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       </form>
       <div class="link-container">
-        <router-link to="/">Volver al inicio</router-link>
+        <router-link to="/">{{ $t('register.backToHome') }}</router-link>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref } from 'vue';

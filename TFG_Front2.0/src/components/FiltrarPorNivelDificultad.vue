@@ -60,10 +60,10 @@ export default defineComponent({
 }
 
 .selector-container {
-  margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 30px;
 }
 
 .selector-label {

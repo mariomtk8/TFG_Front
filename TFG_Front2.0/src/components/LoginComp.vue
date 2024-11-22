@@ -1,44 +1,44 @@
 <template>
   <div class="login-page">
     <div class="login-container">
-      <h2>Iniciar Sesión</h2>
+      <h2>{{ $t('login.title') }}</h2>
       <form @submit.prevent="login">
         <div class="input-group">
-          <label for="nombre">Correo Electrónico</label>
+          <label for="email">{{ $t('login.emailLabel') }}</label>
           <input
             type="email"
-            id="nombre"
+            id="email"
             v-model="nombre"
-            placeholder="Ingrese su email"
+            :placeholder="$t('login.emailPlaceholder')"
             required
           />
         </div>
 
         <div class="input-group">
-          <label for="password">Contraseña</label>
+          <label for="password">{{ $t('login.passwordLabel') }}</label>
           <input
             type="password"
             id="password"
             v-model="password"
-            placeholder="Ingrese su contraseña"
+            :placeholder="$t('login.passwordPlaceholder')"
             required
           />
         </div>
 
         <button type="submit" :disabled="loading">
-          {{ loading ? "Iniciando sesión..." : "Iniciar Sesión" }}
+          {{ loading ? $t('login.loading') : $t('login.submit') }}
         </button>
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       </form>
 
-      <!-- Enlace a la página principal -->
       <div class="link-container">
-        <router-link to="/">Volver al inicio</router-link>
+        <router-link to="/">{{ $t('login.backHome') }}</router-link>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref } from 'vue';

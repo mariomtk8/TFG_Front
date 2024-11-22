@@ -2,7 +2,7 @@
   <v-container class="votaciones" max-width="740">
     <v-card elevation="2">
       <v-card-title>
-        <h2>Votaciones</h2>
+        <h2>{{ $t('votaciones.titulo') }}</h2>
       </v-card-title>
       <v-card-text>
         <div class="estrellas">
@@ -18,12 +18,12 @@
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="green" :disabled="puntuacionSeleccionada === 0" @click="enviarVotacion">
-          Enviar Votación
+        <v-btn color="black" :disabled="puntuacionSeleccionada === 0" @click="enviarVotacion">
+          {{ $t('votaciones.enviarVotacion') }}
         </v-btn>
       </v-card-actions>
       <v-card-subtitle>
-        <h3>Promedio de Votaciones: {{ promedioPuntuacion }}</h3>
+        <h3>{{ $t('votaciones.promedioVotaciones') }} {{ promedioPuntuacion }}</h3>
       </v-card-subtitle>
     </v-card>
   </v-container>

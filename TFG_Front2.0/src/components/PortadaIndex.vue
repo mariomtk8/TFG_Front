@@ -1,12 +1,15 @@
 <template>
   <section class="portada">
     <div class="overlay">
-      <h1>¡Bienvenido a Recetas Redondas!</h1>
-      <p>Descubre nuevas ideas y encuentra el menú perfecto según tus gustos y necesidades.</p>
-      <button @click="goToExplore" class="explorar-btn">Explorar Recetas</button>
+      <h1>{{ $t('portada.title') }}</h1>
+      <p>{{ $t('portada.description') }}</p>
+      <button @click="goToExplore" class="explorar-btn">
+        {{ $t('portada.button') }}
+      </button>
     </div>
   </section>
 </template>
+
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';

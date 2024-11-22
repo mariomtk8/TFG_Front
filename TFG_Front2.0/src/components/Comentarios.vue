@@ -45,7 +45,7 @@
             required
           ></v-textarea>
           <v-card-actions class="d-flex flex-column align-center">
-            <v-btn type="submit" color="green">{{ $t('comentarios.addComment') }}</v-btn>
+            <v-btn type="submit" color="black">{{ $t('comentarios.addComment') }}</v-btn>
           </v-card-actions>
         </v-form>
       </v-card-actions>

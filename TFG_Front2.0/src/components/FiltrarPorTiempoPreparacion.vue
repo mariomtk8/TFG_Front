@@ -60,7 +60,7 @@ export default defineComponent({
 }
 
 .selector-container {
-  margin-bottom: 20px;
+  margin: 30px;
   display: flex;
   justify-content: center;
   align-items: center;

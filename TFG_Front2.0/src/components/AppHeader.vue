@@ -335,8 +335,9 @@ const checkMenuSemanal = async () => {
   top: 100%;
   width: 60%;
   left: 0;
-  background: white;
+  background: #FFE5A2;
   border: 1px solid #ccc;
+  border-radius: 20px;
   max-height: 200px;
   overflow-y: auto;
   width: 75%;

@@ -1,23 +1,46 @@
 <template>
   <section class="populares">
-    <h1>Recetas Populares</h1>
+    <h1>{{ $t('recetasPopulares.title') }}</h1>
     <div v-if="filtradosStore.recetasPopulares.length > 0" class="recetas-container">
-      <div v-for="receta in filtradosStore.recetasPopulares" :key="receta.idReceta" class="receta-card">
+      <div
+        v-for="receta in filtradosStore.recetasPopulares"
+        :key="receta.idReceta"
+        class="receta-card"
+      >
         <RouterLink :to="`/Recetas/${receta.idReceta}`">
           <img :src="receta.imagen" :alt="receta.nombre" class="receta-imagen" />
           <h2>{{ receta.nombre }}</h2>
         </RouterLink>
         <div class="stars">
-          <!-- Estrellas llenas -->
-          <svg v-for="n in Math.floor(receta.promedioVotos)" :key="`filled-${n}`" class="filled" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor">
+          <svg
+            v-for="n in Math.floor(receta.promedioVotos)"
+            :key="`filled-${n}`"
+            class="filled"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+          >
             <path d="M10 15.25l-6.478 3.403 1.236-7.213L.246 6.328l7.24-.105L10 0l2.514 6.223 7.24.105-4.512 4.112 1.236 7.213z" />
           </svg>
-          <!-- Estrella media si corresponde -->
-          <svg v-if="receta.promedioVotos % 1 >= 0.5" class="half" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor">
+          <svg
+            v-if="receta.promedioVotos % 1 >= 0.5"
+            class="half"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+          >
             <path d="M10 15.25l-6.478 3.403 1.236-7.213L.246 6.328l7.24-.105L10 0l2.514 6.223 7.24.105-4.512 4.112 1.236 7.213z" />
           </svg>
-          <!-- Estrellas vacías -->
-          <svg v-for="n in 5 - Math.ceil(receta.promedioVotos)" :key="`empty-${n}`" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor">
+          <svg
+            v-for="n in 5 - Math.ceil(receta.promedioVotos)"
+            :key="`empty-${n}`"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+          >
             <path d="M10 15.25l-6.478 3.403 1.236-7.213L.246 6.328l7.24-.105L10 0l2.514 6.223 7.24.105-4.512 4.112 1.236 7.213z" />
           </svg>
         </div>
@@ -25,6 +48,8 @@
     </div>
   </section>
 </template>
+
+
 
 <script setup lang="ts">
 import { onMounted } from 'vue';

@@ -1,57 +1,72 @@
 <template>
     <div class="preferencias-container">
-        <section class="preferencias-categorias">
-            <h2>Selecciona las categorias que no desees</h2>
-            <input 
-                type="text" 
-                v-model="busquedaCategorias" 
-                placeholder="Buscar categorías..." 
-                class="buscador-categorias"
-            />
-            <select v-model="categoriasSeleccionadas" multiple class="categoria-select">
-                <option v-for="categoria in categoriasFiltradas" :key="categoria.idCategoria" :value="categoria.idCategoria">
-                    {{ categoria.nombreCategoria }}
-                </option>
-            </select>
-            <button @click="guardarCategorias" class="btn-guardar">Guardar Preferencias</button>
-        </section>
-
-        <section class="preferencias-alergenos">
-            <h2>Selecciona tus Alérgenos</h2>
-            <input 
-                type="text" 
-                v-model="busquedaAlergenos" 
-                placeholder="Buscar alérgenos..." 
-                class="buscador-alergenos"
-            />
-            <select v-model="alergenosSeleccionados" multiple class="alergenos-select">
-                <option v-for="ingrediente in alergenosFiltrados" :key="ingrediente.idIngrediente" :value="ingrediente.idIngrediente">
-                    {{ ingrediente.nombreIngrediente }}
-                </option>
-            </select>
-            <button @click="guardarAlergenos" class="btn-guardar">Guardar Preferencias</button>
-        </section>
-
-        <section class="preferencias-guardadas">
-            <h2>Preferencias Guardadas</h2>
-            <div>
-                <h3>Categorías Seleccionadas:</h3>
-                <ul>
-                    <li v-for="categoria in categoriasGuardadas" :key="categoria.idCategoria">
-                        {{ categoria.nombreCategoria }}
-                    </li>
-                </ul>
-                <h3>Alérgenos Seleccionados:</h3>
-                <ul>
-                    <li v-for="alergeno in alergenosGuardados" :key="alergeno.idAlergeno">
-                        {{ alergeno.nombreIngrediente }}
-                    </li>
-                </ul>
-            </div>
-        </section>
-        <button @click="generarMenuSemanal" class="btn-generar-menu">Generar Menú Semanal</button>
+      <section class="preferencias-categorias">
+        <h2>{{ $t('preferencias.categoriasTitulo') }}</h2>
+        <input
+          type="text"
+          v-model="busquedaCategorias"
+          :placeholder="$t('preferencias.buscarCategorias')"
+          class="buscador-categorias"
+        />
+        <select v-model="categoriasSeleccionadas" multiple class="categoria-select">
+          <option
+            v-for="categoria in categoriasFiltradas"
+            :key="categoria.idCategoria"
+            :value="categoria.idCategoria"
+          >
+            {{ categoria.nombreCategoria }}
+          </option>
+        </select>
+        <button @click="guardarCategorias" class="btn-guardar">
+          {{ $t('preferencias.guardar') }}
+        </button>
+      </section>
+  
+      <section class="preferencias-alergenos">
+        <h2>{{ $t('preferencias.alergenosTitulo') }}</h2>
+        <input
+          type="text"
+          v-model="busquedaAlergenos"
+          :placeholder="$t('preferencias.buscarAlergenos')"
+          class="buscador-alergenos"
+        />
+        <select v-model="alergenosSeleccionados" multiple class="alergenos-select">
+          <option
+            v-for="ingrediente in alergenosFiltrados"
+            :key="ingrediente.idIngrediente"
+            :value="ingrediente.idIngrediente"
+          >
+            {{ ingrediente.nombreIngrediente }}
+          </option>
+        </select>
+        <button @click="guardarAlergenos" class="btn-guardar">
+          {{ $t('preferencias.guardar') }}
+        </button>
+      </section>
+  
+      <section class="preferencias-guardadas">
+        <h2>{{ $t('preferencias.guardadasTitulo') }}</h2>
+        <div>
+          <h3>{{ $t('preferencias.categoriasSeleccionadas') }}</h3>
+          <ul>
+            <li v-for="categoria in categoriasGuardadas" :key="categoria.idCategoria">
+              {{ categoria.nombreCategoria }}
+            </li>
+          </ul>
+          <h3>{{ $t('preferencias.alergenosSeleccionados') }}</h3>
+          <ul>
+            <li v-for="alergeno in alergenosGuardados" :key="alergeno.idAlergeno">
+              {{ alergeno.nombreIngrediente }}
+            </li>
+          </ul>
+        </div>
+      </section>
+      <button @click="generarMenuSemanal" class="btn-generar-menu">
+        {{ $t('preferencias.generarMenu') }}
+      </button>
     </div>
-</template>
+  </template>
+  
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed } from 'vue';
@@ -211,7 +226,7 @@ select {
 }
 
 .btn-guardar, .btn-generar-menu {
-    background-color: #4caf50; /* Verde */
+    background-color: #FF8A5C; 
     color: white;
     border: none;
     padding: 10px 20px;

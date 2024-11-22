@@ -2,28 +2,28 @@
   <v-container max-width="lg" class="py-5 receta-container">
     <v-card elevation="2" class="pa-5">
       <v-card-title class="text-h4 receta-titulo text-center">
-        {{ receta?.nombre }}
+        {{ $t('receta.title', { nombre: receta?.nombre }) }}
       </v-card-title>
 
       <v-divider></v-divider>
 
       <v-card-text>
         <section v-if="receta" class="receta__descripcion mb-4">
-          <h2>Descripción</h2>
+          <h2>{{ $t('receta.description') }}</h2>
           <p style="margin-left: 3vh; max-width: 600px;">{{ receta.descripcion }}</p>
         </section>
 
         <v-row class="receta__layout" dense>
           <v-col cols="12" md="8">
             <v-card class="pa-4 mb-4 receta__info">
-              <h2>Detalles de la receta</h2>
-              <p><strong>Dificultad:</strong> {{ receta?.nivelDificultad }}</p>
-              <p><strong>Preparación:</strong> {{ receta?.tiempoPreparacion }} min</p>
-              <p><strong>Vegano:</strong> {{ receta?.esVegano ? 'Vegano' : 'No Vegano' }}</p>
+              <h2>{{ $t('receta.details') }}</h2>
+              <p><strong>{{ $t('receta.difficulty') }}:</strong> {{ receta?.nivelDificultad }}</p>
+              <p><strong>{{ $t('receta.preparationTime') }}:</strong> {{ receta?.tiempoPreparacion }} min</p>
+              <p><strong>{{ $t('receta.vegan') }}:</strong> {{ receta?.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</p>
             </v-card>
 
             <v-card class="pa-4 mb-4 receta__ingredientes">
-              <h2>Ingredientes</h2>
+              <h2>{{ $t('receta.ingredients') }}</h2>
               <v-list dense>
                 <v-list-item
                   v-for="ingrediente in ingredientes"
@@ -37,14 +37,14 @@
             </v-card>
 
             <v-card class="pa-4 mb-4 receta__pasos">
-              <v-subheader>Pasos</v-subheader>
+              <v-subheader>{{ $t('receta.steps') }}</v-subheader>
               <div v-for="paso in pasos" :key="paso.idPaso" class="mb-3">
-                <h4 class="text-h6">{{ paso.numero }}º Paso</h4>
+                <h4 class="text-h6">{{ paso.numero }}º {{ $t('receta.step') }}</h4>
                 <p>{{ paso.descripcion }}</p>
                 <v-img
                   v-if="paso.imagenUrl"
                   :src="paso.imagenUrl"
-                  alt="Imagen del paso"
+                  :alt="$t('receta.stepImage')"
                   class="paso__imagen mb-2"
                   max-width="400"
                 />
@@ -75,6 +75,7 @@
     </v-card>
   </v-container>
 </template>
+
 
 <script setup lang="ts">
 import Comentarios from '../components/Comentarios.vue';

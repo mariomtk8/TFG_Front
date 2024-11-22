@@ -4,39 +4,39 @@
       <thead>
         <tr>
           <th></th>
-          <th v-for="dia in diasSemana" :key="dia">{{ dia }}</th>
+          <th v-for="dia in diasSemana" :key="dia">{{ $t(`${dia}`) }}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Comida</td>
+          <td>{{ $t('menuSemanal.comida') }}</td>
           <td v-for="(dia, index) in diasSemana" :key="`comida-${index}`">
             <div v-if="menuRecetas[dia]?.comida">
               <router-link :to="`/Recetas/${menuRecetas[dia]?.comida?.idReceta}`" class="receta-link">
                 <p class="receta-nombre">{{ menuRecetas[dia]?.comida?.nombre }}</p>
-                <img :src="menuRecetas[dia]?.comida?.imagen" alt="Imagen de la receta" />
+                <img :src="menuRecetas[dia]?.comida?.imagen" :alt="$t('menuSemanal.altImagen')" />
               </router-link>
             </div>
-            <span v-else>Sin receta asignada</span>
+            <span>{{ $t('menuSemanal.sinReceta') }}</span>
           </td>
         </tr>
         <tr>
-          <td>Cena</td>
+          <td>{{ $t('menuSemanal.cena') }}</td>
           <td v-for="(dia, index) in diasSemana" :key="`cena-${index}`">
             <div v-if="menuRecetas[dia]?.cena">
               <router-link :to="`/Recetas/${menuRecetas[dia]?.cena?.idReceta}`" class="receta-link">
                 <p class="receta-nombre">{{ menuRecetas[dia]?.cena?.nombre }}</p>
-                <img :src="menuRecetas[dia]?.cena?.imagen" alt="Imagen de la receta" />
+                <img :src="menuRecetas[dia]?.cena?.imagen" :alt="$t('menuSemanal.altImagen')" />
               </router-link>
             </div>
-            <span v-else>Sin receta asignada</span>
+
           </td>
         </tr>
       </tbody>
     </table>
     <div class="botones">
-      <button @click="actualizarMenuSemanal">Actualizar Menú</button>
-      <router-link to="/PreferenciasUsuario" class="volver-link">Volver a Preferencias</router-link>
+      <button @click="actualizarMenuSemanal">{{ $t('menuSemanal.actualizar') }}</button>
+      <router-link to="/PreferenciasUsuario" class="volver-link">{{ $t('menuSemanal.volver') }}</router-link>
     </div>
   </div>
 </template>
