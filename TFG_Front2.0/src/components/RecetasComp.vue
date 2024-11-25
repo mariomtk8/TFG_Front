@@ -81,7 +81,7 @@
 import Comentarios from '../components/Comentarios.vue';
 import Votaciones from '../components/Votaciones.vue';
 import Populares from './Populares.vue';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRecetasStore } from '../store/Recetas';
 
@@ -90,7 +90,7 @@ const receta = computed(() => recetasStore.recetaActual);
 const ingredientes = computed(() => recetasStore.ingredientes.map(ingrediente => ({ ...ingrediente, mostrarDetalles: false })));
 const pasos = computed(() => recetasStore.pasos);
 const route = useRoute();
-const recetaId = route.params.id ? Number(route.params.id) : null;
+const recetaId = computed(() => route.params.id ? Number(route.params.id) : null);
 
 const cargarReceta = async (id: number) => {
   await recetasStore.fetchRecetaPorId(id);
@@ -98,12 +98,24 @@ const cargarReceta = async (id: number) => {
 };
 
 onMounted(() => {
-  if (recetaId !== null && !isNaN(recetaId)) {
-    cargarReceta(recetaId);
+  if (recetaId.value !== null && !isNaN(recetaId.value)) {
+    cargarReceta(recetaId.value);
   } else {
     console.error('ID de receta no válido');
   }
 });
+
+// Watch para detectar cambios en el parámetro `id` y cargar la receta correspondiente
+watch(
+  recetaId,
+  (newId) => {
+    if (newId !== null && !isNaN(newId)) {
+      cargarReceta(newId);
+    } else {
+      console.error('ID de receta no válido');
+    }
+  }
+);
 </script>
 
 <style scoped>

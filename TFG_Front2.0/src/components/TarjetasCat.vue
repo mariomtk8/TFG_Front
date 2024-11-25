@@ -88,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import Swal from 'sweetalert2';
 import { useRecetasStore } from '../store/RecetasCat';
@@ -177,10 +177,19 @@ const esFavorito = (recetaId: number) => {
   return favoritosStore.recetasFavoritas.some((favorito: any) => favorito.idReceta === recetaId);
 };
 
+// Cargar recetas al montar el componente
 onMounted(() => {
   cargarRecetas(idCategoria.value);
   favoritosStore.obtenerFavoritos();
 });
+
+// Observar cambios en el parámetro `idCategoria`
+watch(
+  () => idCategoria.value,
+  (newId) => {
+    cargarRecetas(newId); // Recargar recetas cuando cambia la categoría
+  }
+);
 </script>
 
 <style scoped>
