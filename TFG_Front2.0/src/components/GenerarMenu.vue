@@ -17,7 +17,6 @@
                 <img :src="menuRecetas[dia]?.comida?.imagen" :alt="$t('menuSemanal.altImagen')" />
               </router-link>
             </div>
-            <span>{{ $t('menuSemanal.sinReceta') }}</span>
           </td>
         </tr>
         <tr>
@@ -103,6 +102,7 @@ export default defineComponent({
   margin: 20px auto;
   max-width: 1000px;
   overflow-x: auto;
+  margin-top: 10vh;
 }
 
 .responsive-table {

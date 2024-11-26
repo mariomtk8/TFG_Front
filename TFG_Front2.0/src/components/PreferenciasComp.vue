@@ -116,7 +116,6 @@ export default defineComponent({
                     recetas: [],
                 };
 
-                // Llamar a la acción del store con el objeto menú completo
                 await store.crearMenuSemanal(menu);
 
                 router.push('/MenuSemanal');

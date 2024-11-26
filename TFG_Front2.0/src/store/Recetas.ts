@@ -24,7 +24,9 @@ interface Paso {
 interface Ingrediente {
   idIngrediente: number;
   nombreIngrediente: string;
-  cantidad: string; // Puedes ajustar según la estructura de tus ingredientes
+  cantidad: number;
+  notas: string;
+  esOpcional: boolean;
   calorias: number;
   contieneAlergenos: boolean;
   tipoAlergeno: string;

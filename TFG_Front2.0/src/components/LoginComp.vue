@@ -61,9 +61,9 @@ const login = async () => {
 
     if (success) {
       if (loginStore.usuario?.rol) {
-        router.push('/PanelAdmin'); // Redirige a la página de administración si es admin
+        router.push('/PanelAdmin');
       } else {
-        router.push('/'); // Redirige a la página de usuarios normales
+        router.push('/'); 
       }
     } else {
       errorMessage.value = 'Credenciales incorrectas. Inténtalo nuevamente.';
@@ -77,7 +77,6 @@ const login = async () => {
 </script>
 
 <style scoped>
-/* Contenedor principal */
 .login-page {
   display: flex;
   justify-content: center;

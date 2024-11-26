@@ -100,7 +100,6 @@ const nuevoIngrediente = ref<Ingrediente>({
   fechaExpiracion: new Date().toISOString().split('T')[0],
 });
 
-// Llamar a getCategorias al montar el componente
 onMounted(async () => {
   await adminStore.getCategorias();
 });
@@ -165,14 +164,14 @@ const resetIngredienteForm = () => {
 
 .form-row {
   display: flex;
-  flex-direction: column; /* Cambio a columna para dispositivos móviles */
+  flex-direction: column; 
   justify-content: space-between;
 }
 
 .create-recipe,
 .add-ingredient {
-  flex: 1; /* Ambos ocupan la misma cantidad de espacio */
-  margin: 0 10px; /* Espacio entre las columnas */
+  flex: 1; 
+  margin: 0 10px; 
 }
 
 .input-field {

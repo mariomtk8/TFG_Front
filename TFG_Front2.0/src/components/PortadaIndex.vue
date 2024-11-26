@@ -21,12 +21,12 @@ const recetasStore = useRecetasStore();
 const goToExplore = async () => {
   try {
     await recetasStore.fetchRecetas(); 
-    const recetas = recetasStore.resultadosBusqueda; // Accede a las recetas obtenidas
+    const recetas = recetasStore.resultadosBusqueda; 
 
     if (recetas.length > 0) {
       const randomIndex = Math.floor(Math.random() * recetas.length); 
-      const randomReceta = recetas[randomIndex]; // Obtén la receta aleatoria
-      router.push(`/Recetas/${randomReceta.idReceta}`); // Redirige a la receta aleatoria
+      const randomReceta = recetas[randomIndex]; 
+      router.push(`/Recetas/${randomReceta.idReceta}`); 
     } else {
       console.error('No hay recetas disponibles.');
     }

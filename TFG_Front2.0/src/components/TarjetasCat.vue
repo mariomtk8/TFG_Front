@@ -59,12 +59,11 @@
                 class="imagen-ajustada"
               ></v-img>
             </v-sheet>
-            <v-card-title>{{ receta.nombre }}</v-card-title>
-            <v-card-subtitle>{{ receta.descripcion }}</v-card-subtitle>
+            <v-card-title  style="margin: 5px;">{{ receta.nombre }}</v-card-title>
             <v-card-text>
-              <v-chip>{{ receta.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</v-chip>
-              <v-chip>{{ $t('receta.difficulty') }}: {{ receta.nivelDificultad }}</v-chip>
-              <v-chip>{{ $t('receta.preparationTime') }}: {{ receta.tiempoPreparacion }} min</v-chip>
+              <v-chip  style="margin: 5px;">{{ receta.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</v-chip>
+              <v-chip  style="margin: 5px;">{{ $t('receta.difficulty') }}: {{ receta.nivelDificultad }}</v-chip>
+              <v-chip  style="margin: 5px;">{{ $t('receta.preparationTime') }}: {{ receta.tiempoPreparacion }} min</v-chip>
             </v-card-text>
           </RouterLink>
 
@@ -177,17 +176,17 @@ const esFavorito = (recetaId: number) => {
   return favoritosStore.recetasFavoritas.some((favorito: any) => favorito.idReceta === recetaId);
 };
 
-// Cargar recetas al montar el componente
+
 onMounted(() => {
   cargarRecetas(idCategoria.value);
   favoritosStore.obtenerFavoritos();
 });
 
-// Observar cambios en el parámetro `idCategoria`
+
 watch(
   () => idCategoria.value,
   (newId) => {
-    cargarRecetas(newId); // Recargar recetas cuando cambia la categoría
+    cargarRecetas(newId); 
   }
 );
 </script>
@@ -246,6 +245,7 @@ a {
 
 .receta-item {
   max-width: 350px;
+  max-height: 430px;
   position: relative;
   padding: 16px;
   border: 1px solid #ddd;

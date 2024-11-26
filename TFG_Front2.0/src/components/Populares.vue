@@ -57,19 +57,18 @@ import { useRoute } from 'vue-router';
 const filtradosStore = useFiltradosStore();
 const route = useRoute();
 
-// Cargar recetas populares cuando se monta el componente
+
 onMounted(async () => {
   await filtradosStore.fetchRecetasPopulares();
 });
 
-// Observa cualquier cambio en la ruta, como parámetros de filtro u otros que afecten a las recetas populares
 watch(
-  () => route.params, // Aquí puedes observar cualquier parámetro de la ruta que cambie
+  () => route.params, 
   async () => {
-    // Recargar las recetas populares cada vez que la ruta cambie
+
     await filtradosStore.fetchRecetasPopulares();
   },
-  { immediate: true } // Esto asegura que se carguen las recetas cuando se monta el componente
+  { immediate: true } 
 );
 </script>
 
@@ -77,6 +76,9 @@ watch(
 <style scoped>
 .populares {
   padding: 20px;
+}
+h1{
+  margin: 3vh;
 }
 
 .recetas-container {

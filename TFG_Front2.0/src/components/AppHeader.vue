@@ -140,10 +140,8 @@ const goToPanelAdmin = () => {
 };
 
 const handleCategoryClick = (e: Event) => {
-  // Evitar que se recargue la página
   e.preventDefault();
-  
-  // Aquí puedes agregar lógica adicional si es necesario, como realizar peticiones o actualizar algún estado
+ 
   const idCategoria = (e.target as HTMLElement).getAttribute('data-id');
   if (idCategoria) {
     router.push({ name: 'RecetasCat', params: { idCategoria } });
@@ -215,7 +213,7 @@ const checkMenuSemanal = async () => {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
-  width: 100px; /* Ajustar al tamaño deseado */
+  width: 100px; 
 }
 
 .language-switcher button:hover {

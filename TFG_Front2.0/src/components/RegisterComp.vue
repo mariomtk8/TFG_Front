@@ -91,7 +91,7 @@ const register = async () => {
 </script>
 
 <style scoped>
-/* Contenedor principal */
+
 .register-page {
   display: flex;
   justify-content: center;
@@ -101,7 +101,7 @@ const register = async () => {
   padding: 20px;
 }
 
-/* Contenedor del formulario */
+
 .register-container {
   width: 100%;
   max-width: 450px;
@@ -112,14 +112,13 @@ const register = async () => {
   text-align: center;
 }
 
-/* Título del formulario */
+
 h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
   color: #333;
 }
 
-/* Estilo de los campos de entrada */
 .input-group {
   margin-bottom: 15px;
 }

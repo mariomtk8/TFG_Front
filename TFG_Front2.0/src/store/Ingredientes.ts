@@ -16,7 +16,7 @@ export interface RecetaIngrediente {
   idRecetaIngrediente: number;
   idReceta: number;
   idIngrediente: number;
-  cantidad: number;
+  cantidad?: number;
   notas: string;
   fechaAñadido: string;
   esOpcional: boolean;
@@ -73,11 +73,11 @@ export const useIngredientesStore = defineStore({
 
         if (!response.ok) throw new Error('Error al crear el ingrediente');
         const createdIngrediente = await response.json();
-        this.ingredientes.push(createdIngrediente); // Añadir el ingrediente creado a la lista
-        return createdIngrediente; // Retornar el ingrediente creado
+        this.ingredientes.push(createdIngrediente); 
+        return createdIngrediente; 
       } catch (error: any) {
         this.error = error.message;
-        throw error; // Lanzar el error para manejarlo en el componente si es necesario
+        throw error; 
       }
     },
 

@@ -224,7 +224,7 @@ const filterRecetas = async () => {
 
 .content {
   display: flex;
-  justify-content: center; /* Cambiado para centrar la tabla */
+  justify-content: center; 
   width: 100%;
   max-width: 1500px;
 }

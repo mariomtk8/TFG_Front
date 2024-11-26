@@ -50,7 +50,7 @@
             <!-- Dirección y Mapa -->
             <h4>{{ $t('contact.address') }}:</h4>
             <p>
-              {{ $t('contact.addressText') }}
+              -       -         -
             </p>
             <v-divider class="my-4" />
             <h4>{{ $t('contact.visitUsOnMap') }}:</h4>

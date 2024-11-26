@@ -2,7 +2,7 @@
   <v-container max-width="lg" class="py-5 receta-container">
     <v-card elevation="2" class="pa-5">
       <v-card-title class="text-h4 receta-titulo text-center">
-        {{ $t('receta.title', { nombre: receta?.nombre }) }}
+        {{ receta?.nombre}}
       </v-card-title>
 
       <v-divider></v-divider>
@@ -17,9 +17,9 @@
           <v-col cols="12" md="8">
             <v-card class="pa-4 mb-4 receta__info">
               <h2>{{ $t('receta.details') }}</h2>
-              <p><strong>{{ $t('receta.difficulty') }}:</strong> {{ receta?.nivelDificultad }}</p>
-              <p><strong>{{ $t('receta.preparationTime') }}:</strong> {{ receta?.tiempoPreparacion }} min</p>
-              <p><strong>{{ $t('receta.vegan') }}:</strong> {{ receta?.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</p>
+              <p style="margin: 1vh;"><strong>{{ $t('receta.difficulty') }}:</strong> {{ receta?.nivelDificultad }}</p>
+              <p style="margin: 1vh;"><strong>{{ $t('receta.preparationTime') }}:</strong> {{ receta?.tiempoPreparacion }} min</p>
+              <p style="margin: 1vh;"><strong>{{ $t('receta.vegan') }}:</strong> {{ receta?.esVegano ? $t('receta.veganYes') : $t('receta.veganNo') }}</p>
             </v-card>
 
             <v-card class="pa-4 mb-4 receta__ingredientes">
@@ -30,18 +30,18 @@
                   :key="ingrediente.idIngrediente"
                 >
                   <v-list-item-content>
-                    <p><strong>{{ ingrediente.nombreIngrediente }}</strong> - {{ ingrediente.cantidad }} {{ ingrediente.unidadMedida }}</p>
+                    <p><strong>{{ ingrediente.nombreIngrediente }}</strong> - {{ borrarCant(ingrediente.cantidad) }} {{ ingrediente.notas }} </p>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
             </v-card>
 
             <v-card class="pa-4 mb-4 receta__pasos">
-              <v-subheader>{{ $t('receta.steps') }}</v-subheader>
+              <h2>{{ $t('receta.steps') }}</h2>
               <div v-for="paso in pasos" :key="paso.idPaso" class="mb-3">
                 <h4 class="text-h6">{{ paso.numero }}º {{ $t('receta.step') }}</h4>
-                <p>{{ paso.descripcion }}</p>
-                <v-img
+                <p style="margin: 2vh;">- {{ paso.descripcion }}</p>
+                <v-img style="margin-left: 2vh;" width="300px"
                   v-if="paso.imagenUrl"
                   :src="paso.imagenUrl"
                   :alt="$t('receta.stepImage')"
@@ -92,6 +92,13 @@ const pasos = computed(() => recetasStore.pasos);
 const route = useRoute();
 const recetaId = computed(() => route.params.id ? Number(route.params.id) : null);
 
+const borrarCant = (numero : number) =>{
+  if (numero <= 1) {
+    return null
+  } else {
+    return numero
+  }
+}
 const cargarReceta = async (id: number) => {
   await recetasStore.fetchRecetaPorId(id);
   await recetasStore.fetchIngredientesPorRecetaId(id);
@@ -105,7 +112,6 @@ onMounted(() => {
   }
 });
 
-// Watch para detectar cambios en el parámetro `id` y cargar la receta correspondiente
 watch(
   recetaId,
   (newId) => {
@@ -127,13 +133,17 @@ watch(
 h2{
   padding: 2vh;
   margin-bottom: 2vh;
+  font-size: 24px;
 }
 p{
-  font-size: 15px
+  font-size: 18px
+}
+h4{
+  margin: 2vh;
 }
 
 .receta-titulo {
-  color: rgb(63, 25, 124);
+  color: rgb(0, 0, 0);
 }
 
 .receta__descripcion,
@@ -143,6 +153,10 @@ p{
 .receta__sidebar {
   background-color: #fafafa;
   border-radius: 8px;
+}
+.pasos{
+  font-size: 18px;
+
 }
 
 .paso__imagen {

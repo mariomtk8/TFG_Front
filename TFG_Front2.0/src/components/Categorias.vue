@@ -61,23 +61,21 @@
 import { onMounted, computed, ref } from 'vue';
 import { useCategoriasStore } from '../store/Categorias';
 
-// Inicializar el store de categorías
 const categoriasStore = useCategoriasStore();
 const fetchCategorias = categoriasStore.fetchCategorias;
 const loading = categoriasStore.loading;
 const error = categoriasStore.error;
 
-// Computed para obtener las categorías
+
 const categoriasComputed = computed(() => categoriasStore.categorias);
 
-// Filtros
+
 const search = ref('');
 
-// Computed para las categorías filtradas por búsqueda
+
 const filteredCategories = computed(() => {
   let categories = categoriasComputed.value;
 
-  // Filtro de búsqueda por nombre
   if (search.value) {
     categories = categories.filter(category =>
       category.nombreCategoria.toLowerCase().includes(search.value.toLowerCase())
@@ -87,14 +85,13 @@ const filteredCategories = computed(() => {
   return categories;
 });
 
-// Definir los encabezados de la tabla
+
 const headers = [
   { text: 'Icono', align: 'start', key: 'icono' },
   { text: 'Nombre', align: 'start', key: 'nombreCategoria' },
   { text: 'Acción', align: 'center', key: 'actions' }
 ];
 
-// Cargar las categorías al montar el componente
 onMounted(async () => {
   await fetchCategorias();
 });
@@ -105,7 +102,6 @@ onMounted(async () => {
   margin-top: 5vh;
 }
 
-/* Título de la tabla */
 .headline {
   font-size: 1.8em;
   color: #333;
@@ -114,7 +110,6 @@ onMounted(async () => {
   font-weight: bold;
 }
 
-/* Estilo del botón */
 .v-btn {
   font-size: 14px;
   font-weight: bold;
@@ -128,14 +123,12 @@ onMounted(async () => {
   background-color: #d6b86b;
 }
 
-/* Estilizar la tabla */
 .v-data-table {
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilizar la tabla con bordes */
 .v-data-table th,
 .v-data-table td {
   padding: 12px;
@@ -144,19 +137,16 @@ onMounted(async () => {
   font-size: 0.9em;
 }
 
-/* Estilizar los encabezados */
 .v-data-table th {
   background-color: #FFE5A2;
   color: black;
   font-weight: bold;
 }
 
-/* Estilizar las filas */
 .v-data-table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-/* Responsividad */
 @media (max-width: 768px) {
   .v-data-table {
     font-size: 0.8em;

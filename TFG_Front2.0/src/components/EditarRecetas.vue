@@ -209,7 +209,6 @@ const nuevaReceta = ref<Receta>({
   tiempoPreparacion: 0,
   idCategoria: 0
 });
-// Cargar las recetas y categorías al montar el componente
 onMounted(() => {
   adminStore.getRecetas();
   adminStore.getCategorias();
@@ -322,19 +321,16 @@ const resetNuevaReceta = () => {
 // cancelar la edición
 const cancelEdit = () => {
   recetaSeleccionada.value = null;
-  pasosSeleccionados.value = []; // Limpiar pasos seleccionados
+  pasosSeleccionados.value = []; 
 };
 
 const manageIngredientes = async (receta: Receta) => {
   recetaSeleccionada.value = receta;
 
-  // Obtén todos los ingredientes
   await ingredientesStore.getAllIngredientes();
 
-  // Obtén los ingredientes de la receta seleccionada
   await ingredientesStore.getIngredientesByRecetaId(receta.idReceta);
 
-  // Asignar los ingredientes seleccionados
   ingredientesSeleccionados.value = ingredientesStore.recetaIngredientes;
 };
 
@@ -351,10 +347,8 @@ const addIngrediente = async () => {
     esOpcional: false,
   };
 
-  // Llama a la API para crear el nuevo ingrediente
   await ingredientesStore.createIngredienteForReceta(nuevoIngrediente);
 
-  // Agrega manualmente el nuevo ingrediente a la lista
   ingredientesSeleccionados.value.push({ ...nuevoIngrediente });
 };
 

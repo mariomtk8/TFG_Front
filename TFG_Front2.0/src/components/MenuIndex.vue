@@ -33,7 +33,7 @@ const goToMenuSemanal = () => {
 
 <style scoped>
 .menu-semanal-section {
-  background-image: url('/path/to/your/background-image.jpg'); /* Puedes añadir una imagen de fondo temática de alimentos */
+  background-image: url('/path/to/your/background-image.jpg'); 
   background-size: cover;
   background-position: center;
   color: black;
@@ -51,7 +51,7 @@ const goToMenuSemanal = () => {
 
 .menu-semanal-content {
   max-width: 600px;
-  background-color: #FFE5A2(0, 0, 0, 0.); /* Fondo oscuro translúcido para el texto */
+  background-color: #FFE5A2(0, 0, 0, 0.); 
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
@@ -71,7 +71,7 @@ const goToMenuSemanal = () => {
 
 .menu-semanal-btn {
   padding: 12px 24px;
-  background-color: #FF6347; /* Tomate, un color que resalta en el tema culinario */
+  background-color: #FF6347; 
   color: white;
   font-size: 1em;
   font-weight: bold;

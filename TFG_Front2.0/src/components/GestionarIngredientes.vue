@@ -141,13 +141,10 @@ onMounted(async () => {
 const manageIngredientes = async (receta: Receta) => {
   recetaSeleccionada.value = receta;
 
-  // Obtener todos los ingredientes de la tienda
   await ingredientesStore.getAllIngredientes();
-
-  // Obtener los ingredientes asociados a la receta seleccionada
+  
   await ingredientesStore.getIngredientesByRecetaId(receta.idReceta);
 
-  // Asignar los ingredientes seleccionados para mostrarlos en el formulario
   ingredientesSeleccionados.value = ingredientesStore.recetaIngredientes;
 };
 
@@ -157,13 +154,13 @@ const addIngrediente = async () => {
     idRecetaIngrediente: 0,
     idReceta: recetaSeleccionada.value ? recetaSeleccionada.value.idReceta : 0, 
     idIngrediente: 0,
-    cantidad: 1,
+    cantidad: 0,
     notas: '',
     fechaAñadido: new Date().toISOString(),
     esOpcional: false,
   };
 
-  await ingredientesStore.createIngredienteForReceta(nuevoIngrediente);
+  await ingredientesStore.updateIngredienteForReceta(nuevoIngrediente);
   ingredientesSeleccionados.value.push({ ...nuevoIngrediente });
 };
 
@@ -214,7 +211,6 @@ const updateIngredientes = async () => {
 </script>
 
 <style scoped>
-/* Estilos para el contenedor y elementos */
 
 .title {
   font-size: 20px;
