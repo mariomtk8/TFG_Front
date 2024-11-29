@@ -41,9 +41,41 @@ export const useAdminStore = defineStore({
     error: null as string | null,
     categorias: [] as Categoria[],
     resultadosBusqueda: [] as Receta[],
+    paginaActual: 1,  // Nueva propiedad para controlar la página actual
+    recetasCargadas: false,  // Para saber si todas las recetas fueron cargadas
+    cargando: false  // Para manejar el estado de carga
   }),
 
   actions: {
+    // Obtener recetas con paginación
+    async getRecetas(pagina: number = 1, pageSize: number = 10) {
+      try {
+        if (this.cargando || this.recetasCargadas) return; // Evitar llamadas mientras se cargan datos
+        this.cargando = true;
+
+        const url = `${urlStore.baseUrl}/Receta?page=${pagina}&pageSize=${pageSize}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error al obtener recetas');
+        
+        const recetasNuevas = await response.json();
+        if (recetasNuevas.length < pageSize) {
+          this.recetasCargadas = true; // Si el número de recetas es menor que el tamaño de página, ya no hay más recetas.
+        }
+
+        this.recetas.push(...recetasNuevas);
+        this.paginaActual = pagina;  // Actualizamos la página actual
+      } catch (error: any) {
+        this.error = error.message;
+      } finally {
+        this.cargando = false;
+      }
+    },
+    resetRecetas() {
+      this.recetas = [];
+      this.recetasCargadas = false;
+      this.paginaActual = 1;
+    },
+
     async searchRecetas(query: string) {
       try {
         const url = urlStore.baseUrl
@@ -63,17 +95,6 @@ export const useAdminStore = defineStore({
       } catch (error) {
         console.log(error)
         throw error
-      }
-    },
-    // Obtener todas las recetas
-    async getRecetas() {
-      try {
-        const url = urlStore.baseUrl
-        const response = await fetch(`${url}/Receta`);
-        if (!response.ok) throw new Error('Error al obtener recetas');
-        this.recetas = await response.json();
-      } catch (error: any) {
-        this.error = error.message;
       }
     },
 

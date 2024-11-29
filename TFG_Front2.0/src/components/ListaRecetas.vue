@@ -35,6 +35,25 @@
         </tbody>
       </table>
 
+      <!-- Paginación -->
+      <div v-if="!adminStore.recetasCargadas" class="pagination">
+        <button 
+          class="btn pagination-btn" 
+          @click="cargarRecetasPagina(adminStore.paginaActual - 1)" 
+          :disabled="adminStore.paginaActual === 1"
+        >
+          Anterior
+        </button>
+        <span>{{ adminStore.paginaActual }}</span>
+        <button 
+          class="btn pagination-btn" 
+          @click="cargarRecetasPagina(adminStore.paginaActual + 1)" 
+          :disabled="adminStore.recetasCargadas"
+        >
+          Siguiente
+        </button>
+      </div>
+
       <!-- Formulario para editar receta -->
       <div v-if="recetaEditar" class="edit-section">
         <h3>Editar Receta</h3>
@@ -132,7 +151,7 @@ const searchQuery = ref('');
 const filteredRecetas = ref<Receta[]>([]);
 
 onMounted(async () => {
-  await adminStore.getRecetas();
+  await adminStore.getRecetas(1);  // Cargar la primera página de recetas
   filteredRecetas.value = adminStore.recetas;
   await adminStore.getCategorias();
 });
@@ -191,14 +210,17 @@ const updatePaso = async () => {
     }
   }
 };
+// Función para cargar recetas de una página específica
+const cargarRecetasPagina = async (pagina: number) => {
+  adminStore.resetRecetas();  // Reiniciamos las recetas antes de cargar nuevas
+  await adminStore.getRecetas(pagina);
+  filteredRecetas.value = adminStore.recetas;
+};
 
-const filterRecetas = async () => {
-  if (searchQuery.value.trim() === '') {
-    filteredRecetas.value = adminStore.recetas;
-  } else {
-    await adminStore.searchRecetas(searchQuery.value);
-    filteredRecetas.value = adminStore.resultadosBusqueda;
-  }
+const filterRecetas = () => {
+  filteredRecetas.value = adminStore.recetas.filter(receta =>
+    receta.nombre.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 };
 </script>
 

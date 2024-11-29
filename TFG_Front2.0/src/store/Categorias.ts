@@ -25,7 +25,7 @@ export const useCategoriasStore = defineStore('categorias', {
       try {
         const url = urlStore.baseUrl
         console.log('Iniciando petición para obtener categorías...');
-        const response = await fetch(`${url}/Categoria`);
+        const response = await fetch(`http://a4f3d54b75e49485791db4994f42a014-387405513.us-east-1.elb.amazonaws.com/Categoria`);
 
         if (!response.ok) {
           throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);

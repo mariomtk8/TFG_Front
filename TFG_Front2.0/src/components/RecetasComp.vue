@@ -39,7 +39,7 @@
             <v-card class="pa-4 mb-4 receta__pasos">
               <h2>{{ $t('receta.steps') }}</h2>
               <div v-for="paso in pasos" :key="paso.idPaso" class="mb-3">
-                <h4 class="text-h6">{{ paso.numero }}º {{ $t('receta.step') }}</h4>
+                <h4 class="text-h6"><strong>{{ paso.numero }}º {{ $t('receta.step') }}</strong></h4>
                 <p style="margin: 2vh;">- {{ paso.descripcion }}</p>
                 <v-img style="margin-left: 2vh;" width="300px"
                   v-if="paso.imagenUrl"

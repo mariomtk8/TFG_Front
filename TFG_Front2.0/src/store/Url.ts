@@ -5,8 +5,9 @@ interface UrlState {
 }
 
 const state: UrlState = reactive({
-  baseUrl: 'http://localhost:5023'
-  //http://a7bf6533c051941e3b7a87053c11b42b-1321297782.us-east-1.elb.amazonaws.com
+  baseUrl: 'http://a4f3d54b75e49485791db4994f42a014-387405513.us-east-1.elb.amazonaws.com'
+  //a4f3d54b75e49485791db4994f42a014-387405513.us-east-1.elb.amazonaws.com
+  //http://localhost:5023
 })
 
 export default state
