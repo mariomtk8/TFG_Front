@@ -26,33 +26,14 @@
             <td class="action-buttons">
               <button class="btn edit-btn" @click="selectReceta(receta)">Editar</button>
               <button class="btn delete-btn" @click="deleteReceta(receta.idReceta)">Eliminar</button>
-              <button class="btn add-step-btn1" @click="addPaso">Añadir Paso</button>
+              <button class="btn add-step-btn" @click="addPaso">Añadir Paso</button>
             </td>
           </tr>
-          <tr v-if="filteredRecetas.length === 0">
+          <tr v-if="filteredRecetas.length == 0">
             <td colspan="2">No se encontraron recetas.</td>
           </tr>
         </tbody>
       </table>
-
-      <!-- Paginación -->
-      <div v-if="!adminStore.recetasCargadas" class="pagination">
-        <button 
-          class="btn pagination-btn" 
-          @click="cargarRecetasPagina(adminStore.paginaActual - 1)" 
-          :disabled="adminStore.paginaActual === 1"
-        >
-          Anterior
-        </button>
-        <span>{{ adminStore.paginaActual }}</span>
-        <button 
-          class="btn pagination-btn" 
-          @click="cargarRecetasPagina(adminStore.paginaActual + 1)" 
-          :disabled="adminStore.recetasCargadas"
-        >
-          Siguiente
-        </button>
-      </div>
 
       <!-- Formulario para editar receta -->
       <div v-if="recetaEditar" class="edit-section">
@@ -149,11 +130,19 @@ const recetaEditar = ref<Receta | null>(null);
 const pasosSeleccionados = ref<Paso[]>([]);
 const searchQuery = ref('');
 const filteredRecetas = ref<Receta[]>([]);
+  
+const filterRecetas = async () => {
+  if (searchQuery.value.trim() === '') {
+    filteredRecetas.value = adminStore.recetas;
+  } else {
+    await adminStore.searchRecetas(searchQuery.value);
+    filteredRecetas.value = adminStore.resultadosBusqueda;
+  }
+};
 
 onMounted(async () => {
-  await adminStore.getRecetas(1);  // Cargar la primera página de recetas
+  await adminStore.getRecetas();
   filteredRecetas.value = adminStore.recetas;
-  await adminStore.getCategorias();
 });
 
 const selectReceta = async (receta: Receta) => {
@@ -210,18 +199,7 @@ const updatePaso = async () => {
     }
   }
 };
-// Función para cargar recetas de una página específica
-const cargarRecetasPagina = async (pagina: number) => {
-  adminStore.resetRecetas();  // Reiniciamos las recetas antes de cargar nuevas
-  await adminStore.getRecetas(pagina);
-  filteredRecetas.value = adminStore.recetas;
-};
 
-const filterRecetas = () => {
-  filteredRecetas.value = adminStore.recetas.filter(receta =>
-    receta.nombre.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-};
 </script>
 
 <style scoped>
@@ -309,6 +287,8 @@ td {
 .form-buttons, .button-group {
   display: flex;
   justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .btn {
@@ -337,7 +317,6 @@ td {
 
 
 .add-step-btn {
-  margin-top: 3vh;
   background-color: #2c3e50;
   color: white;
 }

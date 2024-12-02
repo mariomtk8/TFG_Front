@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="admin-panel">
     
 
@@ -229,7 +229,7 @@ const nuevoIngrediente = ref<Ingrediente>({
   contieneAlergenos: false,
   tipoAlergeno: '',
   unidadMedida: '',
-  fechaExpiracion: new Date().toISOString().split('T')[0], // Fecha en formato YYYY-MM-DD
+  fechaExpiracion: new Date().toISOString().split('T')[0], 
 });
 
 
@@ -252,7 +252,6 @@ onMounted(() => {
 //  seleccionar una receta y editarla
 const selectReceta = async (receta: Receta) => {
   recetaSeleccionada.value = { ...receta };
-  // Obtener los pasos de la receta seleccionada
   pasosSeleccionados.value = await adminStore.getPasosByRecetaId(receta.idReceta);
   console.log(receta.idReceta)
 };
@@ -261,7 +260,7 @@ const selectReceta = async (receta: Receta) => {
 const updateReceta = async () => {
   if (recetaSeleccionada.value) {
     await adminStore.updateReceta(recetaSeleccionada.value.idReceta, recetaSeleccionada.value);
-    recetaSeleccionada.value = null; // Limpiar la receta seleccionada
+    recetaSeleccionada.value = null; 
   }
 };
 
@@ -293,7 +292,7 @@ const deletePaso = async (index: number, idPaso: number) => {
   pasosSeleccionados.value.splice(index, 1);
 };
 
-// a actualizar un paso
+//  actualizar un paso
 const updatePaso = async () => {
   if (recetaSeleccionada.value) {
     for (const paso of pasosSeleccionados.value) {
@@ -470,4 +469,4 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
-</style>
+</style> -->

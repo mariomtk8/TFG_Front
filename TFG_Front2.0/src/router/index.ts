@@ -11,6 +11,7 @@ import Favoritos from '../views/Favoritos.vue';
 import PreferenciasUsuario from '../views/PreferenciasUsuario.vue';
 import Contactanos from '../views/Contactanos.vue';
 import MenuSemanal from '../views/MenuSemanal.vue';
+import PortadaIndex from '../components/PortadaIndex.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,7 @@ const router = createRouter({
     { path: '/', name: 'index', component: Index },
     { path: '/RecetasCat/:idCategoria', name: 'RecetasCat', component: RecetasCat },
     { path: '/Recetas/:id', name: 'Recetas', component: Recetas },
+    { path: '/Recetas/:id', name: 'RecetasPort', component: PortadaIndex },
     { path: '/Contactanos', name: 'Contactanos', component: Contactanos },
     { path: '/Login', name: 'Login', component: Login },
     { path: '/Register', name: 'Register', component: Register },

@@ -1,6 +1,9 @@
 <template>
   <div class="register-page">
     <div class="register-container">
+      <div class="header__logo">
+        <RouterLink to="/"><img src="../assets/Logo-design.png" alt="Logo" /></RouterLink>
+      </div>
       <h2>{{ $t('register.title') }}</h2>
       <form @submit.prevent="register">
         <div class="input-group">
@@ -43,9 +46,6 @@
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
       </form>
-      <div class="link-container">
-        <router-link to="/">{{ $t('register.backToHome') }}</router-link>
-      </div>
     </div>
   </div>
 </template>
@@ -91,6 +91,11 @@ const register = async () => {
 </script>
 
 <style scoped>
+
+.header__logo img {
+  max-width: 120px;
+  border-radius: 100px
+}
 
 .register-page {
   display: flex;
@@ -149,9 +154,10 @@ h2 {
 button {
   width: 100%;
   padding: 12px;
-  background-color: #4caf50;
+  background-color: #d96b45;
   color: white;
   border: none;
+  margin-top: 2vh;
   border-radius: 4px;
   font-size: 1.1rem;
   cursor: pointer;
@@ -159,12 +165,12 @@ button {
 }
 
 button:disabled {
-  background-color: #a5d6a7;
+  background-color: #d96b45;
   cursor: not-allowed;
 }
 
 button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #f0ccc0;
 }
 
 /* Estilo de mensaje de error */

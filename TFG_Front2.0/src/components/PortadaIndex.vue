@@ -13,19 +13,20 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { useRecetasStore } from '../store/Recetas'; 
+import { useAdminStore } from '../store/Admin'; 
 
 const router = useRouter();
-const recetasStore = useRecetasStore();
+const recetasStore = useAdminStore();
 
 const goToExplore = async () => {
   try {
-    await recetasStore.fetchRecetas(); 
-    const recetas = recetasStore.resultadosBusqueda; 
-
+    await recetasStore.getRecetas(); 
+    const recetas = recetasStore.recetas; 
+    console.log(recetas)
     if (recetas.length > 0) {
       const randomIndex = Math.floor(Math.random() * recetas.length); 
       const randomReceta = recetas[randomIndex]; 
+      console.log(randomReceta)
       router.push(`/Recetas/${randomReceta.idReceta}`); 
     } else {
       console.error('No hay recetas disponibles.');

@@ -48,7 +48,7 @@ export const useAdminStore = defineStore({
 
   actions: {
     // Obtener recetas con paginación
-    async getRecetas(pagina: number = 1, pageSize: number = 10) {
+    async getRecetas(pagina: number = 1, pageSize: number = 100) {
       try {
         if (this.cargando || this.recetasCargadas) return; // Evitar llamadas mientras se cargan datos
         this.cargando = true;
@@ -56,24 +56,23 @@ export const useAdminStore = defineStore({
         const url = `${urlStore.baseUrl}/Receta?page=${pagina}&pageSize=${pageSize}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error('Error al obtener recetas');
-        
-        const recetasNuevas = await response.json();
+
+        const responseData = await response.json();
+        const recetasNuevas = responseData.recetas; // Cambiar a responseData.recetas
+
         if (recetasNuevas.length < pageSize) {
-          this.recetasCargadas = true; // Si el número de recetas es menor que el tamaño de página, ya no hay más recetas.
+          this.recetasCargadas = true; // Si hay menos recetas que el tamaño de página, no hay más recetas.
         }
 
-        this.recetas.push(...recetasNuevas);
-        this.paginaActual = pagina;  // Actualizamos la página actual
+        // Actualizar recetas en el store
+        this.recetas = [...this.recetas, ...recetasNuevas];
+        this.paginaActual = pagina; // Actualizamos la página actual
       } catch (error: any) {
         this.error = error.message;
+        console.error(error);
       } finally {
         this.cargando = false;
       }
-    },
-    resetRecetas() {
-      this.recetas = [];
-      this.recetasCargadas = false;
-      this.paginaActual = 1;
     },
 
     async searchRecetas(query: string) {
