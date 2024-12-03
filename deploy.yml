@@ -1,0 +1,45 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto si usas otra rama principal
+
+jobs:
+  deploy:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_FRONTEND: mariomtk8/front_term1:v2
+      IMAGE_BACKEND: mariomtk8/api_terminated:v1
+      AWS_REGION: us-east-1  # Cambia a tu región de AWS
+      CLUSTER_NAME: demo-cluster  # Cambia al nombre de tu cluster EKS
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ env.AWS_REGION }}
+
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Update Kubeconfig
+      run: |
+        aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
+
+    - name: Build and push Frontend Docker image
+      run: |
+        docker build -t $IMAGE_FRONTEND ./frontend
+        echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+        docker push $IMAGE_FRONTEND
+
+    - name: Build and push Backend Docke
