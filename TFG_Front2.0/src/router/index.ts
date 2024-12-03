@@ -90,7 +90,7 @@ const router = createRouter({
             text: 'Inicia sesión como administrador para acceder a esta página',
             confirmButtonText: 'Aceptar'
           }).then(() => {
-            next('/Login'); // Redirige al login si no tiene rol de admin
+            next('/Login'); 
           });
         }
       },

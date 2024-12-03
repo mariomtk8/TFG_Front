@@ -220,7 +220,7 @@ const checkMenuSemanal = async () => {
   background-color: #d96b45;
 }
 .header {
-  background-color: #FFE5A2;
+  background-color: #fee3a0;
   padding: 20px 0;
   display: flex;
   justify-content: center;
@@ -373,6 +373,32 @@ const checkMenuSemanal = async () => {
 }
 .header__username{
   margin-right: 10px;
+}
+@media (max-width: 1568px) {
+  .header__toggle {
+    display: block;
+  }
+  .header__nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: #FFE5A2;
+  }
+  .header__nav-list{
+    flex-direction: column;
+  }
+  .header__nav--open {
+    display: flex;
+  }
+  .header__user-link{
+    margin-top: 15px;
+  }
+  .header__search-input{
+    margin: 10px;
+  }
+  .header__logged-in{
+    margin: 10px;
+  }
 }
 
 @media (max-width: 768px) {

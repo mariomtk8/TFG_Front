@@ -40,7 +40,7 @@
   <style scoped>
   footer {
       margin-top: 10vh;
-      background-color: #FFE5A2;
+      background-color: #fee3a0;
       padding: 20px;
       display: flex;
       justify-content: center;
